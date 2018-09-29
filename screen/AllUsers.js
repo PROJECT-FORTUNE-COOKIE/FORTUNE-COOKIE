@@ -1,52 +1,29 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
-//-----------------settings for firebase----------------
-import { firebaseConfig } from '../secret';
-const firebase = require('firebase');
-// Required for side-effects
-require('firebase/firestore');
-firebase.initializeApp(firebaseConfig);
-var db = firebase.firestore();
-db.settings({
-  timestampsInSnapshots: true
-});
-//----------------end of setting for firebase ----------
+import { List } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { fetchAllUsers } from './store/userReducer';
 
 class AllUsers extends Component {
-  constructor() {
-    super();
-    this.state = {
-      users: []
-    };
-  }
-  // function navigate to selected matches
-  // onLearnMore = (user) => {
-  //   this.props.navigation.navigate('Details', { ...user });
-  // };
+  // constructor() {
+  //   super();
+  //   this.state = {
+  //     users: []
+  //   };
+  // }
 
   componentDidMount() {
-    db.collection('Users')
-      .get()
-      .then(querySnapshot => {
-        let datas = [];
-        querySnapshot.forEach(doc => {
-          datas.push(doc.data());
-        });
-        this.setState({
-          users: datas
-        });
-      });
+    this.props.allUsers();
   }
 
   render() {
-    console.log(this.state.users, 'users from firebase ');
-    const users = this.state.users;
+    console.log(this.props.allUsers, 'users from firebase>>>>>>> ');
+    // const users = this.state.users;
     return (
       <ScrollView>
         <List>
           <Text>list of all Users</Text>
-          {users.map(user => (
+          {/* {users.map(user => (
             <ListItem
               key={user.birthday}
               roundAvatar
@@ -55,11 +32,27 @@ class AllUsers extends Component {
               subtitle={user.neighborhood}
               // onPress={() => this.onLearnMore(user)}
             />
-          ))}
+          ))} */}
         </List>
       </ScrollView>
     );
   }
 }
 
-export default AllUsers;
+// const mapState = state => {
+//   console.log('-----------state from all user', state);
+//   return {
+//     allUsers: state.allUsers
+//   };
+// };
+
+const mapDispatch = dispatch => {
+  return {
+    allUsers: () => dispatch(fetchAllUsers())
+  };
+};
+
+export default connect(
+  null,
+  mapDispatch
+)(AllUsers);
