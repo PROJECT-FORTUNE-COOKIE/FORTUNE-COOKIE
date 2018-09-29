@@ -4,18 +4,20 @@ import { Icon, Avatar } from 'react-native-elements';
 
 export default class SingleUser extends Component {
   render() {
-    const { container, countViewStyle, welcome, image } = styles;
+    const { container } = styles;
     return (
       <ScrollView>
         <View style={container}>
-          <Avatar
-            xlarge
-            rounded
-            title="CR"
-            onPress={() => console.log('Works!')}
-            activeOpacity={0.7}
-          />
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flex: 3 }}>
+            <Avatar
+              xlarge
+              rounded
+              title="FC"
+              onPress={() => console.log('Works!')}
+              activeOpacity={0.7}
+            />
+          </View>
+          <View style={{ flex: 2, flexDirection: 'row' }}>
             <Icon
               reverse
               name="edit"
@@ -29,10 +31,12 @@ export default class SingleUser extends Component {
               onPress={() => console.log('Works!')}
             />
           </View>
-          <Text>SingleUser Detail </Text>
-          <Text>-- view detail </Text>
-          <Text>-- button to go checkout matches </Text>
-          <Text>-- button to change personal settings</Text>
+          <View style={{ flex: 1 }}>
+            <Text>SingleUser Detail </Text>
+            <Text>-- view detail </Text>
+            <Text>-- button to go checkout matches </Text>
+            <Text>-- button to change personal settings</Text>
+          </View>
         </View>
       </ScrollView>
     );
