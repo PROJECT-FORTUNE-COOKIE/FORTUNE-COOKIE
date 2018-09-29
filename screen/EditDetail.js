@@ -7,7 +7,7 @@ import {
   ListItem,
   FormLabel,
   FormInput,
-  FormValidationMessage
+  FormValidationMessage,
 } from 'react-native-elements';
 
 class EditDetail extends Component {
@@ -15,15 +15,19 @@ class EditDetail extends Component {
     return (
       <ScrollView>
         <FormLabel>Name</FormLabel>
-        <FormInput onChangeText={someFunction} />
+        {/* <FormInput onChangeText={someFunction} /> */}
+        <FormInput />
         <FormValidationMessage>Error message</FormValidationMessage>
 
         <FormLabel>Location</FormLabel>
-        <FormInput onChangeText={someFunction} />
+        {/* <FormInput onChangeText={someFunction} /> */}
+        <FormInput />
         <FormValidationMessage>Error message</FormValidationMessage>
 
         <FormLabel>About Me</FormLabel>
-        <FormInput onChangeText={someFunction} />
+        {/* <FormInput onChangeText={someFunction} /> */}
+        <FormInput />
+
         <FormValidationMessage>Error message</FormValidationMessage>
 
         <View

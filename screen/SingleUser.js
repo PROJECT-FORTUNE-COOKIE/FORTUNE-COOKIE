@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding: 65
+    padding: 65,
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignContent: 'space-around',
-    padding: 60
-  }
+    padding: 60,
+  },
 });
