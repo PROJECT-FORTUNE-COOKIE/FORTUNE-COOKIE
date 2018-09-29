@@ -1,33 +1,30 @@
 import React, { Component } from 'react';
 import { SocialIcon, Button } from 'react-native-elements';
-import { AppRegistry, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  AppRegistry,
+  StyleSheet,
+  Image,
+  Text,
+  TextInput,
+  View
+} from 'react-native';
 
 export default class LogIn extends Component {
   render() {
-    const { container, countViewStyle, welcome } = styles;
+    const { container, countViewStyle, welcome, image } = styles;
     return (
       <View style={container}>
-        <TextInput style={{ width: 200, height: 40, borderWidth: 1 }} />
-        <TextInput
-          style={{ width: 200, height: 40, borderWidth: 1 }}
-          // onChangeText={this.onChangeText}
-          // value={this.state.count.toString()}
+        <Image style={image} source={require('../assets/002.png')} />
+        <Text>no cookies left behind</Text>
+        <Text> </Text>
+        <Text> </Text>
+        <View style={countViewStyle} />
+        <Button
+          raised
+          icon={{ name: 'facebook', type: 'entypo' }}
+          title="sign in with facebook  "
+          onPress={() => this.props.navigation.navigate('SingleUser')}
         />
-        <View style={countViewStyle}>
-          <Button
-            title="LogIn"
-            raised
-            icon={{ name: 'fingerprint', type: 'materialicon' }}
-            onPress={() => this.props.navigation.navigate('SingleUser')}
-          />
-          <Button
-            title="SignUp"
-            raised
-            icon={{ name: 'create', type: 'materialicon' }}
-            onPress={() => this.props.navigation.navigate('SignUp')}
-          />
-        </View>
-        <SocialIcon title="Use My Facebook " raised button type="facebook" />
       </View>
     );
   }
@@ -52,6 +49,13 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   countViewStyle: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    width: 450,
+    height: 50
+  },
+  image: {
+    width: 200,
+    height: 220,
+    resizeMode: 'cover'
   }
 });
