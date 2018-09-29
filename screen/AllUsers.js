@@ -11,7 +11,7 @@ var db = firebase.firestore();
 db.settings({
   timestampsInSnapshots: true
 });
-//----------------end of setting for firebase ------------
+//----------------end of setting for firebase ----------
 
 class AllUsers extends Component {
   constructor() {
