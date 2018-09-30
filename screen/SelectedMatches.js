@@ -66,7 +66,7 @@ class SelectedMatches extends Component {
     // <ScrollView>
     //   <Text>SelectedMatches </Text>
     //   <Text>-- able to message any person selected</Text>
-    //   <Text>-- list of matches likedd</Text>
+    //   <Text>-- list of matches liked</Text>
     //   <Text> </Text>
     // </ScrollView>
     //);

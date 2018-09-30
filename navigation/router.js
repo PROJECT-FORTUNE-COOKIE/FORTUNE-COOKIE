@@ -10,6 +10,7 @@ import SignUp from '../screen/SignUp';
 import AllUsers from '../screen/AllUsers';
 import SelectedMatches from '../screen/SelectedMatches';
 import UserSetting from '../screen/UserSetting';
+import Geolocation from '../screen/Geolocation';
 import EditDetail from '../screen/EditDetail';
 
 //----------route testing --------------
@@ -46,7 +47,7 @@ export const MenuTab = createBottomTabNavigator({
     },
   },
   GEO: {
-    screen: AllUsers, //<<<<<------need to changed later on
+    screen: Geolocation,
     navigationOptions: {
       tabLabel: 'GEO',
       tabBarIcon: ({ tintColor }) => (
@@ -100,7 +101,7 @@ const mapDispatch = dispatch => {
   return {
     loadInitialData() {
       dispatch(fetchAllUsers());
-    }
+    },
   };
 };
 
