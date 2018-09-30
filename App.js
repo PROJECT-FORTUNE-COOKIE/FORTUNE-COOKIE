@@ -21,10 +21,16 @@
 // });
 
 import React, { Component } from 'react';
-import { Root } from './navigation/router';
+import RootRoute from './navigation/router';
+import { Provider } from 'react-redux';
+import store from './screen/store';
 
 export default class App extends Component {
   render() {
-    return <Root />;
+    return (
+      <Provider store={store}>
+        <RootRoute />
+      </Provider>
+    );
   }
 }
