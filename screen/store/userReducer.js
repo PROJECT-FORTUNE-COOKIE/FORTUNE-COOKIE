@@ -12,8 +12,6 @@ db.settings({
 
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
 
-// adduser? updateuser?
-
 //---------------------- ACTION CREATORS -----------------------
 
 const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });

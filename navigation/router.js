@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   createBottomTabNavigator,
   createStackNavigator
@@ -12,6 +12,10 @@ import SelectedMatches from '../screen/SelectedMatches';
 // import UserSetting from '../screen/UserSetting';
 // import EditDetail from '../screen/EditDetail';
 
+//----------route testing --------------
+import { connect } from 'react-redux';
+import { fetchAllUsers } from '../screen/store/userReducer';
+//--------------------------------------
 export const MenuTab = createBottomTabNavigator({
   SingleUser: {
     screen: SingleUser,
@@ -63,3 +67,28 @@ export const Root = createStackNavigator({
     screen: SignUp
   }
 });
+
+class RootRoute extends Component {
+  componentDidMount() {
+    this.props.loadInitialData();
+  }
+
+  render() {
+    return <Root />;
+  }
+}
+
+const mapDispatch = dispatch => {
+  return {
+    loadInitialData() {
+      dispatch(fetchAllUsers());
+    }
+  };
+};
+
+// The `withRouter` wrapper makes sure that updates are not blocked
+// when the url changes
+export default connect(
+  null,
+  mapDispatch
+)(RootRoute);
