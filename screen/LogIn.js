@@ -15,8 +15,8 @@ export default class LogIn extends Component {
     return (
       <View style={container}>
         <Image style={image} source={require('../assets/002.png')} />
-        <Text>no cookies left behind</Text>
-        <Text> </Text>
+        <Text>Welcome to Fortune Cookie</Text>
+        <Text>~no cookie left behind~</Text>
         <Text> </Text>
         <View style={countViewStyle} />
         <Button
