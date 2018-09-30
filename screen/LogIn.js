@@ -6,7 +6,7 @@ import {
   Image,
   Text,
   TextInput,
-  View
+  View,
 } from 'react-native';
 
 export default class LogIn extends Component {
@@ -15,8 +15,8 @@ export default class LogIn extends Component {
     return (
       <View style={container}>
         <Image style={image} source={require('../assets/002.png')} />
-        <Text>no cookies left behind</Text>
-        <Text> </Text>
+        <Text>Welcome to Fortune Cookie</Text>
+        <Text>~no cookie left behind~</Text>
         <Text> </Text>
         <View style={countViewStyle} />
         <Button
@@ -36,26 +36,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    backgroundColor: '#F5FCFF',
   },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
-    margin: 10
+    margin: 10,
   },
   instructions: {
     textAlign: 'center',
     color: '#333333',
-    marginBottom: 5
+    marginBottom: 5,
   },
   countViewStyle: {
     flexDirection: 'row',
     width: 450,
-    height: 50
+    height: 50,
   },
   image: {
     width: 200,
     height: 220,
-    resizeMode: 'cover'
-  }
+    resizeMode: 'cover',
+  },
 });
