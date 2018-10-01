@@ -8,10 +8,11 @@ import SingleUser from '../screen/SingleUser';
 import LogIn from '../screen/LogIn';
 import SignUp from '../screen/SignUp';
 import AllUsers from '../screen/AllUsers';
-import SelectedMatches from '../screen/SelectedMatches';
+import CameraAR from '../screen/CameraAR';
 import UserSetting from '../screen/UserSetting';
 import Geolocation from '../screen/Chat';
 import Chat from '../screen/Chat';
+import MatchesList from '../screen/MatchesList';
 import EditDetail from '../screen/EditDetail';
 
 //----------route testing --------------
@@ -38,6 +39,17 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
+
+  MatchesList: {
+    screen: MatchesList,
+    navigationOptions: {
+      tabLabel: 'MatchesList',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="align-justify" type="feather" color={tintColor} />
+      ),
+    },
+  },
+
   Chat: {
     screen: Chat,
     navigationOptions: {
@@ -48,12 +60,12 @@ export const MenuTab = createBottomTabNavigator({
     },
   },
 
-  SeletedMatches: {
-    screen: SelectedMatches,
+  CameraAR: {
+    screen: CameraAR,
     navigationOptions: {
-      tabLabel: 'Matched',
+      tabLabel: 'CameraAR',
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="heart" type="feather" color={tintColor} />
+        <Icon name="camera" type="feather" color={tintColor} />
       ),
     },
   },

@@ -7,7 +7,7 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import { Permissions } from 'expo-permissions';
 import { Camera } from 'expo-camera';
 
-class SelectedMatches extends Component {
+class CameraAR extends Component {
   state = {
     hasCameraPermission: null,
     type: Camera.Constants.Type.back,
@@ -73,4 +73,4 @@ class SelectedMatches extends Component {
   }
 }
 
-export default SelectedMatches;
+export default CameraAR;
