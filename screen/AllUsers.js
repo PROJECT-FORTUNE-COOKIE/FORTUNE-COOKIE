@@ -13,7 +13,7 @@ class AllUsers extends Component {
             <ListItem
               key={user.birthday}
               roundAvatar
-              // avatar={{ uri: user.image[0] }}
+              avatar={{ uri: user.images[0] }}
               title={`${user.name} `}
               subtitle={user.neighborhood}
               // onPress={() => this.onLearnMore(user)}
@@ -27,7 +27,7 @@ class AllUsers extends Component {
 
 const mapState = state => {
   return {
-    users: state.users.all
+    users: state.users.all,
   };
 };
 

@@ -10,7 +10,8 @@ import SignUp from '../screen/SignUp';
 import AllUsers from '../screen/AllUsers';
 import SelectedMatches from '../screen/SelectedMatches';
 import UserSetting from '../screen/UserSetting';
-import Geolocation from '../screen/Geolocation';
+import Geolocation from '../screen/Chat';
+import Chat from '../screen/Chat';
 import EditDetail from '../screen/EditDetail';
 
 //----------route testing --------------
@@ -37,6 +38,16 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
+  Chat: {
+    screen: Chat,
+    navigationOptions: {
+      tabLabel: 'Chat',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="message-circle" type="feather" color={tintColor} />
+      ),
+    },
+  },
+
   SeletedMatches: {
     screen: SelectedMatches,
     navigationOptions: {
@@ -64,6 +75,15 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
+  // FaceTime: {
+  //   screen: FaceTime,
+  //   navigationOptions: {
+  //     tabLabel: 'FaceTime',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="sunrise" type="feather" color={tintColor} />
+  //     ),
+  //   },
+  // },
   // EditDetail: {
   //   screen: EditDetail,
   //   navigationOptions: {

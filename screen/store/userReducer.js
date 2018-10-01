@@ -1,11 +1,12 @@
 import { firebaseConfig } from '../../secret';
 const firebase = require('firebase');
+
 // Required for side-effects
 require('firebase/firestore');
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 db.settings({
-  timestampsInSnapshots: true
+  timestampsInSnapshots: true,
 });
 
 //---------------------- ACTION TYPES -----------------------
@@ -15,12 +16,6 @@ const GOT_ALL_USERS = 'GOT_ALL_USERS';
 //---------------------- ACTION CREATORS -----------------------
 
 const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });
-
-//---------------------- INITIAL STATE -----------------------
-const initialState = {
-  current: {},
-  all: []
-};
 
 //---------------------- THUNK CREATOR -----------------------
 
@@ -41,6 +36,13 @@ export const fetchAllUsers = () => {
     }
   };
 };
+//---------------------- INITIAL STATE -----------------------
+const initialState = {
+  current: {},
+  matches: [],
+  selectedMatch: {},
+  all: [],
+};
 
 //---------------------- REDUCER -----------------------
 export default function(state = initialState, action) {
@@ -48,7 +50,7 @@ export default function(state = initialState, action) {
     case GOT_ALL_USERS:
       return {
         ...state,
-        all: action.users
+        all: action.users,
       };
     default:
       return state;
