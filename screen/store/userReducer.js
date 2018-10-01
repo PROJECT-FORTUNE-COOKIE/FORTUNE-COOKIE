@@ -80,6 +80,40 @@ export const fetchAllUsers = () => {
     }
   };
 };
+
+// export const fetchAllMatches = userId => async dispatch => {
+//   try {
+//     const res = await db.collection('Users').where(doc.id === userId)
+//   } catch(err) {
+//     console.log(err)
+//   }
+// }
+
+// export const fetchAllMatches = userId => {
+//   return dispatch => {
+//     try {
+//       db.collection('Users')
+//         .get()
+//         .then(querySnapshot => {
+//           // let data = null;
+//           querySnapshot.filter(doc => {
+//             //console.log(doc);
+//             // if (
+//             doc.id === userId;
+//             //) {
+//             //   console.log(doc);
+//             //   data = doc.matches.accepted();
+//             // }
+//           });
+//           console.log('filtereduser: ', filtereduser);
+//           dispatch(getAllMatchesForUser(data));
+//         });
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+// };
+
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
   current: {},
@@ -101,6 +135,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         all: action.users,
+      };
+    case GET_MATCHES:
+      return {
+        ...state,
+        matches: action.matches,
       };
     default:
       return state;
