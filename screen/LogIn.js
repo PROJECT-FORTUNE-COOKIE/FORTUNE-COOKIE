@@ -8,27 +8,44 @@ import {
   TextInput,
   View
 } from 'react-native';
+import { fbMe } from './store/userReducer';
+import { connect } from 'react-redux';
 
-export default class LogIn extends Component {
-  render() {
-    const { container, countViewStyle, welcome, image } = styles;
-    return (
-      <View style={container}>
-        <Image style={image} source={require('../assets/002.png')} />
-        <Text>Welcome to Fortune Cookie</Text>
-        <Text>~no cookie left behind~</Text>
-        <Text> </Text>
-        <View style={countViewStyle} />
-        <Button
-          raised
-          icon={{ name: 'facebook', type: 'entypo' }}
-          title="sign in with facebook  "
-          onPress={() => this.props.navigation.navigate('SingleUser')}
-        />
-      </View>
-    );
-  }
-}
+const LogIn = props => {
+  const { container, countViewStyle, image } = styles;
+
+  return (
+    <View style={container}>
+      <Image style={image} source={require('../assets/002.png')} />
+      <Text>Welcome to Fortune Cookie</Text>
+      <Text>~no cookie left behind~</Text>
+
+      <View style={countViewStyle} />
+      <Button
+        raised
+        icon={{ name: 'facebook', type: 'entypo' }}
+        title="sign in with facebook  "
+        onPress={() => {
+          props.handleSubmit();
+          props.navigation.navigate('SingleUser');
+        }}
+      />
+    </View>
+  );
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    handleSubmit() {
+      dispatch(fbMe());
+    }
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(LogIn);
 
 const styles = StyleSheet.create({
   container: {

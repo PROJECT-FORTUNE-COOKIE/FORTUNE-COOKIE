@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   createBottomTabNavigator,
-  createStackNavigator,
+  createStackNavigator
 } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import SingleUser from '../screen/SingleUser';
@@ -24,8 +24,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'Me',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="star" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
 
   AllUsers: {
@@ -34,8 +34,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'All user',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="search" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
   SeletedMatches: {
     screen: SelectedMatches,
@@ -43,8 +43,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'Matched',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="heart" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
   GEO: {
     screen: Geolocation,
@@ -52,8 +52,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'GEO',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="compass" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
   UserSetting: {
     screen: UserSetting,
@@ -61,9 +61,9 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'UserSetting',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="plus" type="feather" color={tintColor} />
-      ),
-    },
-  },
+      )
+    }
+  }
   // EditDetail: {
   //   screen: EditDetail,
   //   navigationOptions: {
@@ -77,14 +77,14 @@ export const MenuTab = createBottomTabNavigator({
 
 export const Root = createStackNavigator({
   LogIn: {
-    screen: LogIn,
+    screen: LogIn
   },
   SingleUser: {
-    screen: MenuTab,
+    screen: MenuTab
   },
   SignUp: {
-    screen: SignUp,
-  },
+    screen: SignUp
+  }
 });
 
 class RootRoute extends Component {
@@ -101,7 +101,7 @@ const mapDispatch = dispatch => {
   return {
     loadInitialData() {
       dispatch(fetchAllUsers());
-    },
+    }
   };
 };
 
