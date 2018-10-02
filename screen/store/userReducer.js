@@ -8,6 +8,7 @@ const GOT_USER = 'GOT_USER';
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
 const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
+const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
 const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
 
 //---------------------- ACTION CREATORS -----------------------
@@ -18,6 +19,10 @@ const getAllMatchesForUser = matches => ({ type: GET_MATCHES, matches });
 const getAllMessagesForSelectedMatch = messages => ({
   type: GET_MESSAGES_FOR_SELETED_MATCH,
   messages
+});
+const settingSelectedMatchOnState = match => ({
+  type: SET_SELECTED_MATCH_ON_STATE,
+  match
 });
 
 const addUserToPending = (user, owner) => ({
@@ -97,13 +102,15 @@ export const fetchAllMatches = userId => {
       .then(snapShot => {
         let datas = [];
         snapShot.forEach(doc => {
-          datas.push(doc.data());
+          matchWithId = doc.data();
+          matchWithId.id = doc.id;
+          datas.push(matchWithId);
         });
-        console.log(
-          '>>>>>>datas from reducer>>>>>>>> ',
-          datas,
-          '-----------------------------------'
-        );
+        // console.log(
+        //   '>>>>>>datas from reducer>>>>>>>> ',
+        //   datas,
+        //   '-----------------------------------'
+        // );
         dispatch(getAllMatchesForUser(datas));
       })
       .catch(err => {
@@ -112,9 +119,25 @@ export const fetchAllMatches = userId => {
   };
 };
 
+export const getSelectedMatch = matchId => {
+  return dispatch => {
+    try {
+      dispatch(settingSelectedMatchOnState({ id: matchId }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
+export const fetchingMatchMessages = (userId, matchId) => {
+  return dispatch => {
+    ////========STOPPED HERE========
+  };
+};
+
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  current: {},
+  current: { name: 'Siri McClean', id: '10156095729989412' },
   matches: [],
   selectedMatch: {},
   selectedMessages: [],
@@ -138,6 +161,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         matches: action.matches
+      };
+    case SET_SELECTED_MATCH_ON_STATE:
+      return {
+        ...state,
+        selectedMatch: action.match
       };
     default:
       return state;
