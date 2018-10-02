@@ -26,7 +26,7 @@ const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });
 const getAllMatchesForUser = matches => ({ type: GET_MATCHES, matches });
 const getAllMessagesForSelectedMatch = messages => ({
   type: GET_MESSAGES_FOR_SELETED_MATCH,
-  messages,
+  messages
 });
 
 const addUserToPending = (user, owner) => ({
@@ -58,7 +58,7 @@ export const fbMe = () => {
             db.collection('Users')
               .doc(data.id)
               .set({
-                name: data.name,
+                name: data.name
               });
           }
         });
@@ -97,38 +97,31 @@ export const fetchAllUsers = () => {
 //   }
 // }
 
-// export const fetchAllMatches = userId => async dispatch => {
-//   try {
-//     const res = await db.collection('Users').where(doc.id === userId)
-//   } catch(err) {
-//     console.log(err)
-//   }
-// }
 
-// export const fetchAllMatches = userId => {
-//   return dispatch => {
-//     try {
-//       db.collection('Users')
-//         .get()
-//         .then(querySnapshot => {
-//           // let data = null;
-//           querySnapshot.filter(doc => {
-//             //console.log(doc);
-//             // if (
-//             doc.id === userId;
-//             //) {
-//             //   console.log(doc);
-//             //   data = doc.matches.accepted();
-//             // }
-//           });
-//           console.log('filtereduser: ', filtereduser);
-//           dispatch(getAllMatchesForUser(data));
-//         });
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
-// };
+export const fetchAllMatches = userId => {
+  return dispatch => {
+    let allUsers = db.collection('Users');
+    let query = allUsers
+      .where('acceptedMatches', 'array-contains', userId)
+      .get()
+      .then(snapShot => {
+        let datas = [];
+        snapShot.forEach(doc => {
+          datas.push(doc.data());
+        });
+        console.log(
+          '>>>>>>datas from reducer>>>>>>>> ',
+          datas,
+          '-----------------------------------'
+        );
+        dispatch(getAllMatchesForUser(datas));
+      })
+      .catch(err => {
+        console.log('Error getting documents', err);
+      });
+  };
+};
+
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
@@ -136,7 +129,7 @@ const initialState = {
   matches: [],
   selectedMatch: {},
   selectedMessages: [],
-  all: [],
+  all: []
 };
 
 //---------------------- REDUCER -----------------------
@@ -145,17 +138,17 @@ export default function(state = initialState, action) {
     case GOT_USER:
       return {
         ...state,
-        current: action.user,
+        current: action.user
       };
     case GOT_ALL_USERS:
       return {
         ...state,
-        all: action.users,
+        all: action.users
       };
     case GET_MATCHES:
       return {
         ...state,
-        matches: action.matches,
+        matches: action.matches
       };
     default:
       return state;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   createBottomTabNavigator,
-  createStackNavigator,
+  createStackNavigator
 } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import SingleUser from '../screen/SingleUser';
@@ -19,6 +19,7 @@ import EditDetail from '../screen/EditDetail';
 import { connect } from 'react-redux';
 import { fetchAllUsers } from '../screen/store/userReducer';
 //--------------------------------------
+
 export const MenuTab = createBottomTabNavigator({
   SingleUser: {
     screen: SingleUser,
@@ -26,8 +27,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'Me',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="star" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
 
   AllUsers: {
@@ -36,8 +37,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'All user',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="search" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
 
   MatchesList: {
@@ -46,8 +47,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'MatchesList',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="align-justify" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
 
   Chat: {
@@ -56,8 +57,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'Chat',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="message-circle" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
 
   CameraAR: {
@@ -66,8 +67,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'CameraAR',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="camera" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
   GEO: {
     screen: Geolocation,
@@ -75,18 +76,10 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'GEO',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="compass" type="feather" color={tintColor} />
-      ),
-    },
-  },
-  UserSetting: {
-    screen: UserSetting,
-    navigationOptions: {
-      tabLabel: 'UserSetting',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="plus" type="feather" color={tintColor} />
-      ),
-    },
-  },
+      )
+    }
+  }
+
   // FaceTime: {
   //   screen: FaceTime,
   //   navigationOptions: {
@@ -109,14 +102,20 @@ export const MenuTab = createBottomTabNavigator({
 
 export const Root = createStackNavigator({
   LogIn: {
-    screen: LogIn,
+    screen: LogIn
   },
   SingleUser: {
-    screen: MenuTab,
+    screen: MenuTab
   },
   SignUp: {
-    screen: SignUp,
+    screen: SignUp
   },
+  EditDetail: {
+    screen: EditDetail
+  },
+  UserSetting: {
+    screen: UserSetting
+  }
 });
 
 class RootRoute extends Component {
@@ -133,7 +132,7 @@ const mapDispatch = dispatch => {
   return {
     loadInitialData() {
       dispatch(fetchAllUsers());
-    },
+    }
   };
 };
 
