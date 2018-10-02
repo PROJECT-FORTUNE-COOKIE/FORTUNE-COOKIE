@@ -1,44 +1,66 @@
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
-import firebase from 'firebase';
+import { ScrollView, View, StyleSheet, Text } from 'react-native';
 import {
   Slider,
+  Icon,
   List,
   ListItem,
   FormLabel,
   FormInput,
+  CheckBox,
   FormValidationMessage,
+  Button
 } from 'react-native-elements';
 
 class EditDetail extends Component {
   render() {
+    const { rowContainer } = styles;
     return (
       <ScrollView>
-        <FormLabel>Name</FormLabel>
-        {/* <FormInput onChangeText={someFunction} /> */}
-        <FormInput />
-        <FormValidationMessage>Error message</FormValidationMessage>
+        <FormLabel>blurb</FormLabel>
+        <FormInput placeholder="enter blurb?" />
 
-        <FormLabel>Location</FormLabel>
-        {/* <FormInput onChangeText={someFunction} /> */}
-        <FormInput />
-        <FormValidationMessage>Error message</FormValidationMessage>
+        <FormLabel>neighborhood</FormLabel>
+        <FormInput placeholder="my neighborhood" />
 
-        <FormLabel>About Me</FormLabel>
-        {/* <FormInput onChangeText={someFunction} /> */}
-        <FormInput />
-
-        <FormValidationMessage>Error message</FormValidationMessage>
-
-        <View
-          style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}
-        >
-          {/* User Preference, -> lucky cookie's age, gender ...etc */}
-          <Slider
-            value={this.state.value}
-            onValueChange={value => this.setState({ value })}
+        <View style={rowContainer}>
+          <Text>Gender: </Text>
+          <CheckBox
+            center
+            title="male"
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            // checked={this.state.checked}
           />
-          <Text>Value: {this.state.value}</Text>
+          <CheckBox
+            center
+            title="female"
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            // checked={this.state.checked}
+          />
+        </View>
+
+        <View style={rowContainer}>
+          <Text>Interest In: </Text>
+          <CheckBox
+            center
+            title="male"
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            // checked={this.state.checked}
+          />
+          <CheckBox
+            center
+            title="female"
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            // checked={this.state.checked}
+          />
+        </View>
+
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Icon reverse name="check-circle" type="feather" />
         </View>
       </ScrollView>
     );
@@ -46,3 +68,11 @@ class EditDetail extends Component {
 }
 
 export default EditDetail;
+
+const styles = StyleSheet.create({
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignContent: 'space-around'
+  }
+});
