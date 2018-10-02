@@ -17,6 +17,7 @@ const GOT_USER = 'GOT_USER';
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
 const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
+const GET_MESSAGES_FROM_SELETED_MATCH = 'GET_MESSAGES_FROM_SELETED_MATCH';
 const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
 const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
 
@@ -29,6 +30,11 @@ const getAllMessagesForSelectedMatch = messages => ({
   type: GET_MESSAGES_FOR_SELETED_MATCH,
   messages,
 });
+const getAllMessagesFromSelectedMatch = messages => ({
+  type: GET_MESSAGES_FROM_SELETED_MATCH,
+  messages,
+});
+
 const settingSelectedMatchOnState = match => ({
   type: SET_SELECTED_MATCH_ON_STATE,
   match,
@@ -115,11 +121,6 @@ export const fetchAllMatches = userId => {
           matchWithId.id = doc.id;
           datas.push(matchWithId);
         });
-        // console.log(
-        //   '>>>>>>datas from reducer>>>>>>>> ',
-        //   datas,
-        //   '-----------------------------------'
-        // );
         dispatch(getAllMatchesForUser(datas));
       })
       .catch(err => {
@@ -140,7 +141,41 @@ export const getSelectedMatch = matchId => {
 
 export const fetchingMatchMessages = (userId, matchId) => {
   return dispatch => {
-    ////========STOPPED HERE========
+    let allMessages = db.collection('Messages');
+    let query = allMessages
+      .where('recipientId', '==', matchId)
+      .where('user._id', '==', userId)
+      .get()
+      .then(snapShot => {
+        let data = [];
+        snapShot.forEach(doc => {
+          data.push(doc.data());
+        });
+        dispatch(getAllMessagesForSelectedMatch(data));
+      })
+      .catch(err => {
+        console.log('##Error getting messages in reducer##', err);
+      });
+  };
+};
+
+export const fetchingUserMessages = (userId, matchId) => {
+  return dispatch => {
+    let allMessages = db.collection('Messages');
+    let query = allMessages
+      .where('recipientId', '==', userId)
+      .where('user._id', '==', matchId)
+      .get()
+      .then(snapShot => {
+        let data = [];
+        snapShot.forEach(doc => {
+          data.push(doc.data());
+        });
+        dispatch(getAllMessagesFromSelectedMatch(data));
+      })
+      .catch(err => {
+        console.log('##Error getting messages in reducer##', err);
+      });
   };
 };
 
@@ -149,7 +184,8 @@ const initialState = {
   current: { name: 'Siri McClean', id: '10156095729989412' },
   matches: [],
   selectedMatch: {},
-  selectedMessages: [],
+  messagesToMatch: [],
+  messagesToUser: [],
   all: [],
 };
 
@@ -175,6 +211,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         selectedMatch: action.match,
+      };
+    case GET_MESSAGES_FOR_SELETED_MATCH:
+      return {
+        ...state,
+        messagesToMatch: action.messages,
+      };
+    case GET_MESSAGES_FROM_SELETED_MATCH:
+      return {
+        ...state,
+        messagesToUser: action.messages,
       };
     default:
       return state;
