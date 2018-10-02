@@ -6,51 +6,54 @@ import { fetchAllMatches } from './store/userReducer';
 
 class MatchesList extends Component {
   componentDidMount() {
-    console.log('state in MatchesList component: ', this.props);
-    const userId = this.props.users.current.userId;
+    const userId = this.props.current.id;
     this.props.fetchMatches(userId);
   }
 
   render() {
-    const matches = this.props.users.matches;
-
-    if (matches === null) {
-      return (
-        <View>
-          <Text>One moment please...</Text>
-        </View>
-      );
-    }
-
-    return (
-      <ScrollView>
-        <List>
-          {matches.length &&
-            matches.map(match => (
-              <ListItem
-                key={match.id}
-                roundAvatar
-                avatar={{ uri: user.images[0] }}
-                title={`${user.name} `}
-                subtitle={user.neighborhood}
-                // onPress={() => this.onLearnMore(user)}
-              />
-            ))}
-        </List>
-      </ScrollView>
+    const matches = this.props.matches;
+    console.log(
+      'state: ----------------------------------------------------------------------- ',
+      matches
     );
+    return (
+      <View>
+        <Text>One moment please...</Text>
+      </View>
+    );
+
+    // return (
+    //   <ScrollView>
+    //     <List>
+    //       {matches.length &&
+    //         matches.map(match => (
+    //           <ListItem
+    //             key={match.id}
+    //             roundAvatar
+    //             avatar={{ uri: user.images[0] }}
+    //             title={`${user.name} `}
+    //             subtitle={user.neighborhood}
+    //             // onPress={() => this.onLearnMore(user)}
+    //           />
+    //         ))}
+    //     </List>
+    //   </ScrollView>
+    // );
   }
 }
 
 const mapState = state => {
   return {
-    users: state.users,
+    current: state.users.current,
+    matches: state.users.matches
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchMatches: userId => dispatch(fetchAllMatches(userId)),
+    fetchMatches: userId => {
+      dispatch(fetchAllMatches(userId));
+    }
   };
 };
 
