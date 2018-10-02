@@ -17,6 +17,7 @@ const GOT_USER = 'GOT_USER';
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
 const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
+const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
 
 //---------------------- ACTION CREATORS -----------------------
 
@@ -27,6 +28,12 @@ const getAllMessagesForSelectedMatch = messages => ({
   type: GET_MESSAGES_FOR_SELETED_MATCH,
   messages,
 });
+
+const addUserToPending = (user, owner) => ({
+  type: ADD_MATCH_TO_PENDING,
+  user,
+  owner
+})
 
 //---------------------- THUNK CREATOR -----------------------
 
@@ -80,6 +87,15 @@ export const fetchAllUsers = () => {
     }
   };
 };
+
+// add user to accepted
+// export const addUserToPendingMatches = (user, owner) => {
+//   return async dispatch => {
+//     db.collection('Users')
+//     .get()
+
+//   }
+// }
 
 // export const fetchAllMatches = userId => async dispatch => {
 //   try {
