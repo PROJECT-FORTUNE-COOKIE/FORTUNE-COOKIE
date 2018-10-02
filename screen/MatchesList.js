@@ -7,6 +7,7 @@ import { fetchAllMatches } from './store/userReducer';
 class MatchesList extends Component {
   componentDidMount() {
     const userId = this.props.current.id;
+    console.log('userId: ', userId);
     this.props.fetchMatches(userId);
   }
 
@@ -16,36 +17,36 @@ class MatchesList extends Component {
       'state: ----------------------------------------------------------------------- ',
       matches
     );
-    return (
-      <View>
-        <Text>One moment please...</Text>
-      </View>
-    );
-
     // return (
-    //   <ScrollView>
-    //     <List>
-    //       {matches.length &&
-    //         matches.map(match => (
-    //           <ListItem
-    //             key={match.id}
-    //             roundAvatar
-    //             avatar={{ uri: user.images[0] }}
-    //             title={`${user.name} `}
-    //             subtitle={user.neighborhood}
-    //             // onPress={() => this.onLearnMore(user)}
-    //           />
-    //         ))}
-    //     </List>
-    //   </ScrollView>
+    //   <View>
+    //     <Text>One moment please...</Text>
+    //   </View>
     // );
+
+    return (
+      <ScrollView>
+        <List>
+          {matches.length &&
+            matches.map(match => (
+              <ListItem
+                key={match.id}
+                roundAvatar
+                avatar={{ uri: match.images[0] }}
+                title={`${match.name} `}
+                subtitle={match.neighborhood}
+                // onPress={() => this.onLearnMore(user)}
+              />
+            ))}
+        </List>
+      </ScrollView>
+    );
   }
 }
 
 const mapState = state => {
   return {
     current: state.users.current,
-    matches: state.users.matches
+    matches: state.users.matches,
   };
 };
 
@@ -53,7 +54,7 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchMatches: userId => {
       dispatch(fetchAllMatches(userId));
-    }
+    },
   };
 };
 

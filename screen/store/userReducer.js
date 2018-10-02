@@ -25,7 +25,7 @@ const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });
 const getAllMatchesForUser = matches => ({ type: GET_MATCHES, matches });
 const getAllMessagesForSelectedMatch = messages => ({
   type: GET_MESSAGES_FOR_SELETED_MATCH,
-  messages
+  messages,
 });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -51,7 +51,7 @@ export const fbMe = () => {
             db.collection('Users')
               .doc(data.id)
               .set({
-                name: data.name
+                name: data.name,
               });
           }
         });
@@ -90,7 +90,9 @@ export const fetchAllMatches = userId => {
       .then(snapShot => {
         let datas = [];
         snapShot.forEach(doc => {
-          datas.push(doc.data());
+          matchWithId = doc.data();
+          matchWithId.id = doc.id;
+          datas.push(matchWithId);
         });
         console.log(
           '>>>>>>datas from reducer>>>>>>>> ',
@@ -111,7 +113,7 @@ const initialState = {
   matches: [],
   selectedMatch: {},
   selectedMessages: [],
-  all: []
+  all: [],
 };
 
 //---------------------- REDUCER -----------------------
@@ -120,17 +122,17 @@ export default function(state = initialState, action) {
     case GOT_USER:
       return {
         ...state,
-        current: action.user
+        current: action.user,
       };
     case GOT_ALL_USERS:
       return {
         ...state,
-        all: action.users
+        all: action.users,
       };
     case GET_MATCHES:
       return {
         ...state,
-        matches: action.matches
+        matches: action.matches,
       };
     default:
       return state;
