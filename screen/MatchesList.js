@@ -2,26 +2,24 @@ import React, { Component } from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { fetchAllMatches } from './store/userReducer';
+import { fetchAllMatches, getSelectedMatch } from './store/userReducer';
 
 class MatchesList extends Component {
   componentDidMount() {
     const userId = this.props.current.id;
     console.log('userId: ', userId);
     this.props.fetchMatches(userId);
+    this.chatWith = this.chatWith.bind(this);
+  }
+
+  chatWith(matchId) {
+    this.props.setSelectedMatch(matchId);
+    this.props.navigation.navigate('ChatWithMatch');
   }
 
   render() {
     const matches = this.props.matches;
-    console.log(
-      'state: ----------------------------------------------------------------------- ',
-      matches
-    );
-    // return (
-    //   <View>
-    //     <Text>One moment please...</Text>
-    //   </View>
-    // );
+    //console.log('state: ----- ', matches);
 
     return (
       <ScrollView>
@@ -35,6 +33,7 @@ class MatchesList extends Component {
                 title={`${match.name} `}
                 subtitle={match.neighborhood}
                 // onPress={() => this.onLearnMore(user)}
+                onPress={() => this.chatWith(match.id)}
               />
             ))}
         </List>
@@ -54,6 +53,9 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchMatches: userId => {
       dispatch(fetchAllMatches(userId));
+    },
+    setSelectedMatch: matchId => {
+      dispatch(getSelectedMatch(matchId));
     },
   };
 };
