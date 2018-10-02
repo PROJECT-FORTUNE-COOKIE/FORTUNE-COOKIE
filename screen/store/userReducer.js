@@ -1,12 +1,3 @@
-const firebase = require('firebase');
-
-// Required for side-effects
-require('firebase/firestore');
-// firebase.initializeApp(firebaseConfig);
-// var db = firebase.firestore();
-// db.settings({
-//   timestampsInSnapshots: true,
-// });
 import { db } from './firestoreAuth';
 import { Facebook } from 'expo';
 import { fbAppId } from '../../secret';
@@ -33,7 +24,7 @@ const addUserToPending = (user, owner) => ({
   type: ADD_MATCH_TO_PENDING,
   user,
   owner
-})
+});
 
 //---------------------- THUNK CREATOR -----------------------
 
@@ -97,7 +88,6 @@ export const fetchAllUsers = () => {
 //   }
 // }
 
-
 export const fetchAllMatches = userId => {
   return dispatch => {
     let allUsers = db.collection('Users');
@@ -121,7 +111,6 @@ export const fetchAllMatches = userId => {
       });
   };
 };
-
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {

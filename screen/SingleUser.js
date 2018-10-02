@@ -8,37 +8,43 @@ import {
   Alert
 } from 'react-native';
 import { Icon, Avatar } from 'react-native-elements';
-import * as firebase from 'firebase';
-import { ImagePicker } from 'expo';
+import { storage } from './store/firestoreAuth';
+import { ImagePicker, Permissions } from 'expo';
 import { connect } from 'react-redux';
-import CameraAR from './CameraAR';
 
 class SingleUser extends Component {
   onChooseImage = async () => {
-    console.log('--------------pressed ------------');
-    let result = await ImagePicker.launchCameraAsync();
-
-    if (!resule.cancelled) {
-      this.uploadImage(result.uri, 'test')
-        .then(() => {
-          Alert.alert('Success');
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status === 'granted') {
+      ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [1, 1]
+      })
+        .then(newPostImage => {
+          if (!newPostImage.cancelled) {
+            this.uploadImage(newPostImage.uri, 'test')
+              .then(() => {
+                console.log('good');
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          }
         })
-        .catch(error => {
-          Alert.alert(error);
-        });
+        .catch(err => console.log(err));
     }
   };
 
   uploadImage = async (uri, imageName) => {
     const response = await fetch(uri);
     const blob = await response.blob();
+    var ref = storage.child('test.jpg');
 
-    var ref = firebase
-      .storage()
-      .ref()
-      .child('images/' + imageName);
-    return ref.put(blob);
+    return ref.put(blob).then(snapshot => {
+      console.log('uploaded successsss');
+    });
   };
+
   render() {
     const { container, rowContainer } = styles;
     const me = this.props.me;
@@ -61,7 +67,13 @@ class SingleUser extends Component {
             type="feather"
             onPress={() => this.props.navigation.navigate('EditDetail')}
           />
-          <Button title="camera" onPress={() => <CameraAR />} />
+          <Icon
+            reverse
+            name="camera"
+            type="feather"
+            onPress={() => this.onChooseImage()}
+          />
+          {/* <Button title="camera" onPress={() => this.onChooseImage()} /> */}
           <Icon
             reverse
             name="settings"
