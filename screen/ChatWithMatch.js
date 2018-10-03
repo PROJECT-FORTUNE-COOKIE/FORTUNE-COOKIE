@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
   fetchingMatchMessages,
   fetchingUserMessages,
+  addingNewMessageToServer,
 } from './store/userReducer';
 
 class ChatWithMatch extends Component {
@@ -15,18 +16,21 @@ class ChatWithMatch extends Component {
     this.props.fetchUserMessages(userId, matchId);
   }
 
-  // onSend(messages = []) {
-  //   this.setState(previousState => ({
-  //     messages: GiftedChat.append(previousState.messages, messages),
-  //   }));
-  // }
+  onSend(message, userId, matchId, userName) {
+    // this.setState(previousState => ({
+    //   messages: GiftedChat.append(previousState.messages, messages),
+    // }));
+    this.props.addMessageToServer(message, userId, matchId, userName);
+  }
 
   render() {
-    console.log('STATE---THIS.PROPS: ', this.props);
+    //console.log('STATE---THIS.PROPS: ', this.props);
+    let userName = this.props.current.name;
+    let userId = this.props.current.id;
+    let matchId = this.props.selectedMatch.id;
+
     let messagesToMatch = this.props.messagesToMatch;
     let messagesToUser = this.props.messagesToUser;
-
-    let userObj = { _id: this.props.current.id };
     let allMessages = messagesToMatch.concat(messagesToUser);
     allMessages = allMessages.sort(function(a, b) {
       a = new Date(a.createdAt);
@@ -34,10 +38,12 @@ class ChatWithMatch extends Component {
       return a > b ? -1 : a < b ? 1 : 0;
     });
 
+    let userObj = { _id: this.props.current.id };
+
     return (
       <GiftedChat
         messages={allMessages}
-        onSend={messages => this.onSend(messages)}
+        onSend={message => this.onSend(message, userId, matchId, userName)}
         user={userObj}
       />
     );
@@ -61,6 +67,9 @@ const mapDispatchToProps = dispatch => {
     },
     fetchUserMessages: (userId, matchId) => {
       dispatch(fetchingUserMessages(userId, matchId));
+    },
+    addMessageToServer: (message, userId, matchId, userName) => {
+      dispatch(addingNewMessageToServer(message, userId, matchId, userName));
     },
   };
 };

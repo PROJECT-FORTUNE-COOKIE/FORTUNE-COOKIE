@@ -20,6 +20,7 @@ const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
 const GET_MESSAGES_FROM_SELETED_MATCH = 'GET_MESSAGES_FROM_SELETED_MATCH';
 const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
 const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
+const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
 
 //---------------------- ACTION CREATORS -----------------------
 
@@ -38,6 +39,11 @@ const getAllMessagesFromSelectedMatch = messages => ({
 const settingSelectedMatchOnState = match => ({
   type: SET_SELECTED_MATCH_ON_STATE,
   match,
+});
+
+const addNewMessageToServer = message => ({
+  type: ADD_NEW_MESSAGE,
+  message,
 });
 
 const addUserToPending = (user, owner) => ({
@@ -98,15 +104,6 @@ export const fetchAllUsers = () => {
     }
   };
 };
-
-// add user to accepted
-// export const addUserToPendingMatches = (user, owner) => {
-//   return async dispatch => {
-//     db.collection('Users')
-//     .get()
-
-//   }
-// }
 
 export const fetchAllMatches = userId => {
   return dispatch => {
@@ -179,6 +176,61 @@ export const fetchingUserMessages = (userId, matchId) => {
   };
 };
 
+export const addingNewMessageToServer = (
+  message,
+  userId,
+  matchId,
+  userName
+) => {
+  return dispatch => {
+    let newMessageId = '';
+    let possible =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < 10; i++) {
+      newMessageId += possible.charAt(
+        Math.floor(Math.random() * possible.length)
+      );
+      //return newMessageId;
+    }
+    let allMessages = db.collection('Messages');
+    const docRef = allMessages.doc(newMessageId);
+
+    console.log('+++++++++_+++++++++MESSAGE:', message);
+
+    docRef.get().then(function(doc) {
+      if (!doc.exists) {
+        allMessages.doc(newMessageId).set({
+          _id: newMessageId,
+          createdAt: message[0].createdAt,
+          recipientId: matchId,
+          text: message[0].text,
+          user: {
+            _id: userId,
+            name: userName,
+            avatar:
+              'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
+          },
+        });
+        dispatch(
+          addNewMessageToServer({
+            _id: newMessageId,
+            createdAt: message[0].createdAt,
+            recipientId: matchId,
+            text: message[0].text,
+            user: {
+              _id: userId,
+              name: userName,
+              avatar:
+                'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
+            },
+          })
+        );
+      }
+    });
+  };
+};
+
+
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
   current: { name: 'Siri McClean', id: '10156095729989412' },
@@ -221,6 +273,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         messagesToUser: action.messages,
+      };
+    case ADD_NEW_MESSAGE:
+      return {
+        ...state,
+        messagesToMatch: [...state.messagesToMatch, action.message],
       };
     default:
       return state;
