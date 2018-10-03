@@ -196,40 +196,28 @@ export const addingNewMessageToServer = (
     const docRef = allMessages.doc(newMessageId);
 
     console.log('+++++++++_+++++++++MESSAGE:', message);
+    let newMessage = {
+      _id: newMessageId,
+      createdAt: message[0].createdAt.toISOString(),
+      recipientId: matchId,
+      text: message[0].text,
+      user: {
+        _id: userId,
+        name: userName,
+        avatar:
+          'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
+      },
+    };
+    console.log('+++++++++NEW+++++++++MESSAGE:', newMessage);
 
     docRef.get().then(function(doc) {
       if (!doc.exists) {
-        allMessages.doc(newMessageId).set({
-          _id: newMessageId,
-          createdAt: message[0].createdAt,
-          recipientId: matchId,
-          text: message[0].text,
-          user: {
-            _id: userId,
-            name: userName,
-            avatar:
-              'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
-          },
-        });
-        dispatch(
-          addNewMessageToServer({
-            _id: newMessageId,
-            createdAt: message[0].createdAt,
-            recipientId: matchId,
-            text: message[0].text,
-            user: {
-              _id: userId,
-              name: userName,
-              avatar:
-                'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
-            },
-          })
-        );
+        allMessages.doc(newMessageId).set(newMessage);
+        dispatch(addNewMessageToServer(newMessage));
       }
     });
   };
 };
-
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
