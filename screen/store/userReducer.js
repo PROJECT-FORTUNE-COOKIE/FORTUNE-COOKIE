@@ -12,6 +12,7 @@ const GET_MESSAGES_FROM_SELETED_MATCH = 'GET_MESSAGES_FROM_SELETED_MATCH';
 const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
 const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
 const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
+const CHANGE_ICON = 'CHANGE_ICON';
 
 //---------------------- ACTION CREATORS -----------------------
 
@@ -41,6 +42,11 @@ const addUserToPending = (user, owner) => ({
   type: ADD_MATCH_TO_PENDING,
   user,
   owner
+});
+
+const changeIcon = user => ({
+  type: CHANGE_ICON,
+  user
 });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -202,14 +208,30 @@ export const addingNewMessageToServer = (
           'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg'
       }
     };
-    console.log('+++++++++NEW+++++++++MESSAGE:', newMessage);
-
     docRef.get().then(function(doc) {
       if (!doc.exists) {
         allMessages.doc(newMessageId).set(newMessage);
         dispatch(addNewMessageToServer(newMessage));
       }
     });
+  };
+};
+
+export const updateIcon = (user, newIcon) => {
+  return async dispatch => {
+    try {
+      const docRef = db.collection('Users').doc(user.id);
+      await docRef.update({
+        icon: newIcon
+      });
+
+      await docRef.get().then(doc => {
+        userObj = doc.data();
+        dispatch(changeIcon(userObj));
+      });
+    } catch (err) {
+      console.error('error in update icon', err);
+    }
   };
 };
 
@@ -261,6 +283,12 @@ export default function(state = initialState, action) {
         ...state,
         messagesToMatch: [...state.messagesToMatch, action.message]
       };
+    case CHANGE_ICON:
+      return {
+        ...state,
+        current: action.user
+      };
+
     default:
       return state;
   }

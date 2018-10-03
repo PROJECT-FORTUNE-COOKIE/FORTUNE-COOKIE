@@ -11,13 +11,9 @@ import { Icon, Avatar } from 'react-native-elements';
 import { storage } from './store/firestoreAuth';
 import { ImagePicker, Permissions } from 'expo';
 import { connect } from 'react-redux';
+import { updateIcon } from './store/userReducer';
 
 class SingleUser extends Component {
-  constructor(props) {
-    super(props);
-    console.log(props.me, 'my props here ??---------------------');
-  }
-
   onChooseImage = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status === 'granted') {
@@ -44,44 +40,34 @@ class SingleUser extends Component {
     const response = await fetch(uri);
     const blob = await response.blob();
     const referenceAddress = `${this.props.me.id}/${imageName}`;
-    console.log(referenceAddress, '----------address here ???');
-    var ref = storage.child(referenceAddress);
-    this.props.me.icon = referenceAddress;
-    return ref.put(blob);
-  };
 
-  pickImages = () => {
-    console.log('im herer---------------- ');
-    const img = storage.child(this.props.me.icon);
-    img
-      .getMetadata()
-      .then(metadata => {
-        return metadata;
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    //----------create storage reference ------
+
+    var ref = storage.child(referenceAddress);
+    ref.put(blob);
+    const strURL = ref.getDownloadURL().then(url => {
+      return url;
+    });
+    const waited = await strURL;
+    waited.toString();
+    this.props.changeIcon(this.props.me, waited);
   };
 
   render() {
     const { container, rowContainer } = styles;
     const me = this.props.me;
 
-    console.log(
-      this.props.me.icon,
-      'hope this change uri no large anymore pleaseeeee !!!!!!!------------------------------------'
-    );
     return (
       <View style={container}>
         <View>
           <Avatar
+            id="myImg"
             xlarge
             rounded
             title="FC"
             source={{
               uri: me.icon
             }}
-            onPress={() => this.pickImages()}
             activeOpacity={0.7}
           />
         </View>
@@ -98,7 +84,6 @@ class SingleUser extends Component {
             type="feather"
             onPress={() => this.onChooseImage()}
           />
-          {/* <Button title="camera" onPress={() => this.onChooseImage()} /> */}
           <Icon
             reverse
             name="settings"
@@ -123,7 +108,16 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(SingleUser);
+const mapDispatchToProps = dispatch => {
+  return {
+    changeIcon: (user, newIcon) => dispatch(updateIcon(user, newIcon))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SingleUser);
 
 const styles = StyleSheet.create({
   container: {
