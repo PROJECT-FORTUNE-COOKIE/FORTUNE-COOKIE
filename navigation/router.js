@@ -11,7 +11,6 @@ import AllUsers from '../screen/AllUsers';
 import CameraAR from '../screen/CameraAR';
 import UserSetting from '../screen/UserSetting';
 import Geolocation from '../screen/Geolocation';
-import Chat from '../screen/Chat';
 import MatchesList from '../screen/MatchesList';
 import EditDetail from '../screen/EditDetail';
 import ChatWithMatch from '../screen/ChatWithMatch';
@@ -48,16 +47,6 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'MatchesList',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="align-justify" type="feather" color={tintColor} />
-      ),
-    },
-  },
-
-  Chat: {
-    screen: Chat,
-    navigationOptions: {
-      tabLabel: 'Chat',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="message-circle" type="feather" color={tintColor} />
       ),
     },
   },
