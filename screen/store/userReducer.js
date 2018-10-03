@@ -8,8 +8,10 @@ const GOT_USER = 'GOT_USER';
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
 const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
+const GET_MESSAGES_FROM_SELETED_MATCH = 'GET_MESSAGES_FROM_SELETED_MATCH';
 const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
 const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
+const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
 
 //---------------------- ACTION CREATORS -----------------------
 
@@ -20,9 +22,19 @@ const getAllMessagesForSelectedMatch = messages => ({
   type: GET_MESSAGES_FOR_SELETED_MATCH,
   messages
 });
+const getAllMessagesFromSelectedMatch = messages => ({
+  type: GET_MESSAGES_FROM_SELETED_MATCH,
+  messages
+});
+
 const settingSelectedMatchOnState = match => ({
   type: SET_SELECTED_MATCH_ON_STATE,
   match
+});
+
+const addNewMessageToServer = message => ({
+  type: ADD_NEW_MESSAGE,
+  message
 });
 
 const addUserToPending = (user, owner) => ({
@@ -88,15 +100,6 @@ export const fetchAllUsers = () => {
   };
 };
 
-// add user to accepted
-// export const addUserToPendingMatches = (user, owner) => {
-//   return async dispatch => {
-//     db.collection('Users')
-//     .get()
-
-//   }
-// }
-
 export const fetchAllMatches = userId => {
   return dispatch => {
     let allUsers = db.collection('Users');
@@ -130,7 +133,83 @@ export const getSelectedMatch = matchId => {
 
 export const fetchingMatchMessages = (userId, matchId) => {
   return dispatch => {
-    ////========STOPPED HERE========
+    let allMessages = db.collection('Messages');
+    let query = allMessages
+      .where('recipientId', '==', matchId)
+      .where('user._id', '==', userId)
+      .get()
+      .then(snapShot => {
+        let data = [];
+        snapShot.forEach(doc => {
+          data.push(doc.data());
+        });
+        dispatch(getAllMessagesForSelectedMatch(data));
+      })
+      .catch(err => {
+        console.log('##Error getting messages in reducer##', err);
+      });
+  };
+};
+
+export const fetchingUserMessages = (userId, matchId) => {
+  return dispatch => {
+    let allMessages = db.collection('Messages');
+    let query = allMessages
+      .where('recipientId', '==', userId)
+      .where('user._id', '==', matchId)
+      .get()
+      .then(snapShot => {
+        let data = [];
+        snapShot.forEach(doc => {
+          data.push(doc.data());
+        });
+        dispatch(getAllMessagesFromSelectedMatch(data));
+      })
+      .catch(err => {
+        console.log('##Error getting messages in reducer##', err);
+      });
+  };
+};
+
+export const addingNewMessageToServer = (
+  message,
+  userId,
+  matchId,
+  userName
+) => {
+  return dispatch => {
+    let newMessageId = '';
+    let possible =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < 10; i++) {
+      newMessageId += possible.charAt(
+        Math.floor(Math.random() * possible.length)
+      );
+      //return newMessageId;
+    }
+    let allMessages = db.collection('Messages');
+    const docRef = allMessages.doc(newMessageId);
+
+    let newMessage = {
+      _id: newMessageId,
+      createdAt: message[0].createdAt.toISOString(),
+      recipientId: matchId,
+      text: message[0].text,
+      user: {
+        _id: userId,
+        name: userName,
+        avatar:
+          'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg'
+      }
+    };
+    console.log('+++++++++NEW+++++++++MESSAGE:', newMessage);
+
+    docRef.get().then(function(doc) {
+      if (!doc.exists) {
+        allMessages.doc(newMessageId).set(newMessage);
+        dispatch(addNewMessageToServer(newMessage));
+      }
+    });
   };
 };
 
@@ -139,7 +218,8 @@ const initialState = {
   current: {},
   matches: [],
   selectedMatch: {},
-  selectedMessages: [],
+  messagesToMatch: [],
+  messagesToUser: [],
   all: []
 };
 
@@ -165,6 +245,21 @@ export default function(state = initialState, action) {
       return {
         ...state,
         selectedMatch: action.match
+      };
+    case GET_MESSAGES_FOR_SELETED_MATCH:
+      return {
+        ...state,
+        messagesToMatch: action.messages
+      };
+    case GET_MESSAGES_FROM_SELETED_MATCH:
+      return {
+        ...state,
+        messagesToUser: action.messages
+      };
+    case ADD_NEW_MESSAGE:
+      return {
+        ...state,
+        messagesToMatch: [...state.messagesToMatch, action.message]
       };
     default:
       return state;

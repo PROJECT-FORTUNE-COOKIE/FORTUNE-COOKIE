@@ -2,26 +2,49 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { connect } from 'react-redux';
+import {
+  fetchingMatchMessages,
+  fetchingUserMessages,
+  addingNewMessageToServer,
+} from './store/userReducer';
 
 class ChatWithMatch extends Component {
-  componentDidMount() {}
+  componentDidMount() {
+    const userId = this.props.current.id;
+    const matchId = this.props.selectedMatch.id;
+    this.props.fetchMatchMessages(userId, matchId);
+    this.props.fetchUserMessages(userId, matchId);
+  }
 
-  // onSend(messages = []) {
-  //   this.setState(previousState => ({
-  //     messages: GiftedChat.append(previousState.messages, messages),
-  //   }));
-  // }
+  onSend(message, userId, matchId, userName) {
+    // this.setState(previousState => ({
+    //   messages: GiftedChat.append(previousState.messages, messages),
+    // }));
+    this.props.addMessageToServer(message, userId, matchId, userName);
+  }
 
   render() {
-    console.log('STATE---THIS.PROPS: ', this.props);
+    //console.log('STATE---THIS.PROPS: ', this.props);
+    let userName = this.props.current.name;
+    let userId = this.props.current.id;
+    let matchId = this.props.selectedMatch.id;
+
+    let messagesToMatch = this.props.messagesToMatch;
+    let messagesToUser = this.props.messagesToUser;
+    let allMessages = messagesToMatch.concat(messagesToUser);
+    allMessages = allMessages.sort(function(a, b) {
+      a = new Date(a.createdAt);
+      b = new Date(b.createdAt);
+      return a > b ? -1 : a < b ? 1 : 0;
+    });
+
+    let userObj = { _id: this.props.current.id };
 
     return (
       <GiftedChat
-        messages={this.props.selectedMessages}
-        // onSend={messages => this.onSend(messages)}
-        user={{
-          _id: 1,
-        }}
+        messages={allMessages}
+        onSend={message => this.onSend(message, userId, matchId, userName)}
+        user={userObj}
       />
     );
   }
@@ -31,45 +54,24 @@ const mapState = state => {
   return {
     current: state.users.current,
     selectedMatch: state.users.selectedMatch,
-    //selectedMessages: state.users.selectedMessages,
-    selectedMessages: [
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-      {
-        _id: 2,
-        text: 'Hello developer2',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-      {
-        _id: 3,
-        text: 'GOODBYE',
-        createdAt: new Date(),
-        user: {
-          _id: 1,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ],
     newMessage: {},
+    messagesToMatch: state.users.messagesToMatch,
+    messagesToUser: state.users.messagesToUser,
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    fetchMatchMessages: (userId, matchId) => {
+      dispatch(fetchingMatchMessages(userId, matchId));
+    },
+    fetchUserMessages: (userId, matchId) => {
+      dispatch(fetchingUserMessages(userId, matchId));
+    },
+    addMessageToServer: (message, userId, matchId, userName) => {
+      dispatch(addingNewMessageToServer(message, userId, matchId, userName));
+    },
+  };
 };
 
 export default connect(
