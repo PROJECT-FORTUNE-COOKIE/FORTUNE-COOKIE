@@ -13,11 +13,13 @@ import { ImagePicker, Permissions } from 'expo';
 import { connect } from 'react-redux';
 
 class SingleUser extends Component {
-  constructor(props) {
-    super(props);
-    console.log(props.me, 'my props here ??---------------------');
+  constructor() {
+    super();
+    this.state = {
+      imageCurrent: '',
+      images: []
+    };
   }
-
   onChooseImage = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status === 'granted') {
@@ -27,7 +29,7 @@ class SingleUser extends Component {
       })
         .then(newPostImage => {
           if (!newPostImage.cancelled) {
-            this.uploadImage(newPostImage.uri, 'myIcon')
+            this.uploadImage(newPostImage.uri, 'test')
               .then(() => {
                 console.log('good');
               })
@@ -43,34 +45,32 @@ class SingleUser extends Component {
   uploadImage = async (uri, imageName) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    const referenceAddress = `${this.props.me.id}/${imageName}`;
-    console.log(referenceAddress, '----------address here ???');
-    var ref = storage.child(referenceAddress);
-    this.props.me.icon = referenceAddress;
+    var ref = storage.child(`${this.props.me.id}/${Math.random()}`);
+    //let imgLocation = ref.location.path_;
+    this.setState({
+      imageCurrent: uri
+    });
     return ref.put(blob);
   };
 
-  pickImages = () => {
-    console.log('im herer---------------- ');
-    const img = storage.child(this.props.me.icon);
-    img
-      .getMetadata()
-      .then(metadata => {
-        return metadata;
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
+  // pickImages = () => {
+  //   const img = storage.child(this.state.imageCurrent);
+  //   // const iconImg = img
+  //   //   .getMetadata()
+  //   //   .then(metadata => {
+  //   //     console.log(metadata);
+  //   //     return metadata;
+  //   //   })
+  //   //   .catch(error => {
+  //   //     console.log(error);
+  //   //   });
+  // };
 
   render() {
+    console.log('------------state---', this.state);
     const { container, rowContainer } = styles;
     const me = this.props.me;
-
-    console.log(
-      this.props.me.icon,
-      'hope this change uri no large anymore pleaseeeee !!!!!!!------------------------------------'
-    );
+    const image = this.state.imageCurrent;
     return (
       <View style={container}>
         <View>
@@ -79,9 +79,9 @@ class SingleUser extends Component {
             rounded
             title="FC"
             source={{
-              uri: me.icon
+              uri: image
             }}
-            onPress={() => this.pickImages()}
+            // onPress={() => this.pickImages()}
             activeOpacity={0.7}
           />
         </View>

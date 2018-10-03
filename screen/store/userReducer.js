@@ -41,12 +41,10 @@ export const fbMe = () => {
         { permissions: ['public_profile'] }
       );
       if (type === 'success') {
-        // Get the user's name using Facebook's Graph API
         const response = await fetch(
           `https://graph.facebook.com/me?access_token=${token}`
         );
         let data = await response.json();
-        //-----------check if user exists --------
         const docRef = db.collection('Users').doc(data.id);
 
         docRef.get().then(function(doc) {
@@ -54,11 +52,17 @@ export const fbMe = () => {
             db.collection('Users')
               .doc(data.id)
               .set({
-                name: data.name
+                id: data.id,
+                name: data.name,
+                icon: 'https://data.whicdn.com/images/106885273/large.jpg'
               });
           }
         });
-        dispatch(gotUser(data));
+        let userObj = {};
+        docRef.get().then(doc => {
+          userObj = doc.data();
+          dispatch(gotUser(userObj));
+        });
       }
     } catch (err) {
       console.error(err);
@@ -106,11 +110,6 @@ export const fetchAllMatches = userId => {
           matchWithId.id = doc.id;
           datas.push(matchWithId);
         });
-        // console.log(
-        //   '>>>>>>datas from reducer>>>>>>>> ',
-        //   datas,
-        //   '-----------------------------------'
-        // );
         dispatch(getAllMatchesForUser(datas));
       })
       .catch(err => {
@@ -137,7 +136,7 @@ export const fetchingMatchMessages = (userId, matchId) => {
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  current: { name: 'Siri McClean', id: '10156095729989412' },
+  current: {},
   matches: [],
   selectedMatch: {},
   selectedMessages: [],
