@@ -102,6 +102,9 @@ export const Root = createStackNavigator({
   ChatWithMatch: {
     screen: ChatWithMatch,
   },
+  PayDeposit: {
+    screen: PayDeposit,
+  },
 });
 
 class RootRoute extends Component {

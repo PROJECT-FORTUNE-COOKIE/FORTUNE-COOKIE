@@ -5,6 +5,7 @@ import { fbAppId } from '../../secret';
 //---------------------- ACTION TYPES -----------------------
 
 const GOT_USER = 'GOT_USER';
+const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
 const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
@@ -16,10 +17,15 @@ const CHANGE_ICON = 'CHANGE_ICON';
 const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
 const ADD_USER_TO_STATE = 'ADD_USER_TO_STATE';
 const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
+const FETCH_DEPOSIT = 'FETCH DEPOSIT';
+const UPDATE_DEPOSIT = 'UPDATE_DEPOSIT';
 
 //---------------------- ACTION CREATORS -----------------------
 
 const gotUser = user => ({ type: GOT_USER, user });
+const fetchingCurrentUser = () => ({
+  type: FETCH_CURRENT_USER,
+});
 const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });
 const getAllMatchesForUser = matches => ({ type: GET_MATCHES, matches });
 const getAllMessagesForSelectedMatch = messages => ({
@@ -51,6 +57,15 @@ const changeIcon = user => ({
   type: CHANGE_ICON,
   user,
 });
+
+const fetchDeposit = deposit => ({
+  type: FETCH_DEPOSIT,
+  deposit,
+});
+
+const updateDeposit = deposit => {
+  type: UPDATE_DEPOSIT, deposit;
+};
 
 const getAcceptedMatches = matchIds => ({
   type: GET_ACCEPTED_MATCHES,
@@ -85,6 +100,7 @@ export const fbMe = () => {
                 id: data.id,
                 name: data.name,
                 icon: 'https://data.whicdn.com/images/106885273/large.jpg',
+                deposit: 0,
               });
           }
         });
@@ -97,6 +113,12 @@ export const fbMe = () => {
     } catch (err) {
       console.error(err);
     }
+  };
+};
+
+export const fetchCurrentUser = () => {
+  return dispatch => {
+    dispatch(fetchingCurrentUser());
   };
 };
 
@@ -273,9 +295,46 @@ export const updateIcon = (user, newIcon) => {
   };
 };
 
+export const fetchingInititalDeposit = user => {
+  return async dispatch => {
+    const docRef = await db.collection('Users').doc(user.id);
+    console.log('outside TRY *****DOC REF IN USER REDUCER:', docRef.deposit);
+    try {
+      const docRef = await db.collection('Users').doc(user.id);
+      console.log('*****DOC REF IN USER REDUCER:', docRef.deposit);
+      // if (!docRef.deposit) {
+      //   const depositObj = {
+      //     deposit: 0,
+      //   };
+      await docRef.update({ deposit: 0 });
+      //   dispatch(fetchDeposit(depositObj.deposit));
+      // } else {
+      dispatch(fetchDeposit(docRef.deposit));
+      // }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const updatingDeposit = (user, oldDeposit, newDeposit) => {
+  return async dispatch => {
+    try {
+      const updatedDeposit = oldDeposit + newDeposit;
+      const docRef = db.collection('Users').doc(user.id);
+      await docRef.update({
+        deposit: updatedDeposit,
+      });
+      dispatch(updateDeposit(updatedDeposit));
+    } catch (err) {
+      console.error('error in update deposit', err);
+    }
+  };
+};
+
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  current: { name: 'Siri McClean', id: '10156095729989412' },
+  current: {},
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
@@ -283,6 +342,7 @@ const initialState = {
   all: [],
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
+  deposit: '',
 };
 
 //---------------------- REDUCER -----------------------
@@ -293,6 +353,8 @@ export default function(state = initialState, action) {
         ...state,
         current: action.user,
       };
+    case FETCH_CURRENT_USER:
+      return state;
     case GOT_ALL_USERS:
       return {
         ...state,
@@ -327,6 +389,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         current: action.user,
+      };
+    case FETCH_DEPOSIT:
+      return {
+        ...state,
+        deposit: action.deposit,
+      };
+    case UPDATE_DEPOSIT:
+      return {
+        ...state,
+        deposit: action.deposit,
       };
     case ADD_MATCH_TO_ACCEPTED:
       return {

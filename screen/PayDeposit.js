@@ -12,6 +12,7 @@ import {
   updatingCVC,
   creatingToken,
 } from './store/paymentReducer';
+import { fetchingInititalDeposit } from './store/userReducer';
 
 class PayDeposit extends Component {
   constructor() {
@@ -21,12 +22,12 @@ class PayDeposit extends Component {
 
   componentDidMount() {
     this.props.fetchInitialState();
+    const user = this.props.current;
+    console.log('const user = this.props.current: ', user);
+    //this.props.fetchInitialDeposit(user);
   }
 
   async payNow() {
-    // alert('Thanks, you now have a $5 deposit in your accout!');
-    //console.log('THIS>PROPS.payment: ', this.props.payment);
-
     AlertIOS.alert(
       'Payment Completed',
       'Thanks, you now have a $5 deposit in your accout!',
@@ -44,6 +45,7 @@ class PayDeposit extends Component {
       console.log('client: ', client);
       const card = this.props.payment;
       console.log('THIS>PROPS.payment: ', this.props.payment);
+      console.log('THIS>PROPS.current: ', this.props.current);
 
       // Create a Stripe token with new card info
       const token = await client.createToken({
@@ -126,14 +128,16 @@ class PayDeposit extends Component {
 
 const mapStateToProps = state => {
   return {
-    current: state.users.current.name,
+    current: state.users.current,
     payment: state.payment,
+    deposit: state.users.deposit,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchInitialState: () => dispatch(fetchInitialPaymentState()),
+    fetchInitialDeposit: userId => dispatch(fetchingInititalDeposit(userId)),
     changeEmail: email => dispatch(updatingPaymentEmail(email)),
     changeCCNumber: number => dispatch(updatingCCNumber(number)),
     changeExpMonth: month => dispatch(updatingExpMonth(month)),

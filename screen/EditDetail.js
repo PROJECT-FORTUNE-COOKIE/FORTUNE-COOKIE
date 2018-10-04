@@ -8,18 +8,23 @@ import {
   FormValidationMessage,
 } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { fetchCurrentUser } from './store/userReducer';
 
 class EditDetail extends Component {
   constructor() {
     super();
-    this.state = {
-      blurb: '',
-      neighborhood: '',
-      identifyAs: '',
-      seeking: '',
-    };
+    // this.state = {
+    //   blurb: '',
+    //   neighborhood: '',
+    //   identifyAs: '',
+    //   seeking: '',
+    // };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.fetchUser();
   }
 
   handleChange = event => {
@@ -28,13 +33,15 @@ class EditDetail extends Component {
     });
   };
 
-  handleSubmit = event => {
-    event.preventDefault();
-    this.props.update(this.state);
+  handleSubmit = () => {
+    //event.preventDefault();
+    //this.props.update(this.state);
+    this.props.navigation.navigate('SingleUser');
   };
 
   render() {
     const { rowContainer } = styles;
+    console.log('THIS>PROPS>>>>>>>>>: ', this.props);
     return (
       <ScrollView>
         <View style={{ flex: 1, alignItems: 'center' }}>
@@ -42,7 +49,7 @@ class EditDetail extends Component {
         </View>
 
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text>Deposit: $5</Text>
+          {/* <Text>Deposit: ${this.props.current.deposit}</Text> */}
         </View>
 
         <FormLabel>blurb</FormLabel>
@@ -110,7 +117,9 @@ const mapState = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    fetchUser: () => dispatch(fetchCurrentUser()),
+  };
 };
 
 export default connect(
