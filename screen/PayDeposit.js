@@ -27,7 +27,7 @@ class PayDeposit extends Component {
   }
 
   async payNow() {
-    alert('fortune favors the bold!');
+    alert('Thanks, you now have a $5 deposit in your accout!');
     try {
       const apiKey = 'pk_test_ocAH4aPzpCRUQYoPZWPcmngV';
       const client = new Stripe(apiKey);

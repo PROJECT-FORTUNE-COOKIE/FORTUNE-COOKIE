@@ -9,7 +9,7 @@ import {
   FormInput,
   CheckBox,
   FormValidationMessage,
-  Button
+  Button,
 } from 'react-native-elements';
 
 class EditDetail extends Component {
@@ -17,14 +17,18 @@ class EditDetail extends Component {
     const { rowContainer } = styles;
     return (
       <ScrollView>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text>USER DETAILS + SETTINGS</Text>
+        </View>
+
         <FormLabel>blurb</FormLabel>
-        <FormInput placeholder="enter blurb?" />
+        <FormInput placeholder="write you blurb! make it fun!" />
 
         <FormLabel>neighborhood</FormLabel>
-        <FormInput placeholder="my neighborhood" />
+        <FormInput placeholder="neighborhood" />
 
         <View style={rowContainer}>
-          <Text>Gender: </Text>
+          <Text>I identify as: </Text>
           <CheckBox
             center
             title="male"
@@ -42,7 +46,7 @@ class EditDetail extends Component {
         </View>
 
         <View style={rowContainer}>
-          <Text>Interest In: </Text>
+          <Text>I am interested in: </Text>
           <CheckBox
             center
             title="male"
@@ -69,10 +73,27 @@ class EditDetail extends Component {
 
 export default EditDetail;
 
+// const mapState = state => {
+//   return {
+//     current: state.users.current,
+
+//     },
+//   };
+// };
+
+// const mapDispatchToProps = dispatch => {
+//   return {};
+// };
+
+// export default connect(
+//   mapState,
+//   mapDispatchToProps
+// )(EditDetail);
+
 const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignContent: 'space-around'
-  }
+    alignContent: 'space-around',
+  },
 });
