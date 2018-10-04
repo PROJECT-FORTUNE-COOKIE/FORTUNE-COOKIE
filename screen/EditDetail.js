@@ -5,45 +5,61 @@ import {
   FormLabel,
   FormInput,
   CheckBox,
-  FormValidationMessage
+  FormValidationMessage,
 } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { fetchCurrentUser } from './store/userReducer';
 
 class EditDetail extends Component {
   constructor() {
     super();
-    this.state = {
-      blurb: '',
-      neighborhood: '',
-      identifyAs: '',
-      seeking: ''
-    };
+    // this.state = {
+    //   blurb: '',
+    //   neighborhood: '',
+    //   identifyAs: '',
+    //   seeking: '',
+    // };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    this.props.fetchUser();
+  }
+
   handleChange = event => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
-  handleSubmit = event => {
-    event.preventDefault();
-    this.props.update(this.state);
+  handleSubmit = () => {
+    //event.preventDefault();
+    //this.props.update(this.state);
+    this.props.navigation.navigate('SingleUser');
   };
 
   render() {
     const { rowContainer } = styles;
+    console.log('THIS>PROPS>>>>>>>>>: ', this.props);
     return (
       <ScrollView>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text>USER DETAILS + SETTINGS</Text>
+        </View>
+
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          {/* <Text>Deposit: ${this.props.current.deposit}</Text> */}
+        </View>
+
         <FormLabel>blurb</FormLabel>
-        <FormInput placeholder="enter blurb?" />
+        <FormInput placeholder="write you blurb! make it fun!" />
 
         <FormLabel>neighborhood</FormLabel>
-        <FormInput placeholder="my neighborhood" />
+        <FormInput placeholder="neighborhood" />
 
         <View style={rowContainer}>
-          <Text>Identify As: </Text>
+          <Text>I identify as: </Text>
           <CheckBox
             center
             title="male"
@@ -61,7 +77,7 @@ class EditDetail extends Component {
         </View>
 
         <View style={rowContainer}>
-          <Text>Interest In: </Text>
+          <Text>I am interested in: </Text>
           <CheckBox
             center
             title="male"
@@ -92,12 +108,29 @@ class EditDetail extends Component {
   }
 }
 
-export default EditDetail;
+//export default EditDetail;
+
+const mapState = state => {
+  return {
+    current: state.users.current,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchUser: () => dispatch(fetchCurrentUser()),
+  };
+};
+
+export default connect(
+  mapState,
+  mapDispatchToProps
+)(EditDetail);
 
 const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignContent: 'space-around'
-  }
+    alignContent: 'space-around',
+  },
 });

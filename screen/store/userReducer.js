@@ -7,6 +7,7 @@ const firestore = require('firebase/firestore');
 //---------------------- ACTION TYPES -----------------------
 
 const GOT_USER = 'GOT_USER';
+const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
 const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
@@ -18,49 +19,63 @@ const CHANGE_ICON = 'CHANGE_ICON';
 const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
 const ADD_USER_TO_STATE = 'ADD_USER_TO_STATE';
 const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
+const FETCH_DEPOSIT = 'FETCH DEPOSIT';
+const UPDATE_DEPOSIT = 'UPDATE_DEPOSIT';
 
 //---------------------- ACTION CREATORS -----------------------
 
 const gotUser = user => ({ type: GOT_USER, user });
+const fetchingCurrentUser = () => ({
+  type: FETCH_CURRENT_USER,
+});
 const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });
 const getAllMatchesForUser = matches => ({ type: GET_MATCHES, matches });
 const getAllMessagesForSelectedMatch = messages => ({
   type: GET_MESSAGES_FOR_SELETED_MATCH,
-  messages
+  messages,
 });
 const getAllMessagesFromSelectedMatch = messages => ({
   type: GET_MESSAGES_FROM_SELETED_MATCH,
-  messages
+  messages,
 });
 
 const settingSelectedMatchOnState = match => ({
   type: SET_SELECTED_MATCH_ON_STATE,
-  match
+  match,
 });
 
 const addNewMessageToServer = message => ({
   type: ADD_NEW_MESSAGE,
-  message
+  message,
 });
 
 const addUserToPending = (user, owner) => ({
   type: ADD_MATCH_TO_PENDING,
   user,
-  owner
+  owner,
 });
 
 const changeIcon = user => ({
   type: CHANGE_ICON,
-  user
+  user,
 });
+
+const fetchDeposit = deposit => ({
+  type: FETCH_DEPOSIT,
+  deposit,
+});
+
+const updateDeposit = deposit => {
+  type: UPDATE_DEPOSIT, deposit;
+};
 
 const getAcceptedMatches = matchIds => ({
   type: GET_ACCEPTED_MATCHES,
-  matchIds
+  matchIds,
 });
 const addMatchToAccepted = content => ({
   type: ADD_MATCH_TO_ACCEPTED,
-  content
+  content,
 });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -86,7 +101,8 @@ export const fbMe = () => {
               .set({
                 id: data.id,
                 name: data.name,
-                icon: 'https://data.whicdn.com/images/106885273/large.jpg'
+                icon: 'https://data.whicdn.com/images/106885273/large.jpg',
+                deposit: 0,
               });
           }
         });
@@ -99,6 +115,12 @@ export const fbMe = () => {
     } catch (err) {
       console.error(err);
     }
+  };
+};
+
+export const fetchCurrentUser = () => {
+  return dispatch => {
+    dispatch(fetchingCurrentUser());
   };
 };
 
@@ -128,7 +150,7 @@ export const addUserToAcceptedMatches = (current, newMatch) => {
       const matchId = newMatch.matchId;
       current = {
         ...current,
-        acceptedMatches: [...current.acceptedMatches, matchId]
+        acceptedMatches: [...current.acceptedMatches, matchId],
       };
       console.log('------------BACK END MATCH ID-------',
       matchId)
@@ -161,7 +183,7 @@ export const fetchAllMatches = userId => {
         dispatch(getAllMatchesForUser(datas));
       })
       .catch(err => {
-        console.log('Error getting documents', err);
+        // console.log('Error getting documents', err);
       });
   };
 };
@@ -171,7 +193,7 @@ export const getSelectedMatch = matchId => {
     try {
       dispatch(settingSelectedMatchOnState({ id: matchId }));
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };
@@ -191,7 +213,7 @@ export const fetchingMatchMessages = (userId, matchId) => {
         dispatch(getAllMessagesForSelectedMatch(data));
       })
       .catch(err => {
-        console.log('##Error getting messages in reducer##', err);
+        // console.log('##Error getting messages in reducer##', err);
       });
   };
 };
@@ -244,8 +266,8 @@ export const addingNewMessageToServer = (
         _id: userId,
         name: userName,
         avatar:
-          'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg'
-      }
+          'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
+      },
     };
     docRef.get().then(function(doc) {
       if (!doc.exists) {
@@ -261,7 +283,7 @@ export const updateIcon = (user, newIcon) => {
     try {
       const docRef = db.collection('Users').doc(user.id);
       await docRef.update({
-        icon: newIcon
+        icon: newIcon,
       });
 
       await docRef.get().then(doc => {
@@ -274,9 +296,46 @@ export const updateIcon = (user, newIcon) => {
   };
 };
 
+export const fetchingInititalDeposit = user => {
+  return async dispatch => {
+    const docRef = await db.collection('Users').doc(user.id);
+    console.log('outside TRY *****DOC REF IN USER REDUCER:', docRef.deposit);
+    try {
+      const docRef = await db.collection('Users').doc(user.id);
+      console.log('*****DOC REF IN USER REDUCER:', docRef.deposit);
+      // if (!docRef.deposit) {
+      //   const depositObj = {
+      //     deposit: 0,
+      //   };
+      await docRef.update({ deposit: 0 });
+      //   dispatch(fetchDeposit(depositObj.deposit));
+      // } else {
+      dispatch(fetchDeposit(docRef.deposit));
+      // }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const updatingDeposit = (user, oldDeposit, newDeposit) => {
+  return async dispatch => {
+    try {
+      const updatedDeposit = oldDeposit + newDeposit;
+      const docRef = db.collection('Users').doc(user.id);
+      await docRef.update({
+        deposit: updatedDeposit,
+      });
+      dispatch(updateDeposit(updatedDeposit));
+    } catch (err) {
+      console.error('error in update deposit', err);
+    }
+  };
+};
+
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  // current: {},
+  current: {},
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
@@ -284,7 +343,8 @@ const initialState = {
   all: [],
    current: { name:'', id: '' },
   selectedMessages: [],
-  newMatchData: { userId: '', matchId: '' }
+  newMatchData: { userId: '', matchId: '' },
+  deposit: '',
 };
 
 //---------------------- REDUCER -----------------------
@@ -293,47 +353,59 @@ export default function(state = initialState, action) {
     case GOT_USER:
       return {
         ...state,
-        current: action.user
+        current: action.user,
       };
+    case FETCH_CURRENT_USER:
+      return state;
     case GOT_ALL_USERS:
       return {
         ...state,
-        all: action.users
+        all: action.users,
       };
     case GET_MATCHES:
       return {
         ...state,
-        matches: action.matches
+        matches: action.matches,
       };
     case SET_SELECTED_MATCH_ON_STATE:
       return {
         ...state,
-        selectedMatch: action.match
+        selectedMatch: action.match,
       };
     case GET_MESSAGES_FOR_SELETED_MATCH:
       return {
         ...state,
-        messagesToMatch: action.messages
+        messagesToMatch: action.messages,
       };
     case GET_MESSAGES_FROM_SELETED_MATCH:
       return {
         ...state,
-        messagesToUser: action.messages
+        messagesToUser: action.messages,
       };
     case ADD_NEW_MESSAGE:
       return {
         ...state,
-        messagesToMatch: [...state.messagesToMatch, action.message]
+        messagesToMatch: [...state.messagesToMatch, action.message],
       };
     case CHANGE_ICON:
       return {
         ...state,
-        current: action.user
+        current: action.user,
+      };
+    case FETCH_DEPOSIT:
+      return {
+        ...state,
+        deposit: action.deposit,
+      };
+    case UPDATE_DEPOSIT:
+      return {
+        ...state,
+        deposit: action.deposit,
       };
     case ADD_MATCH_TO_ACCEPTED:
       return {
         ...state,
-        newMatchData: action.content
+        newMatchData: action.content,
       };
 
     default:

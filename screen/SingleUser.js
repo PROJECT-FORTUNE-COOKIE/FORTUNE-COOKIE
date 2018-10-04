@@ -12,7 +12,7 @@ class SingleUser extends Component {
     if (status === 'granted') {
       ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
-        aspect: [1, 1]
+        aspect: [1, 1],
       })
         .then(newPostImage => {
           if (!newPostImage.cancelled) {
@@ -59,7 +59,7 @@ class SingleUser extends Component {
             rounded
             title="FC"
             source={{
-              uri: me.icon
+              uri: me.icon,
             }}
             activeOpacity={0.7}
           />
@@ -97,13 +97,13 @@ class SingleUser extends Component {
 
 const mapStateToProps = state => {
   return {
-    me: state.users.current
+    me: state.users.current,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    changeIcon: (user, newIcon) => dispatch(updateIcon(user, newIcon))
+    changeIcon: (user, newIcon) => dispatch(updateIcon(user, newIcon)),
   };
 };
 
@@ -119,12 +119,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding: 65
+    padding: 65,
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignContent: 'space-around',
-    padding: 60
-  }
+    padding: 60,
+  },
 });

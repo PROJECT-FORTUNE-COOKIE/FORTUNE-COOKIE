@@ -7,7 +7,7 @@ import { fetchAllMatches, getSelectedMatch } from './store/userReducer';
 class MatchesList extends Component {
   componentDidMount() {
     const userId = this.props.current.id;
-    console.log('userId: ', userId);
+    //console.log('userId: ', userId);
     this.props.fetchMatches(userId);
     this.chatWith = this.chatWith.bind(this);
   }
