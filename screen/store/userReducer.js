@@ -7,9 +7,14 @@ require('firebase/firestore');
 // db.settings({
 //   timestampsInSnapshots: true,
 // });
+
+
+
+
 import { db } from './firestoreAuth';
 import { Facebook } from 'expo';
 import { fbAppId } from '../../secret';
+
 
 //---------------------- ACTION TYPES -----------------------
 
@@ -18,7 +23,9 @@ const GOT_ALL_USERS = 'GOT_ALL_USERS';
 const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
 const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
-const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
+const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
+const ADD_USER_TO_STATE = 'ADD_USER_TO_STATE'
+const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES'
 
 //---------------------- ACTION CREATORS -----------------------
 
@@ -34,10 +41,13 @@ const settingSelectedMatchOnState = match => ({
   match,
 });
 
-const addUserToPending = (user, owner) => ({
-  type: ADD_MATCH_TO_PENDING,
-  user,
-  owner,
+const getAcceptedMatches = matchIds => ({
+  type: GET_ACCEPTED_MATCHES,
+  matchIds
+})
+const addMatchToAccepted = (content) => ({
+  type: ADD_MATCH_TO_ACCEPTED,
+  content
 });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -93,14 +103,24 @@ export const fetchAllUsers = () => {
   };
 };
 
-// add user to accepted
-// export const addUserToPendingMatches = (user, owner) => {
-//   return async dispatch => {
-//     db.collection('Users')
-//     .get()
+//add user to accepted
+export const addUserToAcceptedMatches = (newMatch) => {
+    return async dispatch => {
+    try {
+  const id = newMatch.userId
+  const matchId = newMatch.matchId;
+  console.log('--------------------------MATCHID-----', matchId)
+  const arr = [];
+  arr.push(matchId)
+  let allUsers = await db.collection('Users').doc(id)
+  let updated = await allUsers.update({acceptedMatches: matchId})
 
-//   }
-// }
+  } catch(err) {
+    console.error(err)
+  }
+}
+}
+
 
 export const fetchAllMatches = userId => {
   return dispatch => {
@@ -146,11 +166,14 @@ export const fetchingMatchMessages = (userId, matchId) => {
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  current: { name: 'Siri McClean', id: '10156095729989412' },
+  // current: { name: 'Siri McClean', id: '10156095729989412' },
   matches: [],
   selectedMatch: {},
   selectedMessages: [],
   all: [],
+  newMatchData: {userId: '',
+  matchId: ''},
+  current: {}
 };
 
 //---------------------- REDUCER -----------------------
@@ -176,6 +199,11 @@ export default function(state = initialState, action) {
         ...state,
         selectedMatch: action.match,
       };
+      case ADD_MATCH_TO_ACCEPTED:
+      return {
+        ...state, newMatchData: action.content
+      }
+
     default:
       return state;
   }
