@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Dimensions, Image, Animated, PanResponder } from 'react-native';
+import { connect } from 'react-redux';
+import { addUserToAcceptedMatches, fetchAllUsers } from './store/userReducer';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -92,6 +94,32 @@ class SwipeCards extends Component {
               currentIndex: state.currentIndex + 1 }), () => {
 							this.position.setValue({ x: 0, y: 0 });
 						});
+					//----------DISPATCH THUNK
+			//		const { userId, matchId } = this.props.newMatchData
+			const currentUser = this.props.users.find(user => user.name == this.props.current.name)
+
+			const pref = currentUser.seeking
+			const genderAvail = this.props.users.filter((user) => user.seeking == pref)
+			console.log('-------------UPDATED ACCEPTED-------------', currentUser)
+
+			const availableMatches = genderAvail.filter((item) => {
+				return (currentUser.acceptedMatches.indexOf(item.id) == -1) && (currentUser.name !== item.name)
+					})
+					let id = this.props.current.id
+
+
+					let currentMatches = currentUser.acceptedMatches.slice();
+
+					console.log('--------------CURRENT MATCHES-------------', currentMatches)
+
+					currentMatches = currentMatches.push(availableMatches.id)
+					const newMatch = {
+						userId: id,
+						matchId: currentMatches
+					}
+
+					 this.props.addUserToAcceptedMatches(newMatch)
+
 					});
 				} else if (gestureState.dx < -120) {
 					Animated.spring(this.position, {
@@ -101,6 +129,7 @@ class SwipeCards extends Component {
                currentIndex: state.currentIndex + 1 }), () => {
 							this.position.setValue({ x: 0, y: 0 });
 						});
+				//---------DISPATCH THUNK---------------
 					});
 				} else {
 					Animated.spring(this.position, {
@@ -110,11 +139,10 @@ class SwipeCards extends Component {
         }
       }
 		})
-
   }
 
-
 	renderUsers = () => {
+
 
 		const currentUser = this.props.users.find(user => user.name == this.props.current.name)
 
@@ -122,7 +150,8 @@ class SwipeCards extends Component {
 		const genderAvail = this.props.users.filter((user) => user.seeking == pref)
 
 		const availableMatches = genderAvail.filter((item) => {
-			return (currentUser.acceptedMatches.indexOf(item.id) == -1) && (currentUser.pendingMatches.indexOf(item.id) == -1) && (currentUser.rejectedMatches.indexOf(item.id) == -1) && (currentUser.name !== item.name)
+			return (currentUser.acceptedMatches.indexOf(item.id) == -1) &&
+		(currentUser.rejectedMatches.indexOf(item.id) == -1) && (currentUser.name !== item.name)
 				})
 
 		return availableMatches.map((item, i) => {
@@ -228,7 +257,11 @@ class SwipeCards extends Component {
 					)}
 			})
 			.reverse()
-    }
+		}
+
+	componentDidMount() {
+		this.props.fetchAllUsers()
+	}
 
 	render() {
 
@@ -246,5 +279,23 @@ class SwipeCards extends Component {
 
 }
 
+const mapDispatch = dispatch => {
+	return {
+	fetchAllUsers: () => {
+		dispatch(fetchAllUsers())
+	},
+	addUserToAcceptedMatches: newMatch => {
+		dispatch(addUserToAcceptedMatches(newMatch))
+	}
+}
+}
 
-export default SwipeCards
+const mapState = state => {
+	return {
+	users: state.users.all,
+	current: state.users.current,
+	newMatchData: state.users.newMatchData
+}
+}
+
+export default connect(mapState, mapDispatch)(SwipeCards)

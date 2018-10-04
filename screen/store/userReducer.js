@@ -13,6 +13,9 @@ const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
 const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
 const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
 const CHANGE_ICON = 'CHANGE_ICON';
+const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
+const ADD_USER_TO_STATE = 'ADD_USER_TO_STATE';
+const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
 
 //---------------------- ACTION CREATORS -----------------------
 
@@ -47,6 +50,15 @@ const addUserToPending = (user, owner) => ({
 const changeIcon = user => ({
   type: CHANGE_ICON,
   user
+});
+
+const getAcceptedMatches = matchIds => ({
+  type: GET_ACCEPTED_MATCHES,
+  matchIds
+});
+const addMatchToAccepted = content => ({
+  type: ADD_MATCH_TO_ACCEPTED,
+  content
 });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -100,6 +112,23 @@ export const fetchAllUsers = () => {
           });
           dispatch(gotAllUsers(datas));
         });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+//add user to accepted
+export const addUserToAcceptedMatches = newMatch => {
+  return async dispatch => {
+    try {
+      const id = newMatch.userId;
+      const matchId = newMatch.matchId;
+      console.log('--------------------------MATCHID-----', matchId);
+      const arr = [];
+      arr.push(matchId);
+      let allUsers = await db.collection('Users').doc(id);
+      let updated = await allUsers.update({ acceptedMatches: matchId });
     } catch (err) {
       console.error(err);
     }
@@ -242,7 +271,11 @@ const initialState = {
   selectedMatch: {},
   messagesToMatch: [],
   messagesToUser: [],
-  all: []
+  all: [],
+  // current: { name: 'Siri McClean', id: '10156095729989412' },
+
+  selectedMessages: [],
+  newMatchData: { userId: '', matchId: '' }
 };
 
 //---------------------- REDUCER -----------------------
@@ -287,6 +320,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         current: action.user
+      };
+    case ADD_MATCH_TO_ACCEPTED:
+      return {
+        ...state,
+        newMatchData: action.content
       };
 
     default:

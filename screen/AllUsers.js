@@ -8,6 +8,7 @@ class AllUsers extends Component {
   render() {
 const users = this.props.users;
 const current = this.props.current;
+const newMatchData = this.props.newMatchData;
     return (
       // <ScrollView>
       //   <List>
@@ -24,7 +25,7 @@ const current = this.props.current;
       //   </List>
       // </ScrollView>
 
-      <SwipeCards users={users} current={current}/>
+      <SwipeCards users={users} current={current} newMatchData = {newMatchData} />
     );
   }
 }
@@ -32,7 +33,8 @@ const current = this.props.current;
 const mapState = state => {
   return {
     users: state.users.all,
-    current: state.users.current
+    current: state.users.current,
+    newMatchData: state.users.newMatchData
   };
 };
 

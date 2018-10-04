@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  ScrollView,
-  Button,
-  View,
-  StyleSheet,
-  Text,
-  Alert
-} from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { Icon, Avatar } from 'react-native-elements';
 import { storage } from './store/firestoreAuth';
 import { ImagePicker, Permissions } from 'expo';

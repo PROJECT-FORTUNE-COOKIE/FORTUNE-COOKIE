@@ -1,18 +1,37 @@
 import React, { Component } from 'react';
 import { ScrollView, View, StyleSheet, Text } from 'react-native';
 import {
-  Slider,
   Icon,
-  List,
-  ListItem,
   FormLabel,
   FormInput,
   CheckBox,
-  FormValidationMessage,
-  Button
+  FormValidationMessage
 } from 'react-native-elements';
 
 class EditDetail extends Component {
+  constructor() {
+    super();
+    this.state = {
+      blurb: '',
+      neighborhood: '',
+      identifyAs: '',
+      seeking: ''
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    this.props.update(this.state);
+  };
+
   render() {
     const { rowContainer } = styles;
     return (
@@ -24,7 +43,7 @@ class EditDetail extends Component {
         <FormInput placeholder="my neighborhood" />
 
         <View style={rowContainer}>
-          <Text>Gender: </Text>
+          <Text>Identify As: </Text>
           <CheckBox
             center
             title="male"
@@ -60,7 +79,13 @@ class EditDetail extends Component {
         </View>
 
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Icon reverse name="check-circle" type="feather" />
+          <Icon
+            name="check-circle"
+            type="feather"
+            onPress={() => {
+              this.handleSubmit();
+            }}
+          />
         </View>
       </ScrollView>
     );

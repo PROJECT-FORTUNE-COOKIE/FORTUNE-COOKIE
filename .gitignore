@@ -3,4 +3,4 @@ node_modules/**/*
 npm-debug.*
 secret.js
 app.json
-firebase-adminsdk.json
+firebaseAdmin.json
