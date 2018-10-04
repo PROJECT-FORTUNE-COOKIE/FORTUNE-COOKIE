@@ -119,16 +119,25 @@ export const fetchAllUsers = () => {
 };
 
 //add user to accepted
-export const addUserToAcceptedMatches = newMatch => {
+export const addUserToAcceptedMatches = (current, newMatch) => {
   return async dispatch => {
     try {
       const id = newMatch.userId;
       const matchId = newMatch.matchId;
-      console.log('--------------------------MATCHID-----', matchId);
-      const arr = [];
-      arr.push(matchId);
+      current = {
+        ...current,
+        acceptedMatches: [...current.acceptedMatches, matchId]
+      };
+
+      console.log(
+        current,
+        '<<<<<<<<<<<<current user in reducer------udpateee ????-----'
+      );
+      console.log(id, '--------------------------MATCHID-----', matchId);
       let allUsers = await db.collection('Users').doc(id);
-      let updated = await allUsers.update({ acceptedMatches: matchId });
+      let updated = await allUsers.update({
+        acceptedMatches: current.acceptedMatches
+      });
     } catch (err) {
       console.error(err);
     }
@@ -266,14 +275,13 @@ export const updateIcon = (user, newIcon) => {
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  current: {},
+  // current: {},
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-  // current: { name: 'Siri McClean', id: '10156095729989412' },
-
+  current: { name: 'Siri McClean', id: '10156095729989412' },
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' }
 };
