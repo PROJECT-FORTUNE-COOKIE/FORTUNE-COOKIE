@@ -1,7 +1,9 @@
 import { db } from './firestoreAuth';
 import { Facebook } from 'expo';
 import { fbAppId } from '../../secret';
-
+const firebase = require('firebase');
+// Required for side-effects
+const firestore = require('firebase/firestore');
 //---------------------- ACTION TYPES -----------------------
 
 const GOT_USER = 'GOT_USER';
@@ -128,15 +130,14 @@ export const addUserToAcceptedMatches = (current, newMatch) => {
         ...current,
         acceptedMatches: [...current.acceptedMatches, matchId]
       };
+      console.log('------------BACK END MATCH ID-------',
+      matchId)
 
-      console.log(
-        current,
-        '<<<<<<<<<<<<current user in reducer------udpateee ????-----'
-      );
-      console.log(id, '--------------------------MATCHID-----', matchId);
+
       let allUsers = await db.collection('Users').doc(id);
       let updated = await allUsers.update({
-        acceptedMatches: current.acceptedMatches
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId)
+        // acceptedMatches: current.acceptedMatches
       });
     } catch (err) {
       console.error(err);
@@ -281,7 +282,7 @@ const initialState = {
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-  current: { name: 'Siri McClean', id: '10156095729989412' },
+   current: { name:'', id: '' },
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' }
 };

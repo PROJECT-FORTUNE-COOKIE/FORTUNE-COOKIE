@@ -6,27 +6,22 @@ import SwipeCards from './SwipeCards';
 
 class AllUsers extends Component {
   render() {
+
+
+
 const users = this.props.users;
 const current = this.props.current;
 const newMatchData = this.props.newMatchData;
-    return (
-      // <ScrollView>
-      //   <List>
-      //     {users.map(user => (
-      //       <ListItem
-      //         key={user.birthday}
-      //         roundAvatar
-      //         // avatar={{ uri: user.image[0] }}
-      //         title={`${user.name} `}
-      //         subtitle={user.neighborhood}
-      //         // onPress={() => this.onLearnMore(user)}
-      //       />
-      //     ))}
-      //   </List>
-      // </ScrollView>
 
-      <SwipeCards users={users} current={current} newMatchData = {newMatchData} />
+
+
+    if(current){
+    return (
+
+    <SwipeCards users={users} current={current} newMatchData={newMatchData} />
+
     );
+    }
   }
 }
 

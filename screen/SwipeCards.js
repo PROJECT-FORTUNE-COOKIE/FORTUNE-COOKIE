@@ -16,11 +16,14 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 class SwipeCards extends Component {
   constructor(props) {
-    super(props);
-    this.position = new Animated.ValueXY();
-    this.state = {
-      currentIndex: 0
-    };
+		super(props);
+
+		this.state = {
+			// matchId: 0
+		}
+		this.position = new Animated.ValueXY();
+
+		let tracker;
 
     // adjust sizes for swiping animation
     this.rotate = this.position.x.interpolate({
@@ -37,7 +40,6 @@ class SwipeCards extends Component {
         ...this.position.getTranslateTransform()
       ]
     };
-    //make card "disappear" once swiped
 
     this.likeOpacity = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
@@ -51,16 +53,6 @@ class SwipeCards extends Component {
       extrapolate: 'clamp'
     });
 
-    this.nextCardOpacity = this.position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-      outputRange: [1, 0, 1],
-      extrapolate: 'clamp'
-    });
-    this.nextCardScale = this.position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-      outputRange: [1, 0.8, 1],
-      extrapolate: 'clamp'
-    });
 
     this.PanResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -72,95 +64,77 @@ class SwipeCards extends Component {
           Animated.spring(this.position, {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy }
           }).start(() => {
-            this.setState(
-              state => ({
-                currentIndex: state.currentIndex + 1
-              }),
-              () => {
-                this.position.setValue({ x: 0, y: 0 });
-              }
-            );
-            //----------DISPATCH THUNK
-            //		const { userId, matchId } = this.props.newMatchData
-            const currentUser = this.props.users.find(
-              user => user.name == this.props.current.name
-            );
+								this.position.setValue({ x: 0, y: 0 });
 
-            const pref = currentUser.seeking;
-            const genderAvail = this.props.users.filter(
-              user => user.seeking == pref
-            );
-            console.log(
-              '-------------UPDATED ACCEPTED-------------',
-              currentUser
-            );
+              })
+							const currentUser = this.props.users.find(
+								user => user.name == this.props.current.name
+							);
 
-            const availableMatches = genderAvail.filter(item => {
-              return (
-                currentUser.acceptedMatches.indexOf(item.id) == -1 &&
-                currentUser.name !== item.name
-              );
-            });
+							const genderAvail = this.props.users.filter(match => {
+								return (
+									(currentUser.seeking === match.identifyAs ? match : null)
+								)
+							})
+
+				const availableMatches = genderAvail.filter(item => {
+					return
+				(currentUser.acceptedMatches.indexOf(item.id) < 0) &&
+				(currentUser.rejectedMatches.indexOf(item.id) < 0) &&
+				(currentUser.name !== item.name)
+								})
+
             let id = this.props.current.id;
-
             let currentMatches = currentUser.acceptedMatches.slice();
+						currentMatches = currentMatches.push(availableMatches.id);
 
-            console.log(
-              '--------------CURRENT MATCHES-------------',
-              currentMatches
-            );
-
-            currentMatches = currentMatches.push(availableMatches.id);
-            const newMatch = {
+            let newMatch = {
               userId: id,
               matchId: currentMatches
-            };
+						};
 
-            this.props.addUserToAcceptedMatches(currentUser, newMatch);
-          });
+						console.log('---------------tracker--------', newMatch.matchId)
+
+					this.props.addUserToAcceptedMatches(currentUser, newMatch)
+
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy }
           }).start(() => {
-            this.setState(
-              state => ({
-                currentIndex: state.currentIndex + 1
-              }),
-              () => {
                 this.position.setValue({ x: 0, y: 0 });
-              }
-            );
+              })
             //---------DISPATCH THUNK---------------
-          });
-        } else {
+          }
+        else {
           Animated.spring(this.position, {
             toValue: { x: 0, y: 0 },
             friction: 4
           }).start();
-        }
-      }
-    });
-  }
+					};
+				}
+		})
+	}
 
   renderUsers = () => {
     const currentUser = this.props.users.find(
       user => user.name == this.props.current.name
-    );
+		);
+		const genderAvail = this.props.users.filter(match => {
+			return (
+				(currentUser.seeking === match.identifyAs) ?  match : null
+			)
+		})
+		const bottom = genderAvail.filter(item => {
+			return (
+				(currentUser.acceptedMatches.indexOf(item.id) < 0) &&
+				(currentUser.rejectedMatches.indexOf(item.id) < 0) &&
+				(currentUser.name !== item.name))
+			})
 
-    const pref = currentUser.seeking;
-    const genderAvail = this.props.users.filter(user => user.seeking == pref);
-
-    const availableMatches = genderAvail.filter(item => {
-      return (
-        currentUser.acceptedMatches.indexOf(item.id) == -1 &&
-        currentUser.rejectedMatches.indexOf(item.id) == -1 &&
-        currentUser.name !== item.name
-      );
-    });
-
-    return availableMatches
-      .map((item, i) => {
-        if (i === this.state.currentIndex) {
+    return bottom.map((item, i) => {
+        if (item) {
+					tracker = item.id;
+		console.log('---------map tracke-----------', tracker)
           return (
             <Animated.View
               key={item.name}
@@ -173,8 +147,7 @@ class SwipeCards extends Component {
                   padding: 10,
                   position: 'absolute'
                 }
-              ]}
-            >
+              ]}>
               <Animated.View
                 style={{
                   opacity: this.likeOpacity,
@@ -196,14 +169,10 @@ class SwipeCards extends Component {
                   top: 50,
                   right: 40,
                   zIndex: 1000
-                }}
-              >
+                }}>
                 <Text style={styles.no}>DISLIKE</Text>
               </Animated.View>
 
-              <Text style={{ fontSize: 26, fontWeight: '300', color: '#444' }}>
-                {item.name}, {item.birthday}
-              </Text>
               <Image
                 style={{
                   flex: 1,
@@ -215,79 +184,24 @@ class SwipeCards extends Component {
                 source={{ uri: item.images[0] }}
               />
             </Animated.View>
-          );
-        } else if (i < this.state.currentIndex) {
-          return null;
-        } else {
-          return (
-            <Animated.View
-              key={item.name}
-              style={[
-                {
-                  opacity: this.nextCardOpacity,
-                  transform: [{ scale: this.nextCardScale }],
-                  height: SCREEN_HEIGHT - 120,
-                  width: SCREEN_WIDTH,
-                  padding: 10,
-                  position: 'absolute'
-                }
-              ]}
-            >
-              <Animated.View
-                style={{
-                  opacity: 0,
-                  transform: [{ rotate: '-30deg' }],
-                  position: 'absolute',
-                  top: 50,
-                  left: 40,
-                  zIndex: 1000
-                }}
-              >
-                <Text style={styles.yes}>LIKE</Text>
-              </Animated.View>
+					)
+				}
 
-              <Animated.View
-                style={{
-                  opacity: 0,
-                  transform: [{ rotate: '30deg' }],
-                  position: 'absolute',
-                  top: 50,
-                  right: 40,
-                  zIndex: 1000
-                }}
-              >
-                <Text style={styles.no}>DISLIKE</Text>
-              </Animated.View>
+				return null;
+		})
+	}
 
-              <Text style={styles.textInfo}>
-                {item.name}, {item.birthday}
-              </Text>
-              <Image
-                source={{ uri: item.images[0] }}
-                style={{
-                  flex: 1,
-                  height: null,
-                  width: null,
-                  resizeMode: 'cover',
-                  borderRadius: 20
-                }}
-              />
-            </Animated.View>
-          );
-        }
-      })
-      .reverse();
-  };
 
   render() {
+
+
     return (
       <View style={{ flex: 1 }}>
         <View style={{ height: 20 }} />
         <View style={{ flex: 1 }}>{this.renderUsers()}</View>
         <View style={{ height: 20 }} />
       </View>
-    );
-  }
+		)};
 }
 
 const mapDispatch = dispatch => {
