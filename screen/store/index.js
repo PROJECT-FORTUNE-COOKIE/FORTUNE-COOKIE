@@ -3,11 +3,11 @@ import { createLogger } from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import users from './userReducer';
-import payments from './paymentReducer';
+import payment from './paymentReducer';
 
 const reducer = combineReducers({
   users,
-  payments,
+  payment,
 });
 
 const middleware = composeWithDevTools(

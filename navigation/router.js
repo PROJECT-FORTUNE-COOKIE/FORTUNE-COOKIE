@@ -81,25 +81,6 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-
-  // FaceTime: {
-  //   screen: FaceTime,
-  //   navigationOptions: {
-  //     tabLabel: 'FaceTime',
-  //     tabBarIcon: ({ tintColor }) => (
-  //       <Icon name="sunrise" type="feather" color={tintColor} />
-  //     ),
-  //   },
-  // },
-  // EditDetail: {
-  //   screen: EditDetail,
-  //   navigationOptions: {
-  //     tabLabel: 'EditDetail',
-  //     tabBarIcon: ({ tintColor }) => (
-  //       <Icon name="wind" type="feather" color={tintColor} />
-  //     ),
-  //   },
-  // },
 });
 
 export const Root = createStackNavigator({

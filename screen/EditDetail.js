@@ -7,6 +7,7 @@ import {
   CheckBox,
   FormValidationMessage,
 } from 'react-native-elements';
+import { connect } from 'react-redux';
 
 class EditDetail extends Component {
   constructor() {
@@ -38,6 +39,10 @@ class EditDetail extends Component {
       <ScrollView>
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Text>USER DETAILS + SETTINGS</Text>
+        </View>
+
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text>Deposit: $5</Text>
         </View>
 
         <FormLabel>blurb</FormLabel>
@@ -96,24 +101,22 @@ class EditDetail extends Component {
   }
 }
 
-export default EditDetail;
+//export default EditDetail;
 
-// const mapState = state => {
-//   return {
-//     current: state.users.current,
+const mapState = state => {
+  return {
+    current: state.users.current,
+  };
+};
 
-//     },
-//   };
-// };
+const mapDispatchToProps = dispatch => {
+  return {};
+};
 
-// const mapDispatchToProps = dispatch => {
-//   return {};
-// };
-
-// export default connect(
-//   mapState,
-//   mapDispatchToProps
-// )(EditDetail);
+export default connect(
+  mapState,
+  mapDispatchToProps
+)(EditDetail);
 
 const styles = StyleSheet.create({
   rowContainer: {

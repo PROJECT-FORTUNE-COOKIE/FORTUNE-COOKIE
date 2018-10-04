@@ -275,13 +275,12 @@ export const updateIcon = (user, newIcon) => {
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  // current: {},
+  current: { name: 'Siri McClean', id: '10156095729989412' },
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-  current: {},
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
 };
