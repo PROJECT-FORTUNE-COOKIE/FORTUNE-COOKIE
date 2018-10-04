@@ -5,7 +5,7 @@ import {
   View,
   StyleSheet,
   Text,
-  Alert
+  Alert,
 } from 'react-native';
 import { Icon, Avatar } from 'react-native-elements';
 import * as firebase from 'firebase';
@@ -15,7 +15,7 @@ import CameraAR from './CameraAR';
 
 class SingleUser extends Component {
   onChooseImage = async () => {
-    console.log('--------------pressed ------------');
+    //console.log('--------------pressed ------------');
     let result = await ImagePicker.launchCameraAsync();
 
     if (!resule.cancelled) {
@@ -82,7 +82,7 @@ class SingleUser extends Component {
 
 const mapStateToProps = state => {
   return {
-    me: state.users.current
+    me: state.users.current,
   };
 };
 
@@ -95,12 +95,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding: 65
+    padding: 65,
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignContent: 'space-around',
-    padding: 60
-  }
+    padding: 60,
+  },
 });

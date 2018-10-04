@@ -121,7 +121,7 @@ export const fetchAllMatches = userId => {
         dispatch(getAllMatchesForUser(datas));
       })
       .catch(err => {
-        console.log('Error getting documents', err);
+        // console.log('Error getting documents', err);
       });
   };
 };
@@ -131,7 +131,7 @@ export const getSelectedMatch = matchId => {
     try {
       dispatch(settingSelectedMatchOnState({ id: matchId }));
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };
@@ -151,7 +151,7 @@ export const fetchingMatchMessages = (userId, matchId) => {
         dispatch(getAllMessagesForSelectedMatch(data));
       })
       .catch(err => {
-        console.log('##Error getting messages in reducer##', err);
+        // console.log('##Error getting messages in reducer##', err);
       });
   };
 };
@@ -195,7 +195,7 @@ export const addingNewMessageToServer = (
     let allMessages = db.collection('Messages');
     const docRef = allMessages.doc(newMessageId);
 
-    console.log('+++++++++_+++++++++MESSAGE:', message);
+    //console.log('+++++++++_+++++++++MESSAGE:', message);
     let newMessage = {
       _id: newMessageId,
       createdAt: message[0].createdAt.toISOString(),
@@ -208,7 +208,7 @@ export const addingNewMessageToServer = (
           'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
       },
     };
-    console.log('+++++++++NEW+++++++++MESSAGE:', newMessage);
+    //console.log('+++++++++NEW+++++++++MESSAGE:', newMessage);
 
     docRef.get().then(function(doc) {
       if (!doc.exists) {

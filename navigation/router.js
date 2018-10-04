@@ -14,6 +14,7 @@ import Geolocation from '../screen/Geolocation';
 import MatchesList from '../screen/MatchesList';
 import EditDetail from '../screen/EditDetail';
 import ChatWithMatch from '../screen/ChatWithMatch';
+import PayDeposit from '../screen/PayDeposit';
 
 //----------route testing --------------
 import { connect } from 'react-redux';
@@ -60,6 +61,17 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
+
+  PayDeposit: {
+    screen: PayDeposit,
+    navigationOptions: {
+      tabLabel: 'PayDeposit',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="attach-money" type="FontAwesome5" color={tintColor} />
+      ),
+    },
+  },
+
   GEO: {
     screen: Geolocation,
     navigationOptions: {

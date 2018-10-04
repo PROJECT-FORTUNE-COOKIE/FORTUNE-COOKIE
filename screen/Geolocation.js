@@ -31,7 +31,7 @@ export default class Geolocation extends Component {
     text = this.state.location;
 
     if (text) {
-      console.log('text: ', text);
+      // console.log('text: ', text);
       let coordinates = text.coords;
 
       return (
