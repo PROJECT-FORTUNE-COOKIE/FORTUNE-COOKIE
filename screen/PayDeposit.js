@@ -17,6 +17,7 @@ class PayDeposit extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      email: '',
       number: '',
       expmonth: '',
       expyear: '',
@@ -27,18 +28,25 @@ class PayDeposit extends Component {
 
   async payNow() {
     alert('fortune favors the bold!');
-    const apiKey = 'pk_test_ocAH4aPzpCRUQYoPZWPcmngV';
-    const client = new Stripe(apiKey);
-    console.log('client: ', client);
+    try {
+      const apiKey = 'pk_test_ocAH4aPzpCRUQYoPZWPcmngV';
+      const client = new Stripe(apiKey);
+      console.log('client: ', client);
 
-    // Create a Stripe token with new card infos
-    const token = await client.createToken({
-      number: this.state.number,
-      exp_month: this.state.expmonth,
-      exp_year: this.state.expyear,
-      cvc: this.state.cvc,
-    });
-    console.log('token: ', token);
+      // Create a Stripe token with new card infos
+      const token = await client.createToken({
+        number: this.state.number,
+        exp_month: this.state.expmonth,
+        exp_year: this.state.expyear,
+        cvc: this.state.cvc,
+      });
+      console.log('token: ', token);
+
+      //unable to create customer, charge, etc
+      //this npm react-native-stripe-api does not (yet) support these features
+    } catch (err) {
+      console.log('error with stripe card payment token: ', err);
+    }
   }
 
   render() {
@@ -50,32 +58,39 @@ class PayDeposit extends Component {
           <Text>Deposit Payment Form</Text>
         </View>
 
+        <FormLabel>email</FormLabel>
+        <FormInput
+          placeholder="fortune@cookie.com"
+          onChangeText={email => this.setState({ email })}
+          //value={'4242424242424242'}
+        />
+
         <FormLabel>credit card number</FormLabel>
         <FormInput
           placeholder="4242424242424242"
           onChangeText={number => this.setState({ number })}
-          value={'4242424242424242'}
+          //value={'4242424242424242'}
         />
 
         <FormLabel>expiration month</FormLabel>
         <FormInput
           placeholder="12"
           onChangeText={expmonth => this.setState({ expmonth })}
-          value={'12'}
+          //value={'12'}
         />
 
         <FormLabel>expiration year</FormLabel>
         <FormInput
           placeholder="18"
           onChangeText={expyear => this.setState({ expyear })}
-          value={'18'}
+          //value={'18'}
         />
 
         <FormLabel>cvc</FormLabel>
         <FormInput
           placeholder="111"
           onChangeText={cvc => this.setState({ cvc })}
-          value={'111'}
+          //value={'111'}
         />
 
         <Button onPress={() => this.payNow()} title="PAY" />
