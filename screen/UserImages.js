@@ -1,22 +1,35 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import {
+  ScrollView,
+  Button,
+  View,
+  StyleSheet,
+  Text,
+  Alert
+} from 'react-native';
 import { Icon, Avatar } from 'react-native-elements';
 import { storage } from './store/firestoreAuth';
 import { ImagePicker, Permissions } from 'expo';
 import { connect } from 'react-redux';
-import { updateIcon } from './store/userReducer';
 
 class SingleUser extends Component {
+  constructor() {
+    super();
+    this.state = {
+      imageCurrent: '',
+      images: []
+    };
+  }
   onChooseImage = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status === 'granted') {
       ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
-        aspect: [1, 1],
+        aspect: [1, 1]
       })
         .then(newPostImage => {
           if (!newPostImage.cancelled) {
-            this.uploadImage(newPostImage.uri, 'myIcon')
+            this.uploadImage(newPostImage.uri, 'test')
               .then(() => {
                 console.log('good');
               })
@@ -32,35 +45,43 @@ class SingleUser extends Component {
   uploadImage = async (uri, imageName) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    const referenceAddress = `${this.props.me.id}/${imageName}`;
-
-    //----------create storage reference ------
-
-    var ref = storage.child(referenceAddress);
-    ref.put(blob);
-    const strURL = ref.getDownloadURL().then(url => {
-      return url;
+    var ref = storage.child(`${this.props.me.id}/${Math.random()}`);
+    //let imgLocation = ref.location.path_;
+    this.setState({
+      imageCurrent: uri
     });
-    const waited = await strURL;
-    waited.toString();
-    this.props.changeIcon(this.props.me, waited);
+    return ref.put(blob);
   };
 
+  // pickImages = () => {
+  //   const img = storage.child(this.state.imageCurrent);
+  //   // const iconImg = img
+  //   //   .getMetadata()
+  //   //   .then(metadata => {
+  //   //     console.log(metadata);
+  //   //     return metadata;
+  //   //   })
+  //   //   .catch(error => {
+  //   //     console.log(error);
+  //   //   });
+  // };
+
   render() {
+    console.log('------------state---', this.state);
     const { container, rowContainer } = styles;
     const me = this.props.me;
-
+    const image = this.state.imageCurrent;
     return (
       <View style={container}>
         <View>
           <Avatar
-            id="myImg"
             xlarge
             rounded
             title="FC"
             source={{
-              uri: me.icon,
+              uri: image
             }}
+            // onPress={() => this.pickImages()}
             activeOpacity={0.7}
           />
         </View>
@@ -77,6 +98,7 @@ class SingleUser extends Component {
             type="feather"
             onPress={() => this.onChooseImage()}
           />
+          {/* <Button title="camera" onPress={() => this.onChooseImage()} /> */}
           <Icon
             reverse
             name="settings"
@@ -97,20 +119,11 @@ class SingleUser extends Component {
 
 const mapStateToProps = state => {
   return {
-    me: state.users.current,
+    me: state.users.current
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    changeIcon: (user, newIcon) => dispatch(updateIcon(user, newIcon)),
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SingleUser);
+export default connect(mapStateToProps)(SingleUser);
 
 const styles = StyleSheet.create({
   container: {
@@ -119,12 +132,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding: 65,
+    padding: 65
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignContent: 'space-around',
-    padding: 60,
-  },
+    padding: 60
+  }
 });

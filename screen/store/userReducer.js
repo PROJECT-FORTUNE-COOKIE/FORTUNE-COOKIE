@@ -1,12 +1,3 @@
-const firebase = require('firebase');
-
-// Required for side-effects
-require('firebase/firestore');
-// firebase.initializeApp(firebaseConfig);
-// var db = firebase.firestore();
-// db.settings({
-//   timestampsInSnapshots: true,
-// });
 import { db } from './firestoreAuth';
 import { Facebook } from 'expo';
 import { fbAppId } from '../../secret';
@@ -21,6 +12,10 @@ const GET_MESSAGES_FROM_SELETED_MATCH = 'GET_MESSAGES_FROM_SELETED_MATCH';
 const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
 const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
 const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
+const CHANGE_ICON = 'CHANGE_ICON';
+const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
+const ADD_USER_TO_STATE = 'ADD_USER_TO_STATE';
+const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
 
 //---------------------- ACTION CREATORS -----------------------
 
@@ -52,6 +47,20 @@ const addUserToPending = (user, owner) => ({
   owner,
 });
 
+const changeIcon = user => ({
+  type: CHANGE_ICON,
+  user,
+});
+
+const getAcceptedMatches = matchIds => ({
+  type: GET_ACCEPTED_MATCHES,
+  matchIds,
+});
+const addMatchToAccepted = content => ({
+  type: ADD_MATCH_TO_ACCEPTED,
+  content,
+});
+
 //---------------------- THUNK CREATOR -----------------------
 
 export const fbMe = () => {
@@ -62,12 +71,10 @@ export const fbMe = () => {
         { permissions: ['public_profile'] }
       );
       if (type === 'success') {
-        // Get the user's name using Facebook's Graph API
         const response = await fetch(
           `https://graph.facebook.com/me?access_token=${token}`
         );
         let data = await response.json();
-        //-----------check if user exists --------
         const docRef = db.collection('Users').doc(data.id);
 
         docRef.get().then(function(doc) {
@@ -75,11 +82,17 @@ export const fbMe = () => {
             db.collection('Users')
               .doc(data.id)
               .set({
+                id: data.id,
                 name: data.name,
+                icon: 'https://data.whicdn.com/images/106885273/large.jpg',
               });
           }
         });
-        dispatch(gotUser(data));
+        let userObj = {};
+        docRef.get().then(doc => {
+          userObj = doc.data();
+          dispatch(gotUser(userObj));
+        });
       }
     } catch (err) {
       console.error(err);
@@ -99,6 +112,32 @@ export const fetchAllUsers = () => {
           });
           dispatch(gotAllUsers(datas));
         });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+//add user to accepted
+export const addUserToAcceptedMatches = (current, newMatch) => {
+  return async dispatch => {
+    try {
+      const id = newMatch.userId;
+      const matchId = newMatch.matchId;
+      current = {
+        ...current,
+        acceptedMatches: [...current.acceptedMatches, matchId],
+      };
+
+      console.log(
+        current,
+        '<<<<<<<<<<<<current user in reducer------udpateee ????-----'
+      );
+      console.log(id, '--------------------------MATCHID-----', matchId);
+      let allUsers = await db.collection('Users').doc(id);
+      let updated = await allUsers.update({
+        acceptedMatches: current.acceptedMatches,
+      });
     } catch (err) {
       console.error(err);
     }
@@ -195,7 +234,6 @@ export const addingNewMessageToServer = (
     let allMessages = db.collection('Messages');
     const docRef = allMessages.doc(newMessageId);
 
-    //console.log('+++++++++_+++++++++MESSAGE:', message);
     let newMessage = {
       _id: newMessageId,
       createdAt: message[0].createdAt.toISOString(),
@@ -208,8 +246,6 @@ export const addingNewMessageToServer = (
           'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
       },
     };
-    //console.log('+++++++++NEW+++++++++MESSAGE:', newMessage);
-
     docRef.get().then(function(doc) {
       if (!doc.exists) {
         allMessages.doc(newMessageId).set(newMessage);
@@ -219,14 +255,35 @@ export const addingNewMessageToServer = (
   };
 };
 
+export const updateIcon = (user, newIcon) => {
+  return async dispatch => {
+    try {
+      const docRef = db.collection('Users').doc(user.id);
+      await docRef.update({
+        icon: newIcon,
+      });
+
+      await docRef.get().then(doc => {
+        userObj = doc.data();
+        dispatch(changeIcon(userObj));
+      });
+    } catch (err) {
+      console.error('error in update icon', err);
+    }
+  };
+};
+
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  current: { name: 'Siri McClean', id: '10156095729989412' },
+  // current: {},
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
+  current: {},
+  selectedMessages: [],
+  newMatchData: { userId: '', matchId: '' },
 };
 
 //---------------------- REDUCER -----------------------
@@ -267,6 +324,17 @@ export default function(state = initialState, action) {
         ...state,
         messagesToMatch: [...state.messagesToMatch, action.message],
       };
+    case CHANGE_ICON:
+      return {
+        ...state,
+        current: action.user,
+      };
+    case ADD_MATCH_TO_ACCEPTED:
+      return {
+        ...state,
+        newMatchData: action.content,
+      };
+
     default:
       return state;
   }
