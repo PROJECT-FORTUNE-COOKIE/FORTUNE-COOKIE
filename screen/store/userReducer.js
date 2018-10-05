@@ -17,11 +17,18 @@ const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
 const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
 const CHANGE_ICON = 'CHANGE_ICON';
 const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
-// const ADD_USER_TO_STATE = 'ADD_USER_TO_STATE';
-// const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
+const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
 const FETCH_DEPOSIT = 'FETCH DEPOSIT';
 const UPDATE_DEPOSIT = 'UPDATE_DEPOSIT';
+const UPDATE_USER_LOCATION = 'UPDATE_USER_LOCATION';
+const FETCH_LOCATION = 'FETCH_LOCATION';
 
+const UPDATE_BLURB = 'UPDATE_BLURB';
+const UPDATE_BIRTHDAY = 'UPDATE_BIRTHDAY';
+const UPDATE_NEIGHBORHOOD = 'UPDATE_NEIGHBORHOOD';
+const MAP_OTHER_INFO_TO_STATE = 'MAP_OTHER_INFO_TO_STATE';
+const UPDATE_IDENTIFY_AS = 'UPDATE_IDENTIFY_AS';
+const UPDATE_SEEKING = 'UPDATE_SEEKING';
 //---------------------- ACTION CREATORS -----------------------
 
 const gotUser = user => ({ type: GOT_USER, user });
@@ -46,12 +53,6 @@ const addNewMessageToServer = message => ({
   message
 });
 
-// const addUserToPending = (user, owner) => ({
-//   type: ADD_MATCH_TO_PENDING,
-//   user,
-//   owner
-// });
-
 const changeIcon = user => ({
   type: CHANGE_ICON,
   user
@@ -62,9 +63,10 @@ const fetchDeposit = deposit => ({
   deposit
 });
 
-const updateDeposit = deposit => {
-  type: UPDATE_DEPOSIT, deposit;
-};
+const updateDeposit = deposit => ({
+  type: UPDATE_DEPOSIT,
+  deposit
+});
 
 // const getAcceptedMatches = matchIds => ({
 //   type: GET_ACCEPTED_MATCHES,
@@ -73,6 +75,45 @@ const updateDeposit = deposit => {
 // const addMatchToAccepted = content => ({
 //   type: ADD_MATCH_TO_ACCEPTED,
 //   content
+// });
+
+const updatingBlurb = blurb => ({
+  type: UPDATE_BLURB,
+  blurb
+});
+
+const updatingBirthday = birthday => ({
+  type: UPDATE_BIRTHDAY,
+  birthday
+});
+
+const updatingNeighborhood = neighborhood => ({
+  type: UPDATE_NEIGHBORHOOD,
+  neighborhood
+});
+
+const mappingOtherInfoToState = (blurb, birthday, neighborhood) => ({
+  type: MAP_OTHER_INFO_TO_STATE,
+  blurb,
+  birthday,
+  neighborhood
+});
+
+const updatingIdentifyAs = identifyAs => ({
+  type: UPDATE_IDENTIFY_AS,
+  identifyAs
+});
+const updateSeeking = seeking => ({
+  type: UPDATE_SEEKING,
+  seeking
+});
+const fetchLocation = location => ({
+  type: FETCH_LOCATION,
+  location
+});
+// const updateUserLocation = locale => ({
+//   type: UPDATE_USER_LOCATION,
+//   locale,
 // });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -99,7 +140,7 @@ export const fbMe = () => {
                 id: data.id,
                 name: data.name,
                 icon: 'https://data.whicdn.com/images/106885273/large.jpg',
-                deposit: 0,
+                deposit: 5,
                 acceptedMatches: [],
                 pendingMatches: [],
                 rejectedMatches: [],
@@ -112,12 +153,21 @@ export const fbMe = () => {
         let userObj = {};
         docRef.get().then(doc => {
           userObj = doc.data();
-          dispatch(gotUser(userObj));
+          dispatch(gotUser(data));
+          dispatch(updateDeposit(data.deposit));
         });
       }
     } catch (err) {
       console.error(err);
     }
+    fetchDeposit;
+  };
+};
+
+export const fetchCurrentUser = () => {
+  return dispatch => {
+    dispatch(fetchingCurrentUser());
+    dispatch(fetchDeposit(5));
   };
 };
 
@@ -214,43 +264,43 @@ export const getSelectedMatch = matchId => {
 };
 
 export const fetchingMatchMessages = (userId, matchId) => {
-  return dispatch => {
-    let allMessages = db.collection('Messages');
-    let query = allMessages
-      .where('recipientId', '==', matchId)
-      .where('user._id', '==', userId)
-      .get()
-      .then(snapShot => {
-        let data = [];
-        snapShot.forEach(doc => {
-          data.push(doc.data());
+  try {
+    return dispatch => {
+      let allMessages = db.collection('Messages');
+      let query = allMessages
+        .where('recipientId', '==', matchId)
+        .where('user._id', '==', userId)
+        .onSnapshot(snapShot => {
+          let data = [];
+          snapShot.forEach(doc => {
+            data.push(doc.data());
+          });
+          dispatch(getAllMessagesForSelectedMatch(data));
         });
-        dispatch(getAllMessagesForSelectedMatch(data));
-      })
-      .catch(err => {
-        console.log('##Error getting messages in reducer##', err);
-      });
-  };
+    };
+  } catch (err) {
+    console.log('##Error getting messages in reducer##', err);
+  }
 };
 
 export const fetchingUserMessages = (userId, matchId) => {
-  return dispatch => {
-    let allMessages = db.collection('Messages');
-    let query = allMessages
-      .where('recipientId', '==', userId)
-      .where('user._id', '==', matchId)
-      .get()
-      .then(snapShot => {
-        let data = [];
-        snapShot.forEach(doc => {
-          data.push(doc.data());
+  try {
+    return dispatch => {
+      let allMessages = db.collection('Messages');
+      let query = allMessages
+        .where('recipientId', '==', userId)
+        .where('user._id', '==', matchId)
+        .onSnapshot(snapShot => {
+          let data = [];
+          snapShot.forEach(doc => {
+            data.push(doc.data());
+          });
+          dispatch(getAllMessagesFromSelectedMatch(data));
         });
-        dispatch(getAllMessagesFromSelectedMatch(data));
-      })
-      .catch(err => {
-        console.log('##Error getting messages in reducer##', err);
-      });
-  };
+    };
+  } catch (err) {
+    console.log('##Error getting messages in reducer##', err);
+  }
 };
 
 export const addingNewMessageToServer = (
@@ -313,20 +363,10 @@ export const updateIcon = (user, newIcon) => {
 
 export const fetchingInititalDeposit = user => {
   return async dispatch => {
-    const docRef = await db.collection('Users').doc(user.id);
-    console.log('outside TRY *****DOC REF IN USER REDUCER:', docRef.deposit);
     try {
       const docRef = await db.collection('Users').doc(user.id);
-      console.log('*****DOC REF IN USER REDUCER:', docRef.deposit);
-      // if (!docRef.deposit) {
-      //   const depositObj = {
-      //     deposit: 0,
-      //   };
       await docRef.update({ deposit: 0 });
-      //   dispatch(fetchDeposit(depositObj.deposit));
-      // } else {
       dispatch(fetchDeposit(docRef.deposit));
-      // }
     } catch (err) {
       console.error(err);
     }
@@ -348,24 +388,114 @@ export const updatingDeposit = (user, oldDeposit, newDeposit) => {
   };
 };
 
+export const changingBlurb = (blurb, userId) => {
+  return async dispatch => {
+    try {
+      const docRef = db.collection('Users').doc(userId);
+      await docRef.update({
+        blurb
+      });
+      dispatch(updatingBlurb(blurb));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const changingBirthday = (birthday, userId) => {
+  return async dispatch => {
+    try {
+      const docRef = db.collection('Users').doc(userId);
+      await docRef.update({
+        birthday
+      });
+      dispatch(updatingBirthday(birthday));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const changingNeighborhood = (neighborhood, userId) => {
+  return async dispatch => {
+    try {
+      const docRef = db.collection('Users').doc(userId);
+      await docRef.update({
+        neighborhood
+      });
+      dispatch(updatingNeighborhood(neighborhood));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const fetchingOtherInfo = userId => {
+  return async dispatch => {
+    try {
+      const docRef = await db
+        .collection('Users')
+        .doc(userId)
+        .get()
+        .then(doc => {
+          if (!doc.exists) {
+            console.log('No such document!');
+          } else {
+            console.log('Document data:', doc.data());
+            const obj = doc.data();
+            const { blurb, birthday, neighborhood } = obj;
+            dispatch(mappingOtherInfoToState(blurb, birthday, neighborhood));
+          }
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const updateIdentifyAs = (userId, checkValue, gender) => {
+  return async dispatch => {
+    try {
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+export const updateUserLocation = data => {
+  try {
+    return async dispatch => {
+      let userId = data.userId.id;
+      let latitude = data.lat;
+      let longitude = data.long;
+
+      let user = db.collection('Users').doc(userId);
+      let query = await user.update({
+        geolocation: new firebase.firestore.GeoPoint(latitude, longitude)
+      });
+      // dispatch(fetchLocation(userObj));
+    };
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  // current: {},
+  //current: {},
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-  current: {
-    name: 'Siri McClean',
-    id: '10156095729989412',
-    acceptedMatches: ['10155782703410736', '10155782703410737'],
-    seeking: 'female',
-    identifyAs: 'female'
-  },
+  current: {},
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
-  deposit: ''
+  deposit: '',
+  blurb: '',
+  birthday: '',
+  neighborhood: '',
+  identifyAs: '',
+  seeking: ''
 };
 
 //---------------------- REDUCER -----------------------
@@ -427,7 +557,35 @@ export default function(state = initialState, action) {
         ...state,
         newMatchData: action.content
       };
+    case UPDATE_BLURB:
+      return {
+        ...state,
+        blurb: action.blurb
+      };
 
+    case UPDATE_BIRTHDAY:
+      return {
+        ...state,
+        birthday: action.birthday
+      };
+
+    case UPDATE_NEIGHBORHOOD:
+      return {
+        ...state,
+        neighborhood: action.neighborhood
+      };
+    case MAP_OTHER_INFO_TO_STATE:
+      return {
+        ...state,
+        blurb: action.blurb,
+        birthday: action.birthday,
+        neighborhood: action.neighborhood
+      };
+    case FETCH_LOCATION:
+      return {
+        ...state,
+        current: action.location
+      };
     default:
       return state;
   }

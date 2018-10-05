@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import { Icon, Avatar } from 'react-native-elements';
 import { Permissions } from 'expo-permissions';
 import { Constants, Location } from 'expo';
+import { updateUserLocation } from './store/userReducer';
 
-export default class Geolocation extends Component {
-  state = {
+class Geolocation extends Component {
+  constructor(props) {
+    super(props)
+  this.state = {
     location: null,
     errorMessage: null,
   };
-
-  componentWillMount() {
-    this._getLocationAsync();
   }
 
   _getLocationAsync = async () => {
@@ -21,18 +21,41 @@ export default class Geolocation extends Component {
       this.setState({
         errorMessage: 'Permission to access location was denied',
       });
-    }
-
+    };
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
-  };
+    }
+
+
+  componentDidMount() {
+    this._getLocationAsync()
+
+  }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevState.location !== this.state.location) {
+  //     this._getLocationAsync()
+  //   }
+  //   console.log('---------------HERE ABACK HERE DATA-----------', data)
+  // }
+
 
   render() {
     text = this.state.location;
 
     if (text) {
-      // console.log('text: ', text);
+
+      let userId = this.props.current
       let coordinates = text.coords;
+      let lat = this.state.location.coords.latitude
+      let long = this.state.location.coords.longitude
+      let data = {
+        userId,
+        lat,
+        long
+      }
+
+      this.props.updateUserLocation(data)
 
       return (
         <View style={styles.container}>
@@ -58,6 +81,21 @@ export default class Geolocation extends Component {
   }
 }
 
+const mapState = state => {
+  return {
+    current: state.users.current
+  }
+}
+//need to get current location + listen for updates in change to location
+
+mapDispatch = dispatch => {
+  return {
+    updateUserLocation: (data) => {
+      dispatch(updateUserLocation(data))
+    }
+  }
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -72,3 +110,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+export default connect(mapState, mapDispatch)(Geolocation)

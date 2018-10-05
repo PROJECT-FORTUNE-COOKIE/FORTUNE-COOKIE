@@ -24,7 +24,6 @@ class PayDeposit extends Component {
     this.props.fetchInitialState();
     const user = this.props.current;
     console.log('const user = this.props.current: ', user);
-    //this.props.fetchInitialDeposit(user);
   }
 
   async payNow() {
@@ -66,7 +65,6 @@ class PayDeposit extends Component {
 
   render() {
     const { rowContainer } = styles;
-    //console.log('********PAYMENT STATE************:', this.props);
     return (
       <ScrollView>
         <View style={{ flex: 1, alignItems: 'center' }}>
