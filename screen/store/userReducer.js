@@ -21,6 +21,8 @@ const ADD_USER_TO_STATE = 'ADD_USER_TO_STATE';
 const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
 const FETCH_DEPOSIT = 'FETCH DEPOSIT';
 const UPDATE_DEPOSIT = 'UPDATE_DEPOSIT';
+const UPDATE_USER_LOCATION = 'UPDATE_USER_LOCATION';
+const FETCH_LOCATION = 'FETCH_LOCATION'
 
 //---------------------- ACTION CREATORS -----------------------
 
@@ -77,6 +79,15 @@ const addMatchToAccepted = content => ({
   type: ADD_MATCH_TO_ACCEPTED,
   content,
 });
+
+const fetchLocation = location => ({
+  type: FETCH_LOCATION,
+  location
+})
+// const updateUserLocation = locale => ({
+//   type: UPDATE_USER_LOCATION,
+//   locale,
+// });
 
 //---------------------- THUNK CREATOR -----------------------
 
@@ -199,44 +210,44 @@ export const getSelectedMatch = matchId => {
 };
 
 export const fetchingMatchMessages = (userId, matchId) => {
+  try {
   return dispatch => {
     let allMessages = db.collection('Messages');
     let query = allMessages
       .where('recipientId', '==', matchId)
       .where('user._id', '==', userId)
-      .get()
-      .then(snapShot => {
+      .onSnapshot(snapShot => {
         let data = [];
         snapShot.forEach(doc => {
           data.push(doc.data());
         });
         dispatch(getAllMessagesForSelectedMatch(data));
       })
-      .catch(err => {
+    }
+  } catch(err) {
         console.log('##Error getting messages in reducer##', err);
-      });
+      };
   };
-};
 
 export const fetchingUserMessages = (userId, matchId) => {
+  try {
   return dispatch => {
     let allMessages = db.collection('Messages');
     let query = allMessages
       .where('recipientId', '==', userId)
       .where('user._id', '==', matchId)
-      .get()
-      .then(snapShot => {
+      .onSnapshot(snapShot => {
         let data = [];
         snapShot.forEach(doc => {
           data.push(doc.data());
         });
         dispatch(getAllMessagesFromSelectedMatch(data));
       })
-      .catch(err => {
+    }
+  }catch(err) {
         console.log('##Error getting messages in reducer##', err);
-      });
+      };
   };
-};
 
 export const addingNewMessageToServer = (
   message,
@@ -333,15 +344,35 @@ export const updatingDeposit = (user, oldDeposit, newDeposit) => {
   };
 };
 
+export const updateUserLocation = data => {
+  try {
+    return async dispatch => {
+
+    let userId = data.userId.id;
+    let latitude = data.lat;
+    let longitude = data.long;
+
+    let user = db.collection('Users').doc(userId)
+    let query = await user.update({
+        geolocation: new firebase.firestore.GeoPoint(latitude, longitude)
+      })
+        // dispatch(fetchLocation(userObj));
+      }
+      }
+  catch(err){
+    console.error(err)
+        }
+}
+
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  // current: {},
+  //current: {},
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-   current: { name: 'Siri McClean', id: '10156095729989412' },
+  current: { name: '', id: '' },
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
   deposit: '',
@@ -407,7 +438,11 @@ export default function(state = initialState, action) {
         ...state,
         newMatchData: action.content,
       };
-
+      case FETCH_LOCATION:
+      return {
+        ...state,
+        current: action.location
+      }
     default:
       return state;
   }

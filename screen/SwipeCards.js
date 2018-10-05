@@ -80,7 +80,7 @@ class SwipeCards extends Component {
 				// (currentUser.acceptedMatches.indexOf(item.id) < 0) &&
 				// (currentUser.rejectedMatches.indexOf(item.id) < 0) &&
 				// (currentUser.name !== item.name)
-								})
+								// })
 
             let id = this.props.current.id;
             // let currentMatches = currentUser.acceptedMatches.slice();
@@ -129,19 +129,19 @@ class SwipeCards extends Component {
 				(currentUser.name !== item.name))
 			})
 
-    // return bottom.map((item, i) => {
-    //     if (item) {
-      const arr = []
-          for(let i = 0; i < availMatches.length; i++){
-            arr.push(availMatches[i])
-          }
-          this.setState = {
-            matchId: this.state.matchId + arr[0]
-          }
+    return availMatches.map((item, i) => {
+        if (item) {
+      // const arr = []
+      //     for(let i = 0; i < availMatches.length; i++){
+      //       arr.push(availMatches[i])
+      //     }
+      //     this.setState = {
+      //       matchId: this.state.matchId + arr[0]
+      //     }
 
           return (
             <Animated.View
-              // key={item.name}
+              key={item.name}
               {...this.PanResponder.panHandlers}
               style={[
                 this.rotateAndTranslate,

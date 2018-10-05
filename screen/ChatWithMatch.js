@@ -9,6 +9,7 @@ import {
 } from './store/userReducer';
 
 class ChatWithMatch extends Component {
+
   componentDidMount() {
     const userId = this.props.current.id;
     const matchId = this.props.selectedMatch.id;
