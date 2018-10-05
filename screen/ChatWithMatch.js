@@ -40,6 +40,8 @@ class ChatWithMatch extends Component {
 
     let userObj = { _id: this.props.current.id };
 
+    console.log('---------here in chat-------------', userObj)
+
     return (
       <GiftedChat
         messages={allMessages}

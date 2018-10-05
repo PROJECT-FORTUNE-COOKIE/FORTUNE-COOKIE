@@ -213,7 +213,7 @@ export const fetchingMatchMessages = (userId, matchId) => {
         dispatch(getAllMessagesForSelectedMatch(data));
       })
       .catch(err => {
-        // console.log('##Error getting messages in reducer##', err);
+        console.log('##Error getting messages in reducer##', err);
       });
   };
 };
@@ -335,13 +335,13 @@ export const updatingDeposit = (user, oldDeposit, newDeposit) => {
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  current: {},
+  // current: {},
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-   current: { name:'', id: '' },
+   current: { name: 'Siri McClean', id: '10156095729989412' },
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
   deposit: '',
