@@ -14,12 +14,18 @@ import {
   changingBirthday,
   changingNeighborhood,
   fetchingOtherInfo,
+  updateIdentifyAs,
 } from './store/userReducer';
 
 class EditDetail extends Component {
   constructor() {
     super();
-    //this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      checkIdentifyMale: false,
+      checkIdentifyFemale: false,
+      checkSeekingMale: false,
+      checkSeekingFemale: false,
+    };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -38,6 +44,12 @@ class EditDetail extends Component {
     const { rowContainer } = styles;
     const userId = this.props.current.id;
     const info = this.props.otherinfo;
+    const boolValMale = this.state.checkIdentifyMale;
+    const boolValFemale = this.state.checkIdentifyFemale;
+
+    const boolSeekMale = this.state.checkSeekingMale;
+    const boolSeekFemale = this.state.checkSeekingFemale;
+
     return (
       <ScrollView>
         <View style={{ flex: 1, alignItems: 'center' }}>
@@ -71,41 +83,47 @@ class EditDetail extends Component {
           value={info.birthday}
         />
 
-        <View style={rowContainer}>
-          <Text>I identify as: </Text>
-          <CheckBox
-            center
-            title="male"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            // checked={this.state.checked}
-          />
-          <CheckBox
-            center
-            title="female"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            // checked={this.state.checked}
-          />
-        </View>
+        <FormLabel>I am: </FormLabel>
+        <CheckBox
+          title="male"
+          checked={boolValMale}
+          onPress={() =>
+            this.setState({
+              checkIdentifyMale: !boolValMale,
+            })
+          }
+        />
 
-        <View style={rowContainer}>
-          <Text>I am interested in: </Text>
-          <CheckBox
-            center
-            title="male"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            // checked={this.state.checked}
-          />
-          <CheckBox
-            center
-            title="female"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            // checked={this.state.checked}
-          />
-        </View>
+        <CheckBox
+          title="female"
+          checked={boolValFemale}
+          onPress={() =>
+            this.setState({
+              checkIdentifyFemale: !boolValFemale,
+            })
+          }
+        />
+
+        <FormLabel>I am seeking: </FormLabel>
+        <CheckBox
+          title="male"
+          checked={boolSeekMale}
+          onPress={() =>
+            this.setState({
+              checkSeekingMale: !boolSeekMale,
+            })
+          }
+        />
+
+        <CheckBox
+          title="female"
+          checked={boolSeekFemale}
+          onPress={() =>
+            this.setState({
+              checkSeekingFemale: !boolSeekFemale,
+            })
+          }
+        />
 
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Button
@@ -141,6 +159,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(changingNeighborhood(neighborhood, userId)),
     changeBirthday: (birthday, userId) =>
       dispatch(changingBirthday(birthday, userId)),
+    handleIdentifyChange: (userId, checkValue, gender) =>
+      dispatch(updateIdentifyAs(userId, checkValue, gender)),
   };
 };
 

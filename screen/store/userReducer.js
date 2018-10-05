@@ -25,6 +25,8 @@ const UPDATE_BLURB = 'UPDATE_BLURB';
 const UPDATE_BIRTHDAY = 'UPDATE_BIRTHDAY';
 const UPDATE_NEIGHBORHOOD = 'UPDATE_NEIGHBORHOOD';
 const MAP_OTHER_INFO_TO_STATE = 'MAP_OTHER_INFO_TO_STATE';
+const UPDATE_IDENTIFY_AS = 'UPDATE_IDENTIFY_AS';
+const UPDATE_SEEKING = 'UPDATE_SEEKING';
 //---------------------- ACTION CREATORS -----------------------
 
 const gotUser = user => ({ type: GOT_USER, user });
@@ -96,6 +98,15 @@ const mappingOtherInfoToState = (blurb, birthday, neighborhood) => ({
   blurb,
   birthday,
   neighborhood,
+});
+
+const updatingIdentifyAs = identifyAs => ({
+  type: UPDATE_IDENTIFY_AS,
+  identifyAs,
+});
+const updateSeeking = seeking => ({
+  type: UPDATE_SEEKING,
+  seeking,
 });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -350,10 +361,6 @@ export const updatingDeposit = (user, oldDeposit, newDeposit) => {
   };
 };
 
-// changingBlurb,
-// changingBirthday,
-// changingNeighborhood,
-
 export const changingBlurb = (blurb, userId) => {
   return async dispatch => {
     try {
@@ -413,10 +420,15 @@ export const fetchingOtherInfo = userId => {
             dispatch(mappingOtherInfoToState(blurb, birthday, neighborhood));
           }
         });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
 
-      // const { blurb, birthday, neighborhood } = docRef;
-
-      // dispatch(mappingOtherInfoToState(blurb, birthday, neighborhood));
+export const updateIdentifyAs = (userId, checkValue, gender) => {
+  return async dispatch => {
+    try {
     } catch (err) {
       console.error(err);
     }
@@ -438,6 +450,9 @@ const initialState = {
   blurb: '',
   birthday: '',
   neighborhood: '',
+
+  identifyAs: '',
+  seeking: '',
 };
 
 //---------------------- REDUCER -----------------------
