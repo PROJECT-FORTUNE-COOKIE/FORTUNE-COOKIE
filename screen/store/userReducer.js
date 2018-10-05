@@ -7,27 +7,24 @@ const firestore = require('firebase/firestore');
 //---------------------- ACTION TYPES -----------------------
 
 const GOT_USER = 'GOT_USER';
-const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
+// const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
 const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
 const GET_MESSAGES_FROM_SELETED_MATCH = 'GET_MESSAGES_FROM_SELETED_MATCH';
 const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
-const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
+//const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
 const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
 const CHANGE_ICON = 'CHANGE_ICON';
 const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
-const ADD_USER_TO_STATE = 'ADD_USER_TO_STATE';
-const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
+// const ADD_USER_TO_STATE = 'ADD_USER_TO_STATE';
+// const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
 const FETCH_DEPOSIT = 'FETCH DEPOSIT';
 const UPDATE_DEPOSIT = 'UPDATE_DEPOSIT';
 
 //---------------------- ACTION CREATORS -----------------------
 
 const gotUser = user => ({ type: GOT_USER, user });
-const fetchingCurrentUser = () => ({
-  type: FETCH_CURRENT_USER
-});
 const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });
 const getAllMatchesForUser = matches => ({ type: GET_MATCHES, matches });
 const getAllMessagesForSelectedMatch = messages => ({
@@ -39,21 +36,21 @@ const getAllMessagesFromSelectedMatch = messages => ({
   messages
 });
 
-const settingSelectedMatchOnState = match => ({
-  type: SET_SELECTED_MATCH_ON_STATE,
-  match
-});
+// const settingSelectedMatchOnState = match => ({
+//   type: SET_SELECTED_MATCH_ON_STATE,
+//   match
+// });
 
 const addNewMessageToServer = message => ({
   type: ADD_NEW_MESSAGE,
   message
 });
 
-const addUserToPending = (user, owner) => ({
-  type: ADD_MATCH_TO_PENDING,
-  user,
-  owner
-});
+// const addUserToPending = (user, owner) => ({
+//   type: ADD_MATCH_TO_PENDING,
+//   user,
+//   owner
+// });
 
 const changeIcon = user => ({
   type: CHANGE_ICON,
@@ -69,14 +66,14 @@ const updateDeposit = deposit => {
   type: UPDATE_DEPOSIT, deposit;
 };
 
-const getAcceptedMatches = matchIds => ({
-  type: GET_ACCEPTED_MATCHES,
-  matchIds
-});
-const addMatchToAccepted = content => ({
-  type: ADD_MATCH_TO_ACCEPTED,
-  content
-});
+// const getAcceptedMatches = matchIds => ({
+//   type: GET_ACCEPTED_MATCHES,
+//   matchIds
+// });
+// const addMatchToAccepted = content => ({
+//   type: ADD_MATCH_TO_ACCEPTED,
+//   content
+// });
 
 //---------------------- THUNK CREATOR -----------------------
 
@@ -124,16 +121,12 @@ export const fbMe = () => {
   };
 };
 
-export const fetchCurrentUser = () => {
-  return dispatch => {
-    dispatch(fetchingCurrentUser());
-  };
-};
-
-export const fetchAllUsers = () => {
+export const fetchAllUsers = (selfSex, interest) => {
   return dispatch => {
     try {
       db.collection('Users')
+        .where('seeking', '==', selfSex)
+        .where('identifyAs', '==', interest)
         .get()
         .then(querySnapshot => {
           let datas = [];
@@ -148,22 +141,40 @@ export const fetchAllUsers = () => {
   };
 };
 
-//add user to accepted
-export const addUserToAcceptedMatches = (current, newMatch) => {
+//-------------------- add user to accepted
+export const updateAcceptedMatch = (current, likedUser) => {
   return async dispatch => {
     try {
-      const id = newMatch.userId;
-      const matchId = newMatch.matchId;
-      current = {
-        ...current,
-        acceptedMatches: [...current.acceptedMatches, matchId]
-      };
-      console.log('------------BACK END MATCH ID-------', matchId);
+      let likedId = likedUser.id;
+      let currentId = current.id;
 
-      let allUsers = await db.collection('Users').doc(id);
-      let updated = await allUsers.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId)
-        // acceptedMatches: current.acceptedMatches
+      let user = await db.collection('Users').doc(currentId);
+      await user.update({
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(likedId)
+      });
+      let luckyUser = await db.collection('Users').doc(likedId);
+      await luckyUser.update({
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(currentId)
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const updateRejectMatch = (current, likedUser) => {
+  return async dispatch => {
+    try {
+      let likedId = likedUser.id;
+      let currentId = current.id;
+
+      let user = await db.collection('Users').doc(currentId);
+      await user.update({
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(likedId)
+      });
+      let luckyUser = await db.collection('Users').doc(likedId);
+      await luckyUser.update({
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(currentId)
       });
     } catch (err) {
       console.error(err);
@@ -345,7 +356,13 @@ const initialState = {
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-  current: { name: 'Siri McClean', id: '10156095729989412' },
+  current: {
+    name: 'Siri McClean',
+    id: '10156095729989412',
+    acceptedMatches: ['10155782703410736', '10155782703410737'],
+    seeking: 'female',
+    identifyAs: 'female'
+  },
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
   deposit: ''
@@ -359,8 +376,7 @@ export default function(state = initialState, action) {
         ...state,
         current: action.user
       };
-    case FETCH_CURRENT_USER:
-      return state;
+
     case GOT_ALL_USERS:
       return {
         ...state,

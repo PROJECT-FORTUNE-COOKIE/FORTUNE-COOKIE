@@ -2,34 +2,28 @@ import React, { Component } from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
-import SwipeCards from './SwipeCards';
+import SwipeCards from './NewSwipe';
 
 class AllUsers extends Component {
   render() {
-
-
-
-const users = this.props.users;
-const current = this.props.current;
-const newMatchData = this.props.newMatchData;
-
-
-
-    if(current){
-    return (
-
-    <SwipeCards users={users} current={current} newMatchData={newMatchData} />
-
-    );
-    }
+    const all = this.props.all;
+    const current = this.props.current;
+    let result = all.filter(user => {
+      let currentId = current.id;
+      currentId.toString();
+      return user.acceptedMatches.indexOf(currentId) === -1;
+    });
+    return <SwipeCards all={result} current={current} />;
   }
 }
 
 const mapState = state => {
+  const id = state.users.current.id;
   return {
-    users: state.users.all,
-    current: state.users.current,
-    newMatchData: state.users.newMatchData
+    all: state.users.all.filter(user => {
+      return id !== user.id;
+    }),
+    current: state.users.current
   };
 };
 

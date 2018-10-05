@@ -4,9 +4,18 @@ import { Icon, Avatar } from 'react-native-elements';
 import { storage } from './store/firestoreAuth';
 import { ImagePicker, Permissions } from 'expo';
 import { connect } from 'react-redux';
-import { updateIcon } from './store/userReducer';
+import { updateIcon, fetchAllUsers } from './store/userReducer';
 
 class SingleUser extends Component {
+  componentDidMount() {
+    let interest = 'male';
+    let selfSex = this.props.me.identifyAs;
+    if (this.props.me.seeking !== interest) {
+      interest = 'female';
+    }
+    this.props.waitingCookie(selfSex, interest);
+  }
+
   onChooseImage = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status === 'granted') {
@@ -103,7 +112,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    changeIcon: (user, newIcon) => dispatch(updateIcon(user, newIcon))
+    changeIcon: (user, newIcon) => dispatch(updateIcon(user, newIcon)),
+    waitingCookie: (selfSex, interest) =>
+      dispatch(fetchAllUsers(selfSex, interest))
   };
 };
 

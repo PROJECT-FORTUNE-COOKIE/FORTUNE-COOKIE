@@ -34,7 +34,7 @@ const LogIn = props => {
           title="sign in with facebook  "
           onPress={() => {
             props.handleSubmit();
-            props.navigation.navigate('PayDeposit');
+            props.navigation.navigate('SingleUser');
           }}
         />
       </View>
