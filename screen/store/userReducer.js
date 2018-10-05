@@ -103,6 +103,12 @@ export const fbMe = () => {
                 name: data.name,
                 icon: 'https://data.whicdn.com/images/106885273/large.jpg',
                 deposit: 0,
+                acceptedMatches: [],
+                pendingMatches: [],
+                rejectedMatches: [],
+                birthday: '',
+                identifyAs: '',
+                seeking: '',
               });
           }
         });
@@ -152,13 +158,11 @@ export const addUserToAcceptedMatches = (current, newMatch) => {
         ...current,
         acceptedMatches: [...current.acceptedMatches, matchId],
       };
-      console.log('------------BACK END MATCH ID-------',
-      matchId)
-
+      console.log('------------BACK END MATCH ID-------', matchId);
 
       let allUsers = await db.collection('Users').doc(id);
       let updated = await allUsers.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId)
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId),
         // acceptedMatches: current.acceptedMatches
       });
     } catch (err) {
@@ -341,7 +345,7 @@ const initialState = {
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-   current: { name:'', id: '' },
+  current: { name: '', id: '' },
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
   deposit: '',

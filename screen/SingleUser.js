@@ -58,9 +58,9 @@ class SingleUser extends Component {
             xlarge
             rounded
             title="FC"
-            source={{
-              uri: me.icon,
-            }}
+            // source={{
+            //   uri: me.icon,
+            // }}
             activeOpacity={0.7}
           />
         </View>

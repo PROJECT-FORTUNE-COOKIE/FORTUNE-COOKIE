@@ -58,6 +58,9 @@ class EditDetail extends Component {
         <FormLabel>neighborhood</FormLabel>
         <FormInput placeholder="neighborhood" />
 
+        <FormLabel>birthday</FormLabel>
+        <FormInput placeholder="birthday" />
+
         <View style={rowContainer}>
           <Text>I identify as: </Text>
           <CheckBox
