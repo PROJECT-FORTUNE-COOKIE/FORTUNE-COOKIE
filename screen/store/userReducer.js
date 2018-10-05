@@ -20,6 +20,8 @@ const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
 const GET_ACCEPTED_MATCHES = 'GET_ACCEPTED_MATCHES';
 const FETCH_DEPOSIT = 'FETCH DEPOSIT';
 const UPDATE_DEPOSIT = 'UPDATE_DEPOSIT';
+const UPDATE_USER_LOCATION = 'UPDATE_USER_LOCATION';
+const FETCH_LOCATION = 'FETCH_LOCATION';
 
 const UPDATE_BLURB = 'UPDATE_BLURB';
 const UPDATE_BIRTHDAY = 'UPDATE_BIRTHDAY';
@@ -108,6 +110,14 @@ const updateSeeking = seeking => ({
   type: UPDATE_SEEKING,
   seeking,
 });
+const fetchLocation = location => ({
+  type: FETCH_LOCATION,
+  location,
+});
+// const updateUserLocation = locale => ({
+//   type: UPDATE_USER_LOCATION,
+//   locale,
+// });
 
 //---------------------- THUNK CREATOR -----------------------
 
@@ -237,43 +247,43 @@ export const getSelectedMatch = matchId => {
 };
 
 export const fetchingMatchMessages = (userId, matchId) => {
-  return dispatch => {
-    let allMessages = db.collection('Messages');
-    let query = allMessages
-      .where('recipientId', '==', matchId)
-      .where('user._id', '==', userId)
-      .get()
-      .then(snapShot => {
-        let data = [];
-        snapShot.forEach(doc => {
-          data.push(doc.data());
+  try {
+    return dispatch => {
+      let allMessages = db.collection('Messages');
+      let query = allMessages
+        .where('recipientId', '==', matchId)
+        .where('user._id', '==', userId)
+        .onSnapshot(snapShot => {
+          let data = [];
+          snapShot.forEach(doc => {
+            data.push(doc.data());
+          });
+          dispatch(getAllMessagesForSelectedMatch(data));
         });
-        dispatch(getAllMessagesForSelectedMatch(data));
-      })
-      .catch(err => {
-        // console.log('##Error getting messages in reducer##', err);
-      });
-  };
+    };
+  } catch (err) {
+    console.log('##Error getting messages in reducer##', err);
+  }
 };
 
 export const fetchingUserMessages = (userId, matchId) => {
-  return dispatch => {
-    let allMessages = db.collection('Messages');
-    let query = allMessages
-      .where('recipientId', '==', userId)
-      .where('user._id', '==', matchId)
-      .get()
-      .then(snapShot => {
-        let data = [];
-        snapShot.forEach(doc => {
-          data.push(doc.data());
+  try {
+    return dispatch => {
+      let allMessages = db.collection('Messages');
+      let query = allMessages
+        .where('recipientId', '==', userId)
+        .where('user._id', '==', matchId)
+        .onSnapshot(snapShot => {
+          let data = [];
+          snapShot.forEach(doc => {
+            data.push(doc.data());
+          });
+          dispatch(getAllMessagesFromSelectedMatch(data));
         });
-        dispatch(getAllMessagesFromSelectedMatch(data));
-      })
-      .catch(err => {
-        console.log('##Error getting messages in reducer##', err);
-      });
-  };
+    };
+  } catch (err) {
+    console.log('##Error getting messages in reducer##', err);
+  }
 };
 
 export const addingNewMessageToServer = (
@@ -434,16 +444,33 @@ export const updateIdentifyAs = (userId, checkValue, gender) => {
     }
   };
 };
+export const updateUserLocation = data => {
+  try {
+    return async dispatch => {
+      let userId = data.userId.id;
+      let latitude = data.lat;
+      let longitude = data.long;
+
+      let user = db.collection('Users').doc(userId);
+      let query = await user.update({
+        geolocation: new firebase.firestore.GeoPoint(latitude, longitude),
+      });
+      // dispatch(fetchLocation(userObj));
+    };
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  current: {},
+  //current: {},
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-  current: { name: '', id: '' },
+  current: {},
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
   deposit: '',
@@ -538,6 +565,11 @@ export default function(state = initialState, action) {
         blurb: action.blurb,
         birthday: action.birthday,
         neighborhood: action.neighborhood,
+      };
+    case FETCH_LOCATION:
+      return {
+        ...state,
+        current: action.location,
       };
     default:
       return state;

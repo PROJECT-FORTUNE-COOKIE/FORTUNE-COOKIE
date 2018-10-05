@@ -19,13 +19,13 @@ class SwipeCards extends Component {
     super(props);
 
     this.state = {
-      // matchId: 0
+      currentMatch: {},
     };
+
     this.position = new Animated.ValueXY();
 
     let tracker;
 
-    // adjust sizes for swiping animation
     this.rotate = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: ['-10deg', '0deg', '10deg'],
