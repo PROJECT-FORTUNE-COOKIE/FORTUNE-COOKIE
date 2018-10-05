@@ -19,13 +19,14 @@ class SwipeCards extends Component {
 		super(props);
 
 		this.state = {
-			// matchId: 0
-		}
+
+      currentMatch: {}
+    }
+
 		this.position = new Animated.ValueXY();
 
 		let tracker;
 
-    // adjust sizes for swiping animation
     this.rotate = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: ['-10deg', '0deg', '10deg'],
@@ -65,28 +66,25 @@ class SwipeCards extends Component {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy }
           }).start(() => {
 								this.position.setValue({ x: 0, y: 0 });
-
               })
-							const currentUser = this.props.users.find(
-								user => user.name == this.props.current.name
-							);
+							// const currentUser = this.props.users.find(
+							// 	user => user.name == this.props.current.name
+							// );
+				// 			const genderAvail = this.props.users.filter(match => {
+				// 				return (
+				// 					(currentUser.seeking === match.identifyAs ? match : null)
+				// 				)})
 
-							const genderAvail = this.props.users.filter(match => {
-								return (
-									(currentUser.seeking === match.identifyAs ? match : null)
-								)
-							})
-
-				const availableMatches = genderAvail.filter(item => {
-					return
-				(currentUser.acceptedMatches.indexOf(item.id) < 0) &&
-				(currentUser.rejectedMatches.indexOf(item.id) < 0) &&
-				(currentUser.name !== item.name)
+				// const availableMatches = genderAvail.filter(item => {
+				// 	return
+				// (currentUser.acceptedMatches.indexOf(item.id) < 0) &&
+				// (currentUser.rejectedMatches.indexOf(item.id) < 0) &&
+				// (currentUser.name !== item.name)
 								})
 
             let id = this.props.current.id;
-            let currentMatches = currentUser.acceptedMatches.slice();
-						currentMatches = currentMatches.push(availableMatches.id);
+            // let currentMatches = currentUser.acceptedMatches.slice();
+						// currentMatches = currentMatches.push(availableMatches.id);
 
             let newMatch = {
               userId: id,
@@ -116,7 +114,7 @@ class SwipeCards extends Component {
 	}
 
   renderUsers = () => {
-    const currentUser = this.props.users.find(
+      const currentUser = this.props.users.find(
       user => user.name == this.props.current.name
 		);
 		const genderAvail = this.props.users.filter(match => {
@@ -124,20 +122,26 @@ class SwipeCards extends Component {
 				(currentUser.seeking === match.identifyAs) ?  match : null
 			)
 		})
-		const bottom = genderAvail.filter(item => {
+		const availMatches = genderAvail.filter(item => {
 			return (
 				(currentUser.acceptedMatches.indexOf(item.id) < 0) &&
 				(currentUser.rejectedMatches.indexOf(item.id) < 0) &&
 				(currentUser.name !== item.name))
 			})
 
-    return bottom.map((item, i) => {
-        if (item) {
-					tracker = item.id;
-		console.log('---------map tracke-----------', tracker)
+    // return bottom.map((item, i) => {
+    //     if (item) {
+      const arr = []
+          for(let i = 0; i < availMatches.length; i++){
+            arr.push(availMatches[i])
+          }
+          this.setState = {
+            matchId: this.state.matchId + arr[0]
+          }
+
           return (
             <Animated.View
-              key={item.name}
+              // key={item.name}
               {...this.PanResponder.panHandlers}
               style={[
                 this.rotateAndTranslate,
@@ -181,7 +185,7 @@ class SwipeCards extends Component {
                   resizeMode: 'cover',
                   borderRadius: 20
                 }}
-                source={{ uri: item.images[0] }}
+                source={{ uri: this.state.matchId.images[0] }}
               />
             </Animated.View>
 					)

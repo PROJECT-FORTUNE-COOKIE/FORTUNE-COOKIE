@@ -29,7 +29,7 @@ class MatchesList extends Component {
               <ListItem
                 key={match.id}
                 roundAvatar
-                avatar={{ uri: match.images[0] }}
+               //avatar={{ uri: match.images[0] || null}}
                 title={`${match.name} `}
                 subtitle={match.neighborhood}
                 // onPress={() => this.onLearnMore(user)}

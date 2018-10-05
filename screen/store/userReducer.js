@@ -26,43 +26,43 @@ const UPDATE_DEPOSIT = 'UPDATE_DEPOSIT';
 
 const gotUser = user => ({ type: GOT_USER, user });
 const fetchingCurrentUser = () => ({
-  type: FETCH_CURRENT_USER,
+  type: FETCH_CURRENT_USER
 });
 const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });
 const getAllMatchesForUser = matches => ({ type: GET_MATCHES, matches });
 const getAllMessagesForSelectedMatch = messages => ({
   type: GET_MESSAGES_FOR_SELETED_MATCH,
-  messages,
+  messages
 });
 const getAllMessagesFromSelectedMatch = messages => ({
   type: GET_MESSAGES_FROM_SELETED_MATCH,
-  messages,
+  messages
 });
 
 const settingSelectedMatchOnState = match => ({
   type: SET_SELECTED_MATCH_ON_STATE,
-  match,
+  match
 });
 
 const addNewMessageToServer = message => ({
   type: ADD_NEW_MESSAGE,
-  message,
+  message
 });
 
 const addUserToPending = (user, owner) => ({
   type: ADD_MATCH_TO_PENDING,
   user,
-  owner,
+  owner
 });
 
 const changeIcon = user => ({
   type: CHANGE_ICON,
-  user,
+  user
 });
 
 const fetchDeposit = deposit => ({
   type: FETCH_DEPOSIT,
-  deposit,
+  deposit
 });
 
 const updateDeposit = deposit => {
@@ -71,11 +71,11 @@ const updateDeposit = deposit => {
 
 const getAcceptedMatches = matchIds => ({
   type: GET_ACCEPTED_MATCHES,
-  matchIds,
+  matchIds
 });
 const addMatchToAccepted = content => ({
   type: ADD_MATCH_TO_ACCEPTED,
-  content,
+  content
 });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -108,7 +108,7 @@ export const fbMe = () => {
                 rejectedMatches: [],
                 birthday: '',
                 identifyAs: '',
-                seeking: '',
+                seeking: ''
               });
           }
         });
@@ -156,13 +156,13 @@ export const addUserToAcceptedMatches = (current, newMatch) => {
       const matchId = newMatch.matchId;
       current = {
         ...current,
-        acceptedMatches: [...current.acceptedMatches, matchId],
+        acceptedMatches: [...current.acceptedMatches, matchId]
       };
       console.log('------------BACK END MATCH ID-------', matchId);
 
       let allUsers = await db.collection('Users').doc(id);
       let updated = await allUsers.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId),
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId)
         // acceptedMatches: current.acceptedMatches
       });
     } catch (err) {
@@ -217,7 +217,7 @@ export const fetchingMatchMessages = (userId, matchId) => {
         dispatch(getAllMessagesForSelectedMatch(data));
       })
       .catch(err => {
-        // console.log('##Error getting messages in reducer##', err);
+        console.log('##Error getting messages in reducer##', err);
       });
   };
 };
@@ -270,8 +270,8 @@ export const addingNewMessageToServer = (
         _id: userId,
         name: userName,
         avatar:
-          'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
-      },
+          'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg'
+      }
     };
     docRef.get().then(function(doc) {
       if (!doc.exists) {
@@ -287,7 +287,7 @@ export const updateIcon = (user, newIcon) => {
     try {
       const docRef = db.collection('Users').doc(user.id);
       await docRef.update({
-        icon: newIcon,
+        icon: newIcon
       });
 
       await docRef.get().then(doc => {
@@ -328,7 +328,7 @@ export const updatingDeposit = (user, oldDeposit, newDeposit) => {
       const updatedDeposit = oldDeposit + newDeposit;
       const docRef = db.collection('Users').doc(user.id);
       await docRef.update({
-        deposit: updatedDeposit,
+        deposit: updatedDeposit
       });
       dispatch(updateDeposit(updatedDeposit));
     } catch (err) {
@@ -339,16 +339,16 @@ export const updatingDeposit = (user, oldDeposit, newDeposit) => {
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  current: {},
+  // current: {},
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-  current: { name: '', id: '' },
+  current: { name: 'Siri McClean', id: '10156095729989412' },
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
-  deposit: '',
+  deposit: ''
 };
 
 //---------------------- REDUCER -----------------------
@@ -357,59 +357,59 @@ export default function(state = initialState, action) {
     case GOT_USER:
       return {
         ...state,
-        current: action.user,
+        current: action.user
       };
     case FETCH_CURRENT_USER:
       return state;
     case GOT_ALL_USERS:
       return {
         ...state,
-        all: action.users,
+        all: action.users
       };
     case GET_MATCHES:
       return {
         ...state,
-        matches: action.matches,
+        matches: action.matches
       };
     case SET_SELECTED_MATCH_ON_STATE:
       return {
         ...state,
-        selectedMatch: action.match,
+        selectedMatch: action.match
       };
     case GET_MESSAGES_FOR_SELETED_MATCH:
       return {
         ...state,
-        messagesToMatch: action.messages,
+        messagesToMatch: action.messages
       };
     case GET_MESSAGES_FROM_SELETED_MATCH:
       return {
         ...state,
-        messagesToUser: action.messages,
+        messagesToUser: action.messages
       };
     case ADD_NEW_MESSAGE:
       return {
         ...state,
-        messagesToMatch: [...state.messagesToMatch, action.message],
+        messagesToMatch: [...state.messagesToMatch, action.message]
       };
     case CHANGE_ICON:
       return {
         ...state,
-        current: action.user,
+        current: action.user
       };
     case FETCH_DEPOSIT:
       return {
         ...state,
-        deposit: action.deposit,
+        deposit: action.deposit
       };
     case UPDATE_DEPOSIT:
       return {
         ...state,
-        deposit: action.deposit,
+        deposit: action.deposit
       };
     case ADD_MATCH_TO_ACCEPTED:
       return {
         ...state,
-        newMatchData: action.content,
+        newMatchData: action.content
       };
 
     default:

@@ -5,7 +5,7 @@ import {
   FormLabel,
   FormInput,
   CheckBox,
-  FormValidationMessage,
+  FormValidationMessage
 } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { fetchCurrentUser } from './store/userReducer';
@@ -29,7 +29,7 @@ class EditDetail extends Component {
 
   handleChange = event => {
     this.setState({
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     });
   };
 
@@ -45,7 +45,7 @@ class EditDetail extends Component {
     return (
       <ScrollView>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text>USER DETAILS + SETTINGS</Text>
+          <Text style={{ fontSize: 30 }}>USER DETAILS + SETTINGS</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: 'center' }}>
@@ -111,17 +111,15 @@ class EditDetail extends Component {
   }
 }
 
-//export default EditDetail;
-
 const mapState = state => {
   return {
-    current: state.users.current,
+    current: state.users.current
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchUser: () => dispatch(fetchCurrentUser()),
+    fetchUser: () => dispatch(fetchCurrentUser())
   };
 };
 
@@ -134,6 +132,6 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignContent: 'space-around',
-  },
+    alignContent: 'space-around'
+  }
 });
