@@ -15,6 +15,7 @@ import MatchesList from '../screen/MatchesList';
 import EditDetail from '../screen/EditDetail';
 import ChatWithMatch from '../screen/ChatWithMatch';
 import PayDeposit from '../screen/PayDeposit';
+import WelcomePage from '../screen/WelcomePage';
 
 //----------route testing --------------
 import { connect } from 'react-redux';
@@ -62,15 +63,15 @@ export const MenuTab = createBottomTabNavigator({
     },
   },
 
-  PayDeposit: {
-    screen: PayDeposit,
-    navigationOptions: {
-      tabLabel: 'PayDeposit',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="attach-money" type="FontAwesome5" color={tintColor} />
-      ),
-    },
-  },
+  // PayDeposit: {
+  //   screen: PayDeposit,
+  //   navigationOptions: {
+  //     tabLabel: 'PayDeposit',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="attach-money" type="FontAwesome5" color={tintColor} />
+  //     ),
+  //   },
+  // },
 
   GEO: {
     screen: Geolocation,
@@ -104,6 +105,12 @@ export const Root = createStackNavigator({
   },
   PayDeposit: {
     screen: PayDeposit,
+  },
+  WelcomePage: {
+    screen: WelcomePage,
+  },
+  AllUsers: {
+    screen: AllUsers,
   },
 });
 
