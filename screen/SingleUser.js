@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { Icon, Avatar } from 'react-native-elements';
+import { View, StyleSheet, Text, Image, Animated } from 'react-native';
+import { Icon, Avatar, Card, Button } from 'react-native-elements';
 import { storage } from './store/firestoreAuth';
 import { ImagePicker, Permissions } from 'expo';
 import { connect } from 'react-redux';
@@ -58,20 +58,35 @@ class SingleUser extends Component {
   render() {
     const { container, rowContainer } = styles;
     const me = this.props.me;
-
+    console.log(me.icon);
+    let image = me.icon;
     return (
       <View style={container}>
         <View>
-          <Avatar
-            id="myImg"
-            xlarge
-            rounded
-            title="FC"
-            source={{
-              uri: me.icon
+          <Image
+            style={{
+              height: 280,
+              width: 300,
+              top: 0,
+              borderRadius: 30
             }}
-            activeOpacity={0.7}
+            source={{
+              uri: image
+            }}
           />
+        </View>
+        <View>
+          <Text
+            style={{
+              fontFamily: 'Zapfino',
+              fontSize: 25
+            }}
+          >
+            {me.name}
+          </Text>
+          {me.deposit ? <Text>{me.deposit} </Text> : null}
+          {me.birthday ? <Text>{me.age} </Text> : null}
+          {me.age ? <Text>{me.age} </Text> : null}
         </View>
         <View style={rowContainer}>
           <Icon
@@ -92,12 +107,6 @@ class SingleUser extends Component {
             type="feather"
             onPress={() => this.props.navigation.navigate('UserSetting')}
           />
-        </View>
-        <View>
-          <Text style={{ fontWeight: 'bold' }}>{me.name}</Text>
-          {me.deposit ? <Text>{me.deposit} </Text> : null}
-          {me.birthday ? <Text>{me.age} </Text> : null}
-          {me.age ? <Text>{me.age} </Text> : null}
         </View>
       </View>
     );
@@ -130,12 +139,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding: 65
+    padding: 35
   },
   rowContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignContent: 'space-around',
-    padding: 60
+    posititon: 'absolute',
+    top: 10
   }
 });

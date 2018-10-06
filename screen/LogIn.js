@@ -17,7 +17,7 @@ const LogIn = props => {
   return (
     <View style={container}>
       <View style={img}>
-        <Image source={require('../assets/002.png')} />
+        <Image source={require('../assets/Cookie.png')} />
       </View>
       <View style={txt}>
         <Text style={headText}> Fortune </Text>
@@ -68,13 +68,13 @@ const styles = StyleSheet.create({
     height: 400,
     resizeMode: 'cover',
     position: 'absolute',
-    top: 290,
+    top: 230,
     zIndex: 0
   },
   txt: {
     width: 350,
     position: 'absolute',
-    top: 70,
+    top: 50,
     height: 250,
     zIndex: 1
   },

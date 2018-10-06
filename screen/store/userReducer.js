@@ -492,7 +492,9 @@ const initialState = {
     name: 'Siri McClean',
     rejectedMatches: [],
     seeking: 'female',
-    identifyAs: 'female'
+    identifyAs: 'female',
+    icon:
+      'https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=3fdb668e-875b-431e-af60-f08e948da8ba'
   },
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },

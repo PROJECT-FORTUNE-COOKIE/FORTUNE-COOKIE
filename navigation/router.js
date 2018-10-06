@@ -85,11 +85,11 @@ export const MenuTab = createBottomTabNavigator({
 });
 
 export const Root = createStackNavigator({
-  LogIn: {
-    screen: LogIn
-  },
   SingleUser: {
     screen: MenuTab
+  },
+  LogIn: {
+    screen: LogIn
   },
   SignUp: {
     screen: SignUp
