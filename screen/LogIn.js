@@ -12,7 +12,7 @@ import { fbMe } from './store/userReducer';
 import { connect } from 'react-redux';
 
 const LogIn = props => {
-  const { container, img, txt, btn, text } = styles;
+  const { container, img, txt, btn, headText, subText } = styles;
 
   return (
     <View style={container}>
@@ -20,9 +20,9 @@ const LogIn = props => {
         <Image source={require('../assets/002.png')} />
       </View>
       <View style={txt}>
-        <Text style={text}> Fortune </Text>
-        <Text style={text}> Cokie </Text>
-        <Text> ~ no cookie left behind ~ </Text>
+        <Text style={headText}> Fortune </Text>
+        <Text style={headText}> ©ookie </Text>
+        <Text style={subText}> ' no ©ookie left behind </Text>
       </View>
       <View style={btn}>
         <Button
@@ -64,21 +64,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF'
   },
   img: {
-    width: 300,
-    height: 300,
-    resizeMode: 'cover'
+    width: 180,
+    height: 400,
+    resizeMode: 'cover',
+    position: 'absolute',
+    top: 290,
+    zIndex: 0
   },
   txt: {
-    width: 250,
-    height: 50
+    width: 350,
+    position: 'absolute',
+    top: 70,
+    height: 250,
+    zIndex: 1
   },
   btn: {
     with: 180,
     height: 70,
-    padding: 10
+    padding: 10,
+    position: 'absolute',
+    top: 480,
+    zIndex: 2
   },
-  text: {
+  headText: {
     fontFamily: 'Arial Rounded MT Bold',
-    fontSize: 17
+    fontSize: 60
+  },
+  subText: {
+    fontFamily: 'AvenirNext-Regular',
+    fontSize: 25
   }
 });

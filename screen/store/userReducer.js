@@ -3,7 +3,7 @@ import { Facebook } from 'expo';
 import { fbAppId } from '../../secret';
 const firebase = require('firebase');
 // Required for side-effects
-const firestore = require('firebase/firestore');
+require('firebase/firestore');
 //---------------------- ACTION TYPES -----------------------
 
 const GOT_USER = 'GOT_USER';
@@ -212,19 +212,19 @@ export const updateAcceptedMatch = (current, likedUser) => {
   };
 };
 
-export const updateRejectMatch = (current, likedUser) => {
+export const updateRejectMatch = (current, dislikedUser) => {
   return async dispatch => {
     try {
-      let likedId = likedUser.id;
+      let dislikedId = dislikedUser.id;
       let currentId = current.id;
 
       let user = await db.collection('Users').doc(currentId);
       await user.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(likedId)
+        rejectedMatches: firebase.firestore.FieldValue.arrayUnion(dislikedId)
       });
-      let luckyUser = await db.collection('Users').doc(likedId);
-      await luckyUser.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(currentId)
+      let unluckyUser = await db.collection('Users').doc(dislikedId);
+      await unluckyUser.update({
+        rejectedMatches: firebase.firestore.FieldValue.arrayUnion(currentId)
       });
     } catch (err) {
       console.error(err);
@@ -487,7 +487,13 @@ const initialState = {
   messagesToMatch: [],
   messagesToUser: [],
   all: [],
-  current: {},
+  current: {
+    id: '10156095729989412',
+    name: 'Siri McClean',
+    rejectedMatches: [],
+    seeking: 'female',
+    identifyAs: 'female'
+  },
   selectedMessages: [],
   newMatchData: { userId: '', matchId: '' },
   deposit: '',

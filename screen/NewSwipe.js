@@ -9,7 +9,7 @@ import {
   PanResponder
 } from 'react-native';
 import { connect } from 'react-redux';
-import { updateAcceptedMatch } from './store';
+import { updateAcceptedMatch, updateRejectMatch } from './store';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -76,11 +76,6 @@ class SwipeCards extends Component {
             const likedUser = this.props.all.splice(oldIndx, 1);
             const current = this.props.current;
             this.props.updateAcceptedMatches(current, likedUser[0]);
-            console.log(
-              this.state.currentIndex,
-              'state.current index---------------oldIndx',
-              oldIndx
-            );
             this.setState(
               {
                 currentIndex: this.state.currentIndex + 1
@@ -242,8 +237,12 @@ class SwipeCards extends Component {
 
 mapDispatch = dispatch => {
   return {
-    updateAcceptedMatches: (current, likedUser) =>
-      dispatch(updateAcceptedMatch(current, likedUser))
+    updateAcceptedMatches: (current, likedUser) => {
+      dispatch(updateAcceptedMatch(current, likedUser));
+    },
+    updateRejectMatches: (current, dislikeUser) => {
+      dispatch(updateRejectMatch(current, dislikeUser));
+    }
   };
 };
 
