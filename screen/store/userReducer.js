@@ -23,12 +23,9 @@ const UPDATE_DEPOSIT = 'UPDATE_DEPOSIT';
 const UPDATE_USER_LOCATION = 'UPDATE_USER_LOCATION';
 const FETCH_LOCATION = 'FETCH_LOCATION';
 
-const UPDATE_BLURB = 'UPDATE_BLURB';
-const UPDATE_BIRTHDAY = 'UPDATE_BIRTHDAY';
-const UPDATE_NEIGHBORHOOD = 'UPDATE_NEIGHBORHOOD';
 const MAP_OTHER_INFO_TO_STATE = 'MAP_OTHER_INFO_TO_STATE';
-const UPDATE_IDENTIFY_AS = 'UPDATE_IDENTIFY_AS';
-const UPDATE_SEEKING = 'UPDATE_SEEKING';
+const UPDATE_IDENTIFY_AS_AND_SEEKING = 'UPDATE_IDENTIFY_AS_AND_SEEKING';
+
 //---------------------- ACTION CREATORS -----------------------
 
 const gotUser = user => ({ type: GOT_USER, user });
@@ -80,21 +77,6 @@ const addMatchToAccepted = content => ({
   content,
 });
 
-const updatingBlurb = blurb => ({
-  type: UPDATE_BLURB,
-  blurb,
-});
-
-const updatingBirthday = birthday => ({
-  type: UPDATE_BIRTHDAY,
-  birthday,
-});
-
-const updatingNeighborhood = neighborhood => ({
-  type: UPDATE_NEIGHBORHOOD,
-  neighborhood,
-});
-
 const mappingOtherInfoToState = (blurb, birthday, neighborhood) => ({
   type: MAP_OTHER_INFO_TO_STATE,
   blurb,
@@ -102,22 +84,16 @@ const mappingOtherInfoToState = (blurb, birthday, neighborhood) => ({
   neighborhood,
 });
 
-const updatingIdentifyAs = identifyAs => ({
-  type: UPDATE_IDENTIFY_AS,
+const updatingIdentifyAsAndSeeking = (identifyAs, seeking) => ({
+  type: UPDATE_IDENTIFY_AS_AND_SEEKING,
   identifyAs,
-});
-const updateSeeking = seeking => ({
-  type: UPDATE_SEEKING,
   seeking,
 });
+
 const fetchLocation = location => ({
   type: FETCH_LOCATION,
   location,
 });
-// const updateUserLocation = locale => ({
-//   type: UPDATE_USER_LOCATION,
-//   locale,
-// });
 
 //---------------------- THUNK CREATOR -----------------------
 
@@ -371,48 +347,6 @@ export const updatingDeposit = (user, oldDeposit, newDeposit) => {
   };
 };
 
-export const changingBlurb = (blurb, userId) => {
-  return async dispatch => {
-    try {
-      const docRef = db.collection('Users').doc(userId);
-      await docRef.update({
-        blurb,
-      });
-      dispatch(updatingBlurb(blurb));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-};
-
-export const changingBirthday = (birthday, userId) => {
-  return async dispatch => {
-    try {
-      const docRef = db.collection('Users').doc(userId);
-      await docRef.update({
-        birthday,
-      });
-      dispatch(updatingBirthday(birthday));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-};
-
-export const changingNeighborhood = (neighborhood, userId) => {
-  return async dispatch => {
-    try {
-      const docRef = db.collection('Users').doc(userId);
-      await docRef.update({
-        neighborhood,
-      });
-      dispatch(updatingNeighborhood(neighborhood));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-};
-
 export const fetchingOtherInfo = userId => {
   return async dispatch => {
     try {
@@ -436,14 +370,39 @@ export const fetchingOtherInfo = userId => {
   };
 };
 
-export const updateIdentifyAs = (userId, checkValue, gender) => {
+export const updateIdentifySeeking = (
+  userId,
+  blurb,
+  neighborhood,
+  birthday,
+  identifyAs,
+  seeking
+) => {
   return async dispatch => {
     try {
+      const docRef = db.collection('Users').doc(userId);
+      await docRef.update({
+        blurb,
+        neighborhood,
+        birthday,
+        identifyAs,
+        seeking,
+      });
+      dispatch(
+        updatingIdentifyAsAndSeeking(
+          blurb,
+          neighborhood,
+          birthday,
+          identifyAs,
+          seeking
+        )
+      );
     } catch (err) {
       console.error(err);
     }
   };
 };
+
 export const updateUserLocation = data => {
   try {
     return async dispatch => {
@@ -542,29 +501,22 @@ export default function(state = initialState, action) {
         ...state,
         newMatchData: action.content,
       };
-    case UPDATE_BLURB:
-      return {
-        ...state,
-        blurb: action.blurb,
-      };
-
-    case UPDATE_BIRTHDAY:
-      return {
-        ...state,
-        birthday: action.birthday,
-      };
-
-    case UPDATE_NEIGHBORHOOD:
-      return {
-        ...state,
-        neighborhood: action.neighborhood,
-      };
     case MAP_OTHER_INFO_TO_STATE:
       return {
         ...state,
         blurb: action.blurb,
         birthday: action.birthday,
         neighborhood: action.neighborhood,
+      };
+
+    case UPDATE_IDENTIFY_AS_AND_SEEKING:
+      return {
+        ...state,
+        blurb: action.blurb,
+        neighborhood: action.neighborhood,
+        birthday: action.birthday,
+        identifyAs: action.identifyAs,
+        seeking: action.seeking,
       };
     case FETCH_LOCATION:
       return {
