@@ -356,6 +356,7 @@ export const updateUserLocation = data => {
     let query = await user.update({
         geolocation: new firebase.firestore.GeoPoint(latitude, longitude)
       })
+      console.log('------------in the back end!----------')
         // dispatch(fetchLocation(userObj));
       }
       }

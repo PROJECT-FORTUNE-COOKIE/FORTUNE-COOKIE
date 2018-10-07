@@ -24,27 +24,48 @@ class Geolocation extends Component {
     };
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
-    }
-
-
-  componentDidMount() {
-    this._getLocationAsync()
 
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevState.location !== this.state.location) {
-  //     this._getLocationAsync()
-  //   }
-  //   console.log('---------------HERE ABACK HERE DATA-----------', data)
-  // }
+  componentDidMount() {
 
+    this._getLocationAsync()
+    console.log('-------------updated---------------')
+    Location.watchPositionAsync({
+      enableHighAccuracy: false,
+      distanceInterval: 5,
+      timeInterval: 3000
+    }, newLocation => {
+      this.setState({
+        location: newLocation
+
+      })
+      console.log('----------new location--------------', newLocation)
+    })
+
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.location !== this.state.location) {
+      let userId = this.props.current
+      let coordinates = text.coords;
+      let lat = this.state.location.coords.latitude
+      let long = this.state.location.coords.longitude
+      let data = {
+        userId,
+        lat,
+        long
+      }
+      this.props.updateUserLocation(data)
+    }
+
+  }
 
   render() {
     text = this.state.location;
 
     if (text) {
-
+      console.log('----------IM THE STATE -------', this.state.location)
       let userId = this.props.current
       let coordinates = text.coords;
       let lat = this.state.location.coords.latitude
@@ -55,7 +76,9 @@ class Geolocation extends Component {
         long
       }
 
-      this.props.updateUserLocation(data)
+    this.props.updateUserLocation(data)
+
+
 
       return (
         <View style={styles.container}>
