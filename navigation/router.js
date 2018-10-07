@@ -32,7 +32,6 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-
   AllUsers: {
     screen: AllUsers,
     navigationOptions: {
@@ -42,7 +41,6 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-
   MatchesList: {
     screen: MatchesList,
     navigationOptions: {
@@ -52,7 +50,6 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-
   CameraAR: {
     screen: CameraAR,
     navigationOptions: {
@@ -62,17 +59,6 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-
-  // PayDeposit: {
-  //   screen: PayDeposit,
-  //   navigationOptions: {
-  //     tabLabel: 'PayDeposit',
-  //     tabBarIcon: ({ tintColor }) => (
-  //       <Icon name="attach-money" type="FontAwesome5" color={tintColor} />
-  //     ),
-  //   },
-  // },
-
   GEO: {
     screen: Geolocation,
     navigationOptions: {

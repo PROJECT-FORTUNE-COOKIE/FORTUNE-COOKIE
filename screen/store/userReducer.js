@@ -6,6 +6,7 @@ const firebase = require('firebase');
 const firestore = require('firebase/firestore');
 //---------------------- ACTION TYPES -----------------------
 
+const CHECK_IF_NEW_USER = 'CHECK_IF_NEW_USER';
 const GOT_USER = 'GOT_USER';
 const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
@@ -27,6 +28,11 @@ const MAP_OTHER_INFO_TO_STATE = 'MAP_OTHER_INFO_TO_STATE';
 const UPDATE_IDENTIFY_AS_AND_SEEKING = 'UPDATE_IDENTIFY_AS_AND_SEEKING';
 
 //---------------------- ACTION CREATORS -----------------------
+
+const checkIfNewUser = bool => ({
+  type: CHECK_IF_NEW_USER,
+  bool,
+});
 
 const gotUser = user => ({ type: GOT_USER, user });
 const fetchingCurrentUser = () => ({
@@ -127,6 +133,7 @@ export const fbMe = () => {
                 identifyAs: '',
                 seeking: '',
               });
+            dispatch(checkIfNewUser(true));
           }
         });
         let userObj = {};
@@ -425,6 +432,7 @@ export const updateUserLocation = data => {
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
   //current: {},
+  newUser: '',
   matches: [],
   selectedMatch: {},
   messagesToMatch: [],
@@ -445,6 +453,11 @@ const initialState = {
 //---------------------- REDUCER -----------------------
 export default function(state = initialState, action) {
   switch (action.type) {
+    case CHECK_IF_NEW_USER:
+      return {
+        ...state,
+        newUser: action.bool,
+      };
     case GOT_USER:
       return {
         ...state,

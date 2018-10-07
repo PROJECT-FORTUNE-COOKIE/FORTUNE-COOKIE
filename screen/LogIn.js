@@ -1,13 +1,6 @@
 import React, { Component } from 'react';
-import { SocialIcon, Button } from 'react-native-elements';
-import {
-  AppRegistry,
-  StyleSheet,
-  Image,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Button } from 'react-native-elements';
+import { StyleSheet, Image, Text, View } from 'react-native';
 import { fbMe } from './store/userReducer';
 import { connect } from 'react-redux';
 
@@ -27,7 +20,7 @@ const LogIn = props => {
         title="sign in with facebook  "
         onPress={() => {
           props.handleSubmit();
-          props.navigation.navigate('PayDeposit');
+          props.navigation.navigate('WelcomePage');
         }}
       />
     </View>

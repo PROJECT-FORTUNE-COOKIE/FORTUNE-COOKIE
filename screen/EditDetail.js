@@ -45,7 +45,7 @@ class EditDetail extends Component {
       identifyAs,
       seeking
     );
-    this.props.navigation.navigate('WelcomePage');
+    this.props.navigation.navigate('SingleUser');
   };
 
   render() {
