@@ -11,37 +11,51 @@ import {
 import { fbMe } from './store/userReducer';
 import { connect } from 'react-redux';
 
-const WelcomePage = props => {
-  const { container, countViewStyle, image } = styles;
+class WelcomePage extends Component {
+  // componentDidMount() {
+  //   this.props.checkIfNewUser();
+  // }
 
-  return (
-    <View style={container}>
-      <Text>You are now in Fortune Cookie,</Text>
-      <Text>WELCOME</Text>
-      <Image style={image} source={require('../assets/002.png')} />
+  render() {
+    const { container, image } = styles;
 
-      <Button
-        small
-        title="~fortune favors the brave~"
-        onPress={() => {
-          //props.handleSubmit();
-          props.navigation.navigate('SingleUser');
-        }}
-      />
-    </View>
-  );
+    return (
+      <View style={container}>
+        <Text>You are now in Fortune Cookie,</Text>
+        <Text>WELCOME</Text>
+        <Image style={image} source={require('../assets/002.png')} />
+
+        <Button
+          small
+          title="~fortune favors the brave~"
+          onPress={() => {
+            //props.handleSubmit();
+            if (this.props.newUser === true) {
+              this.props.navigation.navigate('PayDeposit');
+            } else {
+              this.props.navigation.navigate('SingleUser');
+            }
+          }}
+        />
+      </View>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    newUser: state.users.newUser,
+  };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    // handleSubmit() {
-    //   dispatch(fbMe());
-    // },
+    checkIfNewUser: () => dispatch(checkingIfNewUser()),
   };
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(WelcomePage);
 

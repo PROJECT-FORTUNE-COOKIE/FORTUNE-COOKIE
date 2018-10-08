@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
 import { ScrollView, View, StyleSheet, Text } from 'react-native';
-import {
-  Button,
-  FormLabel,
-  FormInput,
-  CheckBox,
-  FormValidationMessage
-} from 'react-native-elements';
+import { Button, FormLabel, FormInput, CheckBox } from 'react-native-elements';
 import { connect } from 'react-redux';
 import {
   fetchCurrentUser,
-  changingBlurb,
-  changingBirthday,
-  changingNeighborhood,
   fetchingOtherInfo,
-  updateIdentifyAs
+  updateIdentifySeeking
 } from './store/userReducer';
 
 class EditDetail extends Component {
@@ -24,7 +15,10 @@ class EditDetail extends Component {
       checkIdentifyMale: false,
       checkIdentifyFemale: false,
       checkSeekingMale: false,
-      checkSeekingFemale: false
+      checkSeekingFemale: false,
+      blurb: '',
+      neighborhood: '',
+      birthday: ''
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -37,12 +31,25 @@ class EditDetail extends Component {
   }
 
   handleSubmit = () => {
-    this.props.navigation.navigate('WelcomePage');
+    const userId = this.props.current.id;
+    const identifyAs = this.state.checkIdentifyMale ? 'male' : 'female';
+    const seeking = this.state.checkSeekingMale ? 'male' : 'female';
+    const blurb = this.state.blurb;
+    const neighborhood = this.state.neighborhood;
+    const birthday = this.state.birthday;
+    this.props.handleIdentifySeeking(
+      userId,
+      blurb,
+      neighborhood,
+      birthday,
+      identifyAs,
+      seeking
+    );
+    this.props.navigation.navigate('SingleUser');
   };
 
   render() {
     const { rowContainer } = styles;
-    const userId = this.props.current.id;
     const info = this.props.otherinfo;
     const boolValMale = this.state.checkIdentifyMale;
     const boolValFemale = this.state.checkIdentifyFemale;
@@ -63,7 +70,11 @@ class EditDetail extends Component {
         <FormLabel>blurb</FormLabel>
         <FormInput
           placeholder="write your blurb! make it fun!"
-          onChangeText={blurb => this.props.changeBlurb(blurb, userId)}
+          onChangeText={blurb =>
+            this.setState({
+              blurb
+            })
+          }
           value={info.blurb}
         />
 
@@ -71,7 +82,9 @@ class EditDetail extends Component {
         <FormInput
           placeholder="neighborhood"
           onChangeText={neighborhood =>
-            this.props.changeNeighborhood(neighborhood, userId)
+            this.setState({
+              neighborhood
+            })
           }
           value={info.neighborhood}
         />
@@ -79,7 +92,11 @@ class EditDetail extends Component {
         <FormLabel>birthday</FormLabel>
         <FormInput
           placeholder="birthday"
-          onChangeText={birthday => this.props.changeBirthday(birthday, userId)}
+          onChangeText={birthday =>
+            this.setState({
+              birthday
+            })
+          }
           value={info.birthday}
         />
 
@@ -150,15 +167,25 @@ const mapState = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchUser: () => dispatch(fetchCurrentUser()),
-    //fetchDeposit: () => dispatch(fetchDeposit())
     fetchOtherInfo: userId => dispatch(fetchingOtherInfo(userId)),
-    changeBlurb: (blurb, userId) => dispatch(changingBlurb(blurb, userId)),
-    changeNeighborhood: (neighborhood, userId) =>
-      dispatch(changingNeighborhood(neighborhood, userId)),
-    changeBirthday: (birthday, userId) =>
-      dispatch(changingBirthday(birthday, userId)),
-    handleIdentifyChange: (userId, checkValue, gender) =>
-      dispatch(updateIdentifyAs(userId, checkValue, gender))
+    handleIdentifySeeking: (
+      userId,
+      blurb,
+      neighborhood,
+      birthday,
+      identifyAs,
+      seeking
+    ) =>
+      dispatch(
+        updateIdentifySeeking(
+          userId,
+          blurb,
+          neighborhood,
+          birthday,
+          identifyAs,
+          seeking
+        )
+      )
   };
 };
 

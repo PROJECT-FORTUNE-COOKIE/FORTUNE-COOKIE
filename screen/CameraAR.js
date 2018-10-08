@@ -57,19 +57,38 @@ class CameraAR extends Component {
     this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
 
     // Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
-    const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-    // Simple color material
+    // const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+    //var geometry = new THREE.CircleGeometry(0.1, 32);
+    // // Simple color material
     const material = new THREE.MeshPhongMaterial({
       color: 0xff00ff,
     });
 
-    // Combine our geometry and material
-    this.cube = new THREE.Mesh(geometry, material);
-    // Place the box 0.4 meters in front of us.
-    this.cube.position.z = -0.4;
-    // Add the cube to the scene
-    this.scene.add(this.cube);
+    // // Combine our geometry and material
+    //this.cube = new THREE.Mesh(geometry, material);
+    //this.circle = new THREE.Mesh(geometry, material);
 
+    var x = 0,
+      y = 0;
+
+    var heartShape = new THREE.Shape();
+    heartShape.moveTo(x + 5, y + 5);
+    heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
+    heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
+    heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
+    heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
+    heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
+    heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
+
+    var geometry = new THREE.ShapeGeometry(heartShape);
+    this.circle = new THREE.Mesh(geometry, material);
+    // // Place the box 0.4 meters in front of us.
+    //this.cube.position.z = -0.4;
+    this.circle.position.z = -23;
+
+    // // Add the cube to the scene
+    //this.scene.add(this.cube);
+    this.scene.add(this.circle);
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
