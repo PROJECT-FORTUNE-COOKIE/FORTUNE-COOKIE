@@ -27,6 +27,8 @@ const FETCH_LOCATION = 'FETCH_LOCATION';
 const MAP_OTHER_INFO_TO_STATE = 'MAP_OTHER_INFO_TO_STATE';
 const UPDATE_IDENTIFY_AS_AND_SEEKING = 'UPDATE_IDENTIFY_AS_AND_SEEKING';
 
+const CREATE_NEARBY_MATCHES_ARRAY = 'CREATE_NEARBY_MATCHES_ARRAY';
+
 //---------------------- ACTION CREATORS -----------------------
 
 const checkIfNewUser = bool => ({
@@ -99,6 +101,11 @@ const updatingIdentifyAsAndSeeking = (identifyAs, seeking) => ({
 const fetchLocation = location => ({
   type: FETCH_LOCATION,
   location,
+});
+
+const createNearbyMatchesArray = matchesArray => ({
+  type: CREATE_NEARBY_MATCHES_ARRAY,
+  matchesArray,
 });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -421,12 +428,56 @@ export const updateUserLocation = data => {
       let query = await user.update({
         geolocation: new firebase.firestore.GeoPoint(latitude, longitude),
       });
-      console.log('------------in the back end!----------');
+      //console.log('------------in the back end!----------');
       // dispatch(fetchLocation(userObj));
     };
   } catch (err) {
     console.error(err);
   }
+};
+
+export const creatingMatchesArray = (userId, location) => {
+  //try{
+  return async dispatch => {
+    let matchArr = [];
+    //let allUsers = db.collection('Users');
+    console.log('USERLOCATION IN REDUCER: ', location);
+    console.log('lat: ', location.coords.latitude);
+    console.log('lat: ', location.coords.longitude);
+
+    let latitude = location.coords.latitude;
+    let longitude = location.coords.longitude;
+
+    // ~1 mile of lat and lon in degrees
+    let lat = 0.0144927536231884;
+    let lon = 0.0181818181818182;
+
+    let lowerLat = latitude - lat;
+    let lowerLon = longitude - lon;
+
+    let greaterLat = latitude + lat;
+    let greaterLon = longitude + lon;
+
+    let lesserGeopoint = new firebase.firestore.GeoPoint(lowerLat, lowerLon);
+    let greaterGeopoint = new firebase.firestore.GeoPoint(
+      greaterLat,
+      greaterLon
+    );
+
+    let allUsers = db.collection('Users');
+    let query = allUsers
+      .where('geolocation', '<=', greaterGeopoint)
+      .where('geolocation', '>=', lesserGeopoint)
+      .onSnapshot(snapshot => {
+        //let data = [];
+        snapshot.forEach(doc => {
+          console.log('&&&&&DOC>DATA()&&&&&&&: ', doc.data());
+          matchArr.push(doc.data());
+        });
+        dispatch(createNearbyMatchesArray(matchArr));
+        console.log('MATCHARR in GEO REDUCER********: ', matchArr);
+      });
+  };
 };
 
 //---------------------- INITIAL STATE -----------------------
@@ -448,6 +499,7 @@ const initialState = {
 
   identifyAs: '',
   seeking: '',
+  nearbyMatchesArr: [],
 };
 
 //---------------------- REDUCER -----------------------
@@ -536,6 +588,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         current: action.location,
+      };
+    case CREATE_NEARBY_MATCHES_ARRAY:
+      return {
+        ...state,
+        nearbyMatchesArr: action.matchesArray,
       };
     default:
       return state;

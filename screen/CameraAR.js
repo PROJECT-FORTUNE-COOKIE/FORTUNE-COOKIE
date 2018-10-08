@@ -3,16 +3,79 @@ import { Tile, List, ListItem, Button } from 'react-native-elements';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { Permissions } from 'expo-permissions';
 import { Camera } from 'expo-camera';
+import { Constants, Location } from 'expo';
+import { creatingMatchesArray, updateUserLocation } from './store/userReducer';
+import { connect } from 'react-redux';
 
 import { AR } from 'expo';
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 import { View as GraphicsView } from 'expo-graphics';
 
 class CameraAR extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      location: null,
+      errorMessage: null,
+    };
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+  };
+
   componentDidMount() {
     // Turn off extra warnings
     THREE.suppressExpoWarnings(true);
     ThreeAR.suppressWarnings();
+
+    this._getLocationAsync();
+    console.log('-------------updated---------------');
+    Location.watchPositionAsync(
+      {
+        enableHighAccuracy: false,
+        distanceInterval: 5,
+        timeInterval: 3000,
+      },
+      newLocation => {
+        this.setState({
+          location: newLocation,
+        });
+        console.log('----------new location--------------', newLocation);
+      }
+    );
+    // this.props.createMatchesArrayForAR(
+    //   this.props.current.id,
+    //   this.state.location
+    // );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.location !== this.state.location) {
+      let userId = this.props.current;
+      //let coordinates = text.coords;
+      let lat = this.state.location.coords.latitude;
+      let long = this.state.location.coords.longitude;
+      let data = {
+        userId,
+        lat,
+        long,
+      };
+      this.props.updateUserLocation(data);
+      if (this.state.location) {
+        this.props.createMatchesArrayForAR(
+          this.props.current.id,
+          this.state.location
+        );
+      }
+    }
   }
 
   render() {
@@ -21,6 +84,7 @@ class CameraAR extends Component {
     // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
     // `arTrackingConfiguration` denotes which camera the AR Session will use.
     // World for rear, Face for front (iPhone X only)
+    // if (this.props.nearbyMatchesArr.length && this.props.nearbyMatchesArr) {
     return (
       <GraphicsView
         style={{ flex: 1 }}
@@ -33,6 +97,9 @@ class CameraAR extends Component {
         arTrackingConfiguration={AR.TrackingConfigurations.World}
       />
     );
+    // } else {
+    //   return null;
+    // }
   }
 
   // When our context is built we can start coding 3D things.
@@ -81,14 +148,48 @@ class CameraAR extends Component {
     heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
 
     var geometry = new THREE.ShapeGeometry(heartShape);
-    this.circle = new THREE.Mesh(geometry, material);
+    // this.heart = new THREE.Mesh(geometry, material);
+    // this.heart1 = new THREE.Mesh(geometry, material);
+    // this.heart2 = new THREE.Mesh(geometry, material);
+
+    const matchesArr = this.props.nearbyMatchesArr;
+    console.log('%%%%%%MATCHES ARRAY IN&&&&&&&: ', matchesArr);
+    if (matchesArr.lenght) {
+      var heartArr = matchesArr.map(match => {
+        return new THREE.Mesh(geometry, material);
+      });
+      console.log('%%%%%%HEART ARRAY IN&&&&&&&: ', heartArr);
+      heartArr.forEach(heart => {
+        x = -40;
+        return () => {
+          heart.position.z = -40;
+          heart.position.x = x;
+          x += 20;
+        };
+      });
+      heartArr.forEach(heart => {
+        this.scene.add(heart);
+      });
+    }
+
     // // Place the box 0.4 meters in front of us.
     //this.cube.position.z = -0.4;
-    this.circle.position.z = -23;
+    // this.heart.position.z = -40;
+    // this.heart1.position.z = -40;
+    // this.heart2.position.z = -40;
+    // this.heart1.position.x = -10;
+    // this.heart2.position.x = 10;
+
+    // for(let x = 0; x < heartArr.length; x+=15) {
+
+    // }
 
     // // Add the cube to the scene
     //this.scene.add(this.cube);
-    this.scene.add(this.circle);
+
+    // this.scene.add(this.heart);
+    // this.scene.add(this.heart1);
+    // this.scene.add(this.heart2);
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
@@ -120,4 +221,25 @@ class CameraAR extends Component {
   };
 }
 
-export default CameraAR;
+const mapState = state => {
+  return {
+    current: state.users.current,
+    nearbyMatchesArr: state.users.nearbyMatchesArr,
+  };
+};
+
+mapDispatch = dispatch => {
+  return {
+    updateUserLocation: data => {
+      dispatch(updateUserLocation(data));
+    },
+    createMatchesArrayForAR: (userId, location) => {
+      dispatch(creatingMatchesArray(userId, location));
+    },
+  };
+};
+
+export default connect(
+  mapState,
+  mapDispatch
+)(CameraAR);
