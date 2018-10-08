@@ -84,17 +84,6 @@ class CameraAR extends Component {
       this.props.nearbyMatchesArr
     );
 
-    // if (this.props.nearbyMatchesArr[0]) {
-    //   this.setState({
-    //     matchesArr: this.props.nearbyMatchesArr,
-    //   });
-    // }
-    // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
-    // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
-    // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
-    // `arTrackingConfiguration` denotes which camera the AR Session will use.
-    // World for rear, Face for front (iPhone X only)
-    // if (this.props.nearbyMatchesArr.length && this.props.nearbyMatchesArr) {
     return (
       <GraphicsView
         style={{ flex: 1 }}
