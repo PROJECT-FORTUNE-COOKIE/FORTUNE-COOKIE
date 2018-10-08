@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
+import { List, ListItem, Avatar } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { fetchAllMatches, getSelectedMatch } from './store/userReducer';
 
@@ -26,14 +26,26 @@ class MatchesList extends Component {
         <List>
           {matches.length &&
             matches.map(match => (
-              <ListItem
-                key={match.id}
-                roundAvatar
-               //avatar={{ uri: match.images[0] || null}}
-                title={`${match.name} `}
-                subtitle={match.neighborhood}
-                // onPress={() => this.onLearnMore(user)}
-                onPress={() => this.chatWith(match.id)}
+              // <ListItem
+              //   key={match.id}
+              //   roundAvatar
+
+              //   avatar={{ uri: match.icon }}
+              //   title={`${match.name} `}
+              //   subtitle={match.neighborhood}
+              //   // onPress={() => this.onLearnMore(user)}
+              //   onPress={() => this.chatWith(match.id)}
+              // />
+
+              <Avatar
+                large
+                rounded
+                source={{
+                  uri:
+                    'https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg'
+                }}
+                onPress={() => console.log('Works!')}
+                activeOpacity={0.7}
               />
             ))}
         </List>
@@ -45,7 +57,7 @@ class MatchesList extends Component {
 const mapState = state => {
   return {
     current: state.users.current,
-    matches: state.users.matches,
+    matches: state.users.matches
   };
 };
 
@@ -56,7 +68,7 @@ const mapDispatchToProps = dispatch => {
     },
     setSelectedMatch: matchId => {
       dispatch(getSelectedMatch(matchId));
-    },
+    }
   };
 };
 
