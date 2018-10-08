@@ -5,24 +5,32 @@ import { fbMe } from './store/userReducer';
 import { connect } from 'react-redux';
 
 const LogIn = props => {
-  const { container, countViewStyle, image } = styles;
+  const { container, img, txt, btn, headText, subText } = styles;
 
   return (
     <View style={container}>
-      <Image style={image} source={require('../assets/002.png')} />
-      <Text>Welcome to Fortune Cookie</Text>
-      <Text>~no cookie left behind~</Text>
-
-      <View style={countViewStyle} />
-      <Button
-        raised
-        icon={{ name: 'facebook', type: 'entypo' }}
-        title="sign in with facebook  "
-        onPress={() => {
-          props.handleSubmit();
-          props.navigation.navigate('WelcomePage');
-        }}
-      />
+      <View style={img}>
+        <Image source={require('../assets/Cookie.png')} />
+      </View>
+      <View style={txt}>
+        <Text style={headText}> Fortune </Text>
+        <Text style={headText}> ©ookie </Text>
+        <Text style={subText}> ' no ©ookie left behind </Text>
+      </View>
+      <View style={btn}>
+        <Button
+          raised
+          icon={{ name: 'facebook', type: 'entypo' }}
+          backgroundColor="#3c9bed"
+          borderRadius="7%"
+          fontFamily="Arial Rounded MT Bold"
+          title="sign in with facebook  "
+          onPress={() => {
+            props.handleSubmit();
+            props.navigation.navigate('WelcomePage');
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -31,7 +39,7 @@ const mapDispatchToProps = dispatch => {
   return {
     handleSubmit() {
       dispatch(fbMe());
-    },
+    }
   };
 };
 
@@ -46,26 +54,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF'
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  countViewStyle: {
-    flexDirection: 'row',
-    width: 450,
-    height: 50,
-  },
-  image: {
-    width: 200,
-    height: 220,
+  img: {
+    width: 180,
+    height: 400,
     resizeMode: 'cover',
+    position: 'absolute',
+    top: 230,
+    zIndex: 0
   },
+  txt: {
+    width: 350,
+    position: 'absolute',
+    top: 50,
+    height: 250,
+    zIndex: 1
+  },
+  btn: {
+    with: 180,
+    height: 70,
+    padding: 10,
+    position: 'absolute',
+    top: 480,
+    zIndex: 2
+  },
+  headText: {
+    fontFamily: 'Arial Rounded MT Bold',
+    fontSize: 60
+  },
+  subText: {
+    fontFamily: 'AvenirNext-Regular',
+    fontSize: 25
+  }
 });

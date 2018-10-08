@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import {
   fetchCurrentUser,
   fetchingOtherInfo,
-  updateIdentifySeeking,
+  updateIdentifySeeking
 } from './store/userReducer';
 
 class EditDetail extends Component {
@@ -18,7 +18,7 @@ class EditDetail extends Component {
       checkSeekingFemale: false,
       blurb: '',
       neighborhood: '',
-      birthday: '',
+      birthday: ''
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -60,7 +60,7 @@ class EditDetail extends Component {
     return (
       <ScrollView>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text>USER DETAILS + SETTINGS</Text>
+          <Text style={{ fontSize: 30 }}>USER DETAILS + SETTINGS</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: 'center' }}>
@@ -72,7 +72,7 @@ class EditDetail extends Component {
           placeholder="write your blurb! make it fun!"
           onChangeText={blurb =>
             this.setState({
-              blurb,
+              blurb
             })
           }
           value={info.blurb}
@@ -83,7 +83,7 @@ class EditDetail extends Component {
           placeholder="neighborhood"
           onChangeText={neighborhood =>
             this.setState({
-              neighborhood,
+              neighborhood
             })
           }
           value={info.neighborhood}
@@ -94,7 +94,7 @@ class EditDetail extends Component {
           placeholder="birthday"
           onChangeText={birthday =>
             this.setState({
-              birthday,
+              birthday
             })
           }
           value={info.birthday}
@@ -106,7 +106,7 @@ class EditDetail extends Component {
           checked={boolValMale}
           onPress={() =>
             this.setState({
-              checkIdentifyMale: !boolValMale,
+              checkIdentifyMale: !boolValMale
             })
           }
         />
@@ -116,7 +116,7 @@ class EditDetail extends Component {
           checked={boolValFemale}
           onPress={() =>
             this.setState({
-              checkIdentifyFemale: !boolValFemale,
+              checkIdentifyFemale: !boolValFemale
             })
           }
         />
@@ -127,7 +127,7 @@ class EditDetail extends Component {
           checked={boolSeekMale}
           onPress={() =>
             this.setState({
-              checkSeekingMale: !boolSeekMale,
+              checkSeekingMale: !boolSeekMale
             })
           }
         />
@@ -137,7 +137,7 @@ class EditDetail extends Component {
           checked={boolSeekFemale}
           onPress={() =>
             this.setState({
-              checkSeekingFemale: !boolSeekFemale,
+              checkSeekingFemale: !boolSeekFemale
             })
           }
         />
@@ -160,7 +160,7 @@ const mapState = state => {
   return {
     current: state.users.current,
     deposit: state.users.deposit,
-    otherinfo: state.users,
+    otherinfo: state.users
   };
 };
 
@@ -185,7 +185,7 @@ const mapDispatchToProps = dispatch => {
           identifyAs,
           seeking
         )
-      ),
+      )
   };
 };
 
@@ -198,6 +198,6 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignContent: 'space-around',
-  },
+    alignContent: 'space-around'
+  }
 });

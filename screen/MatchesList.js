@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
+import { List, ListItem, Avatar, Card } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { fetchAllMatches, getSelectedMatch } from './store/userReducer';
 
@@ -20,6 +20,12 @@ class MatchesList extends Component {
   render() {
     const matches = this.props.matches;
     //console.log('state: ----- ', matches);
+    const users = [
+      {
+        name: 'brynn',
+        avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg'
+      }
+    ];
 
     return (
       <ScrollView>
@@ -29,7 +35,7 @@ class MatchesList extends Component {
               <ListItem
                 key={match.id}
                 roundAvatar
-               //avatar={{ uri: match.images[0] || null}}
+                avatar={<Avatar large rounded source={{ uri: match.icon }} />}
                 title={`${match.name} `}
                 subtitle={match.neighborhood}
                 // onPress={() => this.onLearnMore(user)}
@@ -45,7 +51,7 @@ class MatchesList extends Component {
 const mapState = state => {
   return {
     current: state.users.current,
-    matches: state.users.matches,
+    matches: state.users.matches
   };
 };
 
@@ -56,7 +62,7 @@ const mapDispatchToProps = dispatch => {
     },
     setSelectedMatch: matchId => {
       dispatch(getSelectedMatch(matchId));
-    },
+    }
   };
 };
 
