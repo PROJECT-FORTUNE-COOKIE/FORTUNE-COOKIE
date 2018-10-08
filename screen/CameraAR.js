@@ -17,7 +17,12 @@ class CameraAR extends Component {
     this.state = {
       location: null,
       errorMessage: null,
+      matchesArr: [],
     };
+    this.onContextCreate = this.onContextCreate.bind(this);
+    this.onResize = this.onResize.bind(this);
+    this.onRender = this.onRender.bind(this);
+    this._getLocationAsync = this._getLocationAsync.bind(this);
   }
 
   _getLocationAsync = async () => {
@@ -29,6 +34,11 @@ class CameraAR extends Component {
     }
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
+
+    this.props.createMatchesArrayForAR(
+      this.props.current.id,
+      this.state.location
+    );
   };
 
   componentDidMount() {
@@ -41,26 +51,21 @@ class CameraAR extends Component {
     Location.watchPositionAsync(
       {
         enableHighAccuracy: false,
-        distanceInterval: 5,
-        timeInterval: 3000,
+        distanceInterval: 20,
+        timeInterval: 30000,
       },
       newLocation => {
         this.setState({
           location: newLocation,
         });
-        console.log('----------new location--------------', newLocation);
+        console.log('----------new location------------', newLocation);
       }
     );
-    // this.props.createMatchesArrayForAR(
-    //   this.props.current.id,
-    //   this.state.location
-    // );
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.location !== this.state.location) {
       let userId = this.props.current;
-      //let coordinates = text.coords;
       let lat = this.state.location.coords.latitude;
       let long = this.state.location.coords.longitude;
       let data = {
@@ -69,16 +74,21 @@ class CameraAR extends Component {
         long,
       };
       this.props.updateUserLocation(data);
-      if (this.state.location) {
-        this.props.createMatchesArrayForAR(
-          this.props.current.id,
-          this.state.location
-        );
-      }
     }
   }
 
   render() {
+    console.log('OOOO_______THIS.STATE______00000: ', this.state);
+    console.log(
+      'OOOO_______THIS.PROPS.NEARBYMATCHES______00000: ',
+      this.props.nearbyMatchesArr
+    );
+
+    // if (this.props.nearbyMatchesArr[0]) {
+    //   this.setState({
+    //     matchesArr: this.props.nearbyMatchesArr,
+    //   });
+    // }
     // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
     // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
     // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
@@ -97,9 +107,6 @@ class CameraAR extends Component {
         arTrackingConfiguration={AR.TrackingConfigurations.World}
       />
     );
-    // } else {
-    //   return null;
-    // }
   }
 
   // When our context is built we can start coding 3D things.
@@ -133,8 +140,6 @@ class CameraAR extends Component {
 
     // // Combine our geometry and material
     //this.cube = new THREE.Mesh(geometry, material);
-    //this.circle = new THREE.Mesh(geometry, material);
-
     var x = 0,
       y = 0;
 
@@ -148,48 +153,28 @@ class CameraAR extends Component {
     heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
 
     var geometry = new THREE.ShapeGeometry(heartShape);
-    // this.heart = new THREE.Mesh(geometry, material);
-    // this.heart1 = new THREE.Mesh(geometry, material);
-    // this.heart2 = new THREE.Mesh(geometry, material);
+    this.heart = new THREE.Mesh(geometry, material);
+    this.heart1 = new THREE.Mesh(geometry, material);
+    this.heart2 = new THREE.Mesh(geometry, material);
 
-    const matchesArr = this.props.nearbyMatchesArr;
+    console.log('***###@@@THIS.STATE: ', this.state);
+    const matchesArr = this.state.matchesArr;
     console.log('%%%%%%MATCHES ARRAY IN&&&&&&&: ', matchesArr);
-    if (matchesArr.lenght) {
-      var heartArr = matchesArr.map(match => {
-        return new THREE.Mesh(geometry, material);
-      });
-      console.log('%%%%%%HEART ARRAY IN&&&&&&&: ', heartArr);
-      heartArr.forEach(heart => {
-        x = -40;
-        return () => {
-          heart.position.z = -40;
-          heart.position.x = x;
-          x += 20;
-        };
-      });
-      heartArr.forEach(heart => {
-        this.scene.add(heart);
-      });
-    }
-
     // // Place the box 0.4 meters in front of us.
     //this.cube.position.z = -0.4;
-    // this.heart.position.z = -40;
-    // this.heart1.position.z = -40;
-    // this.heart2.position.z = -40;
-    // this.heart1.position.x = -10;
-    // this.heart2.position.x = 10;
-
-    // for(let x = 0; x < heartArr.length; x+=15) {
-
-    // }
+    this.heart.position.z = -60;
+    this.heart1.position.z = -60;
+    this.heart2.position.z = -60;
+    this.heart.position.x = -40;
+    this.heart1.position.x = 0;
+    this.heart2.position.x = 40;
 
     // // Add the cube to the scene
     //this.scene.add(this.cube);
+    this.scene.add(this.heart);
+    this.scene.add(this.heart1);
+    this.scene.add(this.heart2);
 
-    // this.scene.add(this.heart);
-    // this.scene.add(this.heart1);
-    // this.scene.add(this.heart2);
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
