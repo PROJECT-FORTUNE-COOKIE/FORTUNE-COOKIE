@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
-import { SocialIcon, Button } from 'react-native-elements';
-import {
-  AppRegistry,
-  StyleSheet,
-  Image,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { fbMe } from './store/userReducer';
+import { Button } from 'react-native-elements';
+import { StyleSheet, Image, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 
 class WelcomePage extends Component {
@@ -21,15 +13,23 @@ class WelcomePage extends Component {
 
     return (
       <View style={container}>
-        <Text>You are now in Fortune Cookie,</Text>
-        <Text>WELCOME</Text>
-        <Image style={image} source={require('../assets/002.png')} />
+        <Text
+          style={{
+            fontFamily: 'AvenirNext-Regular',
+            fontSize: 23
+          }}
+        >
+          WELCOME to Fortune Cookie
+        </Text>
+
+        <Image style={image} source={require('../assets/fortune.png')} />
 
         <Button
           small
+          backgroundColor="#3c9bed"
+          fontFamily="Arial Rounded MT Bold"
           title="~fortune favors the brave~"
           onPress={() => {
-            //props.handleSubmit();
             if (this.props.newUser === true) {
               this.props.navigation.navigate('PayDeposit');
             } else {
@@ -44,13 +44,13 @@ class WelcomePage extends Component {
 
 const mapStateToProps = state => {
   return {
-    newUser: state.users.newUser,
+    newUser: state.users.newUser
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    checkIfNewUser: () => dispatch(checkingIfNewUser()),
+    checkIfNewUser: () => dispatch(checkingIfNewUser())
   };
 };
 
@@ -65,26 +65,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF'
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  countViewStyle: {
-    flexDirection: 'row',
-    width: 450,
-    height: 50,
-  },
+
   image: {
-    width: 200,
-    height: 220,
-    resizeMode: 'cover',
-  },
+    width: 400,
+    height: 400,
+    resizeMode: 'cover'
+  }
 });

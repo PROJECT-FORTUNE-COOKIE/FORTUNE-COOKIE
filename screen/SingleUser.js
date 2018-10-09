@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, Image, Animated } from 'react-native';
-import { Icon, Avatar, Card, Button } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import { storage } from './store/firestoreAuth';
 import { ImagePicker, Permissions } from 'expo';
 import { connect } from 'react-redux';
