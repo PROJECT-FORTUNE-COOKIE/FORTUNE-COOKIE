@@ -52,11 +52,12 @@ class CameraAR extends Component {
       {
         enableHighAccuracy: false,
         distanceInterval: 20,
-        timeInterval: 30000,
+        timeInterval: 1200000,
       },
       newLocation => {
         this.setState({
           location: newLocation,
+          matchesArr: this.props.nearbyMatchesArr,
         });
         console.log('----------new location------------', newLocation);
       }
@@ -84,6 +85,12 @@ class CameraAR extends Component {
       this.props.nearbyMatchesArr
     );
 
+    // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
+    // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
+    // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
+    // `arTrackingConfiguration` denotes which camera the AR Session will use.
+    // World for rear, Face for front (iPhone X only)
+    //if (this.state.matchesArr.length && this.state.matchesArr) {
     return (
       <GraphicsView
         style={{ flex: 1 }}
@@ -96,6 +103,9 @@ class CameraAR extends Component {
         arTrackingConfiguration={AR.TrackingConfigurations.World}
       />
     );
+    // } else {
+    //   return null;
+    // }
   }
 
   // When our context is built we can start coding 3D things.
@@ -146,6 +156,8 @@ class CameraAR extends Component {
     this.heart1 = new THREE.Mesh(geometry, material);
     this.heart2 = new THREE.Mesh(geometry, material);
 
+    this.heart3 = new THREE.Mesh(geometry, material);
+
     console.log('***###@@@THIS.STATE: ', this.state);
     const matchesArr = this.state.matchesArr;
     console.log('%%%%%%MATCHES ARRAY IN&&&&&&&: ', matchesArr);
@@ -157,12 +169,19 @@ class CameraAR extends Component {
     this.heart.position.x = -40;
     this.heart1.position.x = 0;
     this.heart2.position.x = 40;
+    this.heart3.position.z = -60;
+    this.heart3.position.x = 80;
 
     // // Add the cube to the scene
     //this.scene.add(this.cube);
     this.scene.add(this.heart);
     this.scene.add(this.heart1);
     this.scene.add(this.heart2);
+
+    console.log('0000 4th heart in here');
+    this.scene.add(this.heart3);
+    //   if (Object.keys(this.props.nearbyMatchesArr).length !== 0) {
+    // }
 
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.
