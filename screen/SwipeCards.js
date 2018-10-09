@@ -60,6 +60,7 @@ class SwipeCards extends Component {
       extrapolate: 'clamp'
     });
   }
+
   componentWillMount() {
     this.PanResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -75,6 +76,7 @@ class SwipeCards extends Component {
             const likedUser = this.props.all.splice(oldIndx, 1);
             const current = this.props.current;
             this.props.updateAcceptedMatches(current, likedUser[0]);
+
             this.setState(
               {
                 currentIndex: this.state.currentIndex + 1
@@ -92,6 +94,7 @@ class SwipeCards extends Component {
             const dislikedUser = this.props.all.splice(oldIndx, 1);
             const current = this.props.current;
             this.props.updateAcceptedMatches(current, dislikedUser[0]);
+
             this.setState(
               {
                 currentIndex: this.state.currentIndex + 1

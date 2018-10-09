@@ -80,9 +80,9 @@ const getAcceptedMatches = matchIds => ({
   type: GET_ACCEPTED_MATCHES,
   matchIds
 });
-const addMatchToAccepted = content => ({
+const addMatchToAccepted = match => ({
   type: ADD_MATCH_TO_ACCEPTED,
-  content
+  match
 });
 
 const mappingOtherInfoToState = (blurb, birthday, neighborhood) => ({
@@ -146,11 +146,6 @@ export const fbMe = () => {
         let userObj = {};
         docRef.get().then(doc => {
           userObj = doc.data();
-          console.log(
-            '-------------------------------------user obj in reducer -------',
-            userObj,
-            'user obj -------------------------------------'
-          );
           dispatch(gotUser(userObj));
           dispatch(updateDeposit(data.deposit));
         });
@@ -197,8 +192,6 @@ export const addUserToAcceptedMatches = (current, newMatch) => {
         ...current,
         acceptedMatches: [...current.acceptedMatches, matchId]
       };
-      console.log('------------BACK END MATCH ID-------', matchId);
-
       let allUsers = await db.collection('Users').doc(id);
       let updated = await allUsers.update({
         acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId)
@@ -223,10 +216,8 @@ export const fetchAllMatches = userId => {
           matchWithId.id = doc.id;
           datas.push(matchWithId);
         });
+
         dispatch(getAllMatchesForUser(datas));
-      })
-      .catch(err => {
-        // console.log('Error getting documents', err);
       });
   };
 };
@@ -236,7 +227,7 @@ export const getSelectedMatch = matchId => {
     try {
       dispatch(settingSelectedMatchOnState({ id: matchId }));
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
   };
 };
@@ -499,6 +490,7 @@ export const updateAcceptedMatch = (current, likedUser) => {
       await luckyUser.update({
         acceptedMatches: firebase.firestore.FieldValue.arrayUnion(currentId)
       });
+      dispatch(addMatchToAccepted(likedUser));
     } catch (err) {
       console.error(err);
     }
@@ -571,6 +563,7 @@ export default function(state = initialState, action) {
         ...state,
         matches: action.matches
       };
+
     case SET_SELECTED_MATCH_ON_STATE:
       return {
         ...state,
@@ -609,7 +602,7 @@ export default function(state = initialState, action) {
     case ADD_MATCH_TO_ACCEPTED:
       return {
         ...state,
-        newMatchData: action.content
+        matches: [...state.matches, action.match]
       };
     case MAP_OTHER_INFO_TO_STATE:
       return {
