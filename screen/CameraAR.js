@@ -6,7 +6,7 @@ import { Camera } from 'expo-camera';
 import { Constants, Location } from 'expo';
 import { creatingMatchesArray, updateUserLocation } from './store/userReducer';
 import { connect } from 'react-redux';
-import NewArCam from './newArCam'
+import NewArCam from './newArCam';
 import { AR } from 'expo';
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 import { View as GraphicsView } from 'expo-graphics';
@@ -79,44 +79,48 @@ class CameraAR extends Component {
   //   }
   // }
 
-
   render() {
-    return     <NewArCam matches={this.state.matchesArr} location={this.state.location} />
+    return (
+      <NewArCam
+        matches={this.state.matchesArr}
+        location={this.state.location}
+      />
+    );
   }
 }
-    // console.log('OOOO_______THIS.STATE______00000: ', this.state);
-    // console.log(
-    //   'OOOO_______THIS.PROPS.NEARBYMATCHES______00000: ',
-    //   this.props.nearbyMatchesArr
-    // );
+// console.log('OOOO_______THIS.STATE______00000: ', this.state);
+// console.log(
+//   'OOOO_______THIS.PROPS.NEARBYMATCHES______00000: ',
+//   this.props.nearbyMatchesArr
+// );
 
-    // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
-    // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
-    // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
-    // `arTrackingConfiguration` denotes which camera the AR Session will use.
-    // World for rear, Face for front (iPhone X only)
-    //if (this.state.matchesArr.length && this.state.matchesArr) {
-    // return
+// You need to add the `isArEnabled` & `arTrackingConfiguration` props.
+// `isArRunningStateEnabled` Will show us the play/pause button in the corner.
+// `isArCameraStateEnabled` Will render the camera tracking information on the screen.
+// `arTrackingConfiguration` denotes which camera the AR Session will use.
+// World for rear, Face for front (iPhone X only)
+//if (this.state.matchesArr.length && this.state.matchesArr) {
+// return
 
-    // (
-    //   <GraphicsView
-    //     style={{ flex: 1 }}
-    //     onContextCreate={this.onContextCreate}
-    //     onRender={this.onRender}
-    //     onResize={this.onResize}
-    //     isArEnabled
-    //     isArRunningStateEnabled
-    //     isArCameraStateEnabled
-    //     arTrackingConfiguration={AR.TrackingConfigurations.World}
-    //   />
-    // );
-    // } else {
-    //   return null;
-    // }
+// (
+//   <GraphicsView
+//     style={{ flex: 1 }}
+//     onContextCreate={this.onContextCreate}
+//     onRender={this.onRender}
+//     onResize={this.onResize}
+//     isArEnabled
+//     isArRunningStateEnabled
+//     isArCameraStateEnabled
+//     arTrackingConfiguration={AR.TrackingConfigurations.World}
+//   />
+// );
+// } else {
+//   return null;
+// }
 //   }
 // }
 // }
-  // When our context is built we can start coding 3D things.
+// When our context is built we can start coding 3D things.
 //   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
 //     // This will allow ARKit to collect Horizontal surfaces
 //     AR.setPlaneDetection(AR.PlaneDetectionTypes.Horizontal);
