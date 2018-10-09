@@ -3,18 +3,18 @@ import { Facebook } from 'expo';
 import { fbAppId } from '../../secret';
 const firebase = require('firebase');
 // Required for side-effects
-require('firebase/firestore');
+const firestore = require('firebase/firestore');
 //---------------------- ACTION TYPES -----------------------
 
 const CHECK_IF_NEW_USER = 'CHECK_IF_NEW_USER';
 const GOT_USER = 'GOT_USER';
-// const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
+const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
 const GOT_ALL_USERS = 'GOT_ALL_USERS';
 const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
 const GET_MESSAGES_FROM_SELETED_MATCH = 'GET_MESSAGES_FROM_SELETED_MATCH';
 const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
-//const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
+const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
 const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
 const CHANGE_ICON = 'CHANGE_ICON';
 const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
@@ -37,6 +37,9 @@ const checkIfNewUser = bool => ({
 });
 
 const gotUser = user => ({ type: GOT_USER, user });
+const fetchingCurrentUser = () => ({
+  type: FETCH_CURRENT_USER,
+});
 const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });
 const getAllMatchesForUser = matches => ({ type: GET_MATCHES, matches });
 const getAllMessagesForSelectedMatch = messages => ({
@@ -48,10 +51,10 @@ const getAllMessagesFromSelectedMatch = messages => ({
   messages,
 });
 
-// const settingSelectedMatchOnState = match => ({
-//   type: SET_SELECTED_MATCH_ON_STATE,
-//   match
-// });
+const settingSelectedMatchOnState = match => ({
+  type: SET_SELECTED_MATCH_ON_STATE,
+  match,
+});
 
 const addNewMessageToServer = message => ({
   type: ADD_NEW_MESSAGE,
@@ -73,14 +76,14 @@ const updateDeposit = deposit => ({
   deposit,
 });
 
-// const getAcceptedMatches = matchIds => ({
-//   type: GET_ACCEPTED_MATCHES,
-//   matchIds
-// });
-// const addMatchToAccepted = content => ({
-//   type: ADD_MATCH_TO_ACCEPTED,
-//   content
-// });
+const getAcceptedMatches = matchIds => ({
+  type: GET_ACCEPTED_MATCHES,
+  matchIds,
+});
+const addMatchToAccepted = content => ({
+  type: ADD_MATCH_TO_ACCEPTED,
+  content,
+});
 
 const mappingOtherInfoToState = (blurb, birthday, neighborhood) => ({
   type: MAP_OTHER_INFO_TO_STATE,
@@ -161,12 +164,10 @@ export const fetchCurrentUser = () => {
   };
 };
 
-export const fetchAllUsers = (selfSex, interest) => {
+export const fetchAllUsers = () => {
   return dispatch => {
     try {
       db.collection('Users')
-        .where('seeking', '==', selfSex)
-        .where('identifyAs', '==', interest)
         .get()
         .then(querySnapshot => {
           let datas = [];
@@ -181,40 +182,22 @@ export const fetchAllUsers = (selfSex, interest) => {
   };
 };
 
-//-------------------- add user to accepted
-export const updateAcceptedMatch = (current, likedUser) => {
+//add user to accepted
+export const addUserToAcceptedMatches = (current, newMatch) => {
   return async dispatch => {
     try {
-      let likedId = likedUser.id;
-      let currentId = current.id;
+      const id = newMatch.userId;
+      const matchId = newMatch.matchId;
+      current = {
+        ...current,
+        acceptedMatches: [...current.acceptedMatches, matchId],
+      };
+      console.log('------------BACK END MATCH ID-------', matchId);
 
-      let user = await db.collection('Users').doc(currentId);
-      await user.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(likedId),
-      });
-      let luckyUser = await db.collection('Users').doc(likedId);
-      await luckyUser.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(currentId),
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-};
-
-export const updateRejectMatch = (current, dislikedUser) => {
-  return async dispatch => {
-    try {
-      let dislikedId = dislikedUser.id;
-      let currentId = current.id;
-
-      let user = await db.collection('Users').doc(currentId);
-      await user.update({
-        rejectedMatches: firebase.firestore.FieldValue.arrayUnion(dislikedId),
-      });
-      let unluckyUser = await db.collection('Users').doc(dislikedId);
-      await unluckyUser.update({
-        rejectedMatches: firebase.firestore.FieldValue.arrayUnion(currentId),
+      let allUsers = await db.collection('Users').doc(id);
+      let updated = await allUsers.update({
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId),
+        // acceptedMatches: current.acceptedMatches
       });
     } catch (err) {
       console.error(err);
@@ -513,6 +496,7 @@ const initialState = {
   blurb: '',
   birthday: '',
   neighborhood: '',
+
   identifyAs: '',
   seeking: '',
   nearbyMatchesArr: [],
@@ -531,7 +515,8 @@ export default function(state = initialState, action) {
         ...state,
         current: action.user,
       };
-
+    case FETCH_CURRENT_USER:
+      return state;
     case GOT_ALL_USERS:
       return {
         ...state,
