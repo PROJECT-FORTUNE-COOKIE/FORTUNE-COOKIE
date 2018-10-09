@@ -14,6 +14,8 @@ import Geolocation from '../screen/Geolocation';
 import MatchesList from '../screen/MatchesList';
 import EditDetail from '../screen/EditDetail';
 import ChatWithMatch from '../screen/ChatWithMatch';
+import PayDeposit from '../screen/PayDeposit';
+import WelcomePage from '../screen/WelcomePage';
 
 //----------route testing --------------
 import { connect } from 'react-redux';
@@ -30,7 +32,6 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-
   AllUsers: {
     screen: AllUsers,
     navigationOptions: {
@@ -40,7 +41,6 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-
   MatchesList: {
     screen: MatchesList,
     navigationOptions: {
@@ -50,7 +50,6 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-
   CameraAR: {
     screen: CameraAR,
     navigationOptions: {
@@ -69,25 +68,6 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-
-  // FaceTime: {
-  //   screen: FaceTime,
-  //   navigationOptions: {
-  //     tabLabel: 'FaceTime',
-  //     tabBarIcon: ({ tintColor }) => (
-  //       <Icon name="sunrise" type="feather" color={tintColor} />
-  //     ),
-  //   },
-  // },
-  // EditDetail: {
-  //   screen: EditDetail,
-  //   navigationOptions: {
-  //     tabLabel: 'EditDetail',
-  //     tabBarIcon: ({ tintColor }) => (
-  //       <Icon name="wind" type="feather" color={tintColor} />
-  //     ),
-  //   },
-  // },
 });
 
 export const Root = createStackNavigator({
@@ -108,6 +88,15 @@ export const Root = createStackNavigator({
   },
   ChatWithMatch: {
     screen: ChatWithMatch,
+  },
+  PayDeposit: {
+    screen: PayDeposit,
+  },
+  WelcomePage: {
+    screen: WelcomePage,
+  },
+  AllUsers: {
+    screen: AllUsers,
   },
 });
 

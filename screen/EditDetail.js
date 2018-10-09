@@ -1,78 +1,203 @@
 import React, { Component } from 'react';
 import { ScrollView, View, StyleSheet, Text } from 'react-native';
+import { Button, FormLabel, FormInput, CheckBox } from 'react-native-elements';
+import { connect } from 'react-redux';
 import {
-  Slider,
-  Icon,
-  List,
-  ListItem,
-  FormLabel,
-  FormInput,
-  CheckBox,
-  FormValidationMessage,
-  Button
-} from 'react-native-elements';
+  fetchCurrentUser,
+  fetchingOtherInfo,
+  updateIdentifySeeking,
+} from './store/userReducer';
 
 class EditDetail extends Component {
+  constructor() {
+    super();
+    this.state = {
+      checkIdentifyMale: false,
+      checkIdentifyFemale: false,
+      checkSeekingMale: false,
+      checkSeekingFemale: false,
+      blurb: '',
+      neighborhood: '',
+      birthday: '',
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.fetchUser();
+    if (this.props.current.id) {
+      this.props.fetchOtherInfo(this.props.current.id);
+    }
+  }
+
+  handleSubmit = () => {
+    const userId = this.props.current.id;
+    const identifyAs = this.state.checkIdentifyMale ? 'male' : 'female';
+    const seeking = this.state.checkSeekingMale ? 'male' : 'female';
+    const blurb = this.state.blurb;
+    const neighborhood = this.state.neighborhood;
+    const birthday = this.state.birthday;
+    this.props.handleIdentifySeeking(
+      userId,
+      blurb,
+      neighborhood,
+      birthday,
+      identifyAs,
+      seeking
+    );
+    this.props.navigation.navigate('SingleUser');
+  };
+
   render() {
     const { rowContainer } = styles;
+    const info = this.props.otherinfo;
+    const boolValMale = this.state.checkIdentifyMale;
+    const boolValFemale = this.state.checkIdentifyFemale;
+
+    const boolSeekMale = this.state.checkSeekingMale;
+    const boolSeekFemale = this.state.checkSeekingFemale;
+
     return (
       <ScrollView>
-        <FormLabel>blurb</FormLabel>
-        <FormInput placeholder="enter blurb?" />
-
-        <FormLabel>neighborhood</FormLabel>
-        <FormInput placeholder="my neighborhood" />
-
-        <View style={rowContainer}>
-          <Text>Gender: </Text>
-          <CheckBox
-            center
-            title="male"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            // checked={this.state.checked}
-          />
-          <CheckBox
-            center
-            title="female"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            // checked={this.state.checked}
-          />
-        </View>
-
-        <View style={rowContainer}>
-          <Text>Interest In: </Text>
-          <CheckBox
-            center
-            title="male"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            // checked={this.state.checked}
-          />
-          <CheckBox
-            center
-            title="female"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            // checked={this.state.checked}
-          />
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text>USER DETAILS + SETTINGS</Text>
         </View>
 
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Icon reverse name="check-circle" type="feather" />
+          <Text>Deposit: ${this.props.deposit}</Text>
+        </View>
+
+        <FormLabel>blurb</FormLabel>
+        <FormInput
+          placeholder="write your blurb! make it fun!"
+          onChangeText={blurb =>
+            this.setState({
+              blurb,
+            })
+          }
+          value={info.blurb}
+        />
+
+        <FormLabel>neighborhood</FormLabel>
+        <FormInput
+          placeholder="neighborhood"
+          onChangeText={neighborhood =>
+            this.setState({
+              neighborhood,
+            })
+          }
+          value={info.neighborhood}
+        />
+
+        <FormLabel>birthday</FormLabel>
+        <FormInput
+          placeholder="birthday"
+          onChangeText={birthday =>
+            this.setState({
+              birthday,
+            })
+          }
+          value={info.birthday}
+        />
+
+        <FormLabel>I am: </FormLabel>
+        <CheckBox
+          title="male"
+          checked={boolValMale}
+          onPress={() =>
+            this.setState({
+              checkIdentifyMale: !boolValMale,
+            })
+          }
+        />
+
+        <CheckBox
+          title="female"
+          checked={boolValFemale}
+          onPress={() =>
+            this.setState({
+              checkIdentifyFemale: !boolValFemale,
+            })
+          }
+        />
+
+        <FormLabel>I am seeking: </FormLabel>
+        <CheckBox
+          title="male"
+          checked={boolSeekMale}
+          onPress={() =>
+            this.setState({
+              checkSeekingMale: !boolSeekMale,
+            })
+          }
+        />
+
+        <CheckBox
+          title="female"
+          checked={boolSeekFemale}
+          onPress={() =>
+            this.setState({
+              checkSeekingFemale: !boolSeekFemale,
+            })
+          }
+        />
+
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Button
+            small
+            title="~all done~"
+            onPress={() => {
+              this.handleSubmit();
+            }}
+          />
         </View>
       </ScrollView>
     );
   }
 }
 
-export default EditDetail;
+const mapState = state => {
+  return {
+    current: state.users.current,
+    deposit: state.users.deposit,
+    otherinfo: state.users,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchUser: () => dispatch(fetchCurrentUser()),
+    fetchOtherInfo: userId => dispatch(fetchingOtherInfo(userId)),
+    handleIdentifySeeking: (
+      userId,
+      blurb,
+      neighborhood,
+      birthday,
+      identifyAs,
+      seeking
+    ) =>
+      dispatch(
+        updateIdentifySeeking(
+          userId,
+          blurb,
+          neighborhood,
+          birthday,
+          identifyAs,
+          seeking
+        )
+      ),
+  };
+};
+
+export default connect(
+  mapState,
+  mapDispatchToProps
+)(EditDetail);
 
 const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignContent: 'space-around'
-  }
+    alignContent: 'space-around',
+  },
 });
