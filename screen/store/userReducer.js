@@ -519,7 +519,6 @@ export const updateRejectMatch = (current, dislikedUser) => {
 
 //---------------------- INITIAL STATE -----------------------
 const initialState = {
-  //current: {},
   newUser: '',
   matches: [],
   selectedMatch: {},
@@ -528,7 +527,6 @@ const initialState = {
   all: [],
   current: {},
   selectedMessages: [],
-  newMatchData: { userId: '', matchId: '' },
   deposit: '',
   blurb: '',
   birthday: '',
