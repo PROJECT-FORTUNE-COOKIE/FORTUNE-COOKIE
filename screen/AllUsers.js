@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import SwipeCards from './NewSwipe';
 
@@ -23,7 +21,7 @@ const mapState = state => {
     all: state.users.all.filter(user => {
       return id !== user.id;
     }),
-    current: state.users.current
+    current: state.users.current,
   };
 };
 

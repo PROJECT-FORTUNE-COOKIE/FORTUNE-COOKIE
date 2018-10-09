@@ -1,252 +1,269 @@
-// import React, { Component } from 'react';
-// import {
-//   StyleSheet,
-//   Text,
-//   View,
-//   Dimensions,
-//   Image,
-//   Animated,
-//   PanResponder
-// } from 'react-native';
-// import { connect } from 'react-redux';
-// import { addUserToAcceptedMatches, fetchAllUsers } from './store/userReducer';
+import React, { Component } from 'react';
+import {
+  Text,
+  View,
+  Dimensions,
+  Image,
+  Animated,
+  PanResponder,
+} from 'react-native';
+import { connect } from 'react-redux';
+import { updateAcceptedMatch, updateRejectMatch } from './store';
 
-// const SCREEN_HEIGHT = Dimensions.get('window').height;
-// const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
-// class SwipeCards extends Component {
-//   constructor(props) {
-// 		super(props);
+class SwipeCards extends Component {
+  constructor() {
+    super();
+    this.position = new Animated.ValueXY();
+    this.state = {
+      currentIndex: 0,
+    };
 
-// 		this.state = {
+    this.rotate = this.position.x.interpolate({
+      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+      outputRange: ['-10deg', '0deg', '10deg'],
+      extrapolate: 'clamp',
+    });
 
-//       currentMatch: {}
-//     }
-// //--------------animation -----------------------
-// 		this.position = new Animated.ValueXY();
+    this.rotateAndTranslate = {
+      transform: [
+        {
+          rotate: this.rotate,
+        },
+        ...this.position.getTranslateTransform(),
+      ],
+    };
 
-// 		let tracker;
-//     this.rotate = this.position.x.interpolate({
-//       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-//       outputRange: ['-10deg', '0deg', '10deg'],
-//       extrapolate: 'clamp'
-//     });
+    this.likeOpacity = this.position.x.interpolate({
+      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+      outputRange: [0, 0, 1],
+      extrapolate: 'clamp',
+    });
 
-//     this.rotateAndTranslate = {
-//       transform: [
-//         {
-//           rotate: this.rotate
-//         },
-//         ...this.position.getTranslateTransform()
-//       ]
-//     };
+    this.dislikeOpacity = this.position.x.interpolate({
+      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+      outputRange: [1, 0, 0],
+      extrapolate: 'clamp',
+    });
 
-//     this.likeOpacity = this.position.x.interpolate({
-//       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-//       outputRange: [0, 0, 1],
-//       extrapolate: 'clamp'
-//     });
+    this.nextCardOpacity = this.position.x.interpolate({
+      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+      outputRange: [1, 0, 1],
+      extrapolate: 'clamp',
+    });
 
-//     this.dislikeOpacity = this.position.x.interpolate({
-//       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-//       outputRange: [1, 0, 0],
-//       extrapolate: 'clamp'
-//     });
+    this.nextCardScale = this.position.x.interpolate({
+      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+      outputRange: [1, 0.8, 1],
+      extrapolate: 'clamp',
+    });
+  }
 
-// //--------------------- animation - gusture -----------------------
-//     this.PanResponder = PanResponder.create({
-//       onStartShouldSetPanResponder: (evt, gestureState) => true,
-//       onPanResponderMove: (evt, gestureState) => {
-//         this.position.setValue({ x: gestureState.dx, y: gestureState.dy });
-//       },
-//       onPanResponderRelease: (evt, gestureState) => {
-//         if (gestureState.dx > 120) {
-//           Animated.spring(this.position, {
-//             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy }
-//           }).start(() => {
-// 								this.position.setValue({ x: 0, y: 0 });
-//               })
-// 							// const currentUser = this.props.users.find(
-// 							// 	user => user.name == this.props.current.name
-// 							// );
-// 				// 			const genderAvail = this.props.users.filter(match => {
-// 				// 				return (
-// 				// 					(currentUser.seeking === match.identifyAs ? match : null)
-// 				// 				)})
+  componentWillMount() {
+    this.PanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onPanResponderMove: (evt, gestureState) => {
+        this.position.setValue({ x: gestureState.dx, y: gestureState.dy });
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dx > 120) {
+          Animated.spring(this.position, {
+            toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
+          }).start(() => {
+            let oldIndx = this.state.currentIndex;
+            const likedUser = this.props.all.splice(oldIndx, 1);
+            const current = this.props.current;
+            this.props.updateAcceptedMatches(current, likedUser[0]);
 
-// 				// const availableMatches = genderAvail.filter(item => {
-// 				// 	return
-// 				// (currentUser.acceptedMatches.indexOf(item.id) < 0) &&
-// 				// (currentUser.rejectedMatches.indexOf(item.id) < 0) &&
-// 				// (currentUser.name !== item.name)
-// 							//	})
+            this.setState(
+              {
+                currentIndex: this.state.currentIndex + 1,
+              },
+              () => {
+                this.position.setValue({ x: 0, y: 0 });
+              }
+            );
+          });
+        } else if (gestureState.dx < -120) {
+          Animated.spring(this.position, {
+            toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
+          }).start(() => {
+            let oldIndx = this.state.currentIndex;
+            const dislikedUser = this.props.all.splice(oldIndx, 1);
+            const current = this.props.current;
+            this.props.updateAcceptedMatches(current, dislikedUser[0]);
 
-//             let id = this.props.current.id;
-//             // let currentMatches = currentUser.acceptedMatches.slice();
-// 						// currentMatches = currentMatches.push(availableMatches.id);
+            this.setState(
+              {
+                currentIndex: this.state.currentIndex + 1,
+              },
+              () => {
+                this.position.setValue({ x: 0, y: 0 });
+              }
+            );
+          });
+        } else {
+          Animated.spring(this.position, {
+            toValue: { x: 0, y: 0 },
+            friction: 4,
+          }).start();
+        }
+      },
+    });
+  }
 
-//             let newMatch = {
-//               userId: id,
-//               matchId: currentMatches
-// 						};
+  renderUsers = all => {
+    return all
+      .map((item, i) => {
+        if (i < this.state.currentIndex) {
+          return null;
+        } else if (i == this.state.currentIndex) {
+          return (
+            <Animated.View
+              {...this.PanResponder.panHandlers}
+              key={item.id}
+              style={[
+                this.rotateAndTranslate,
+                {
+                  height: SCREEN_HEIGHT - 120,
+                  width: SCREEN_WIDTH,
+                  padding: 10,
+                  position: 'absolute',
+                },
+              ]}
+            >
+              <Animated.View
+                style={{
+                  opacity: this.likeOpacity,
+                  transform: [{ rotate: '-20deg' }],
+                  position: 'absolute',
+                  zIndex: 1000,
+                }}
+              >
+                <Text
+                  style={{
+                    borderWidth: 1,
+                    borderColor: 'orange',
+                    color: 'orange',
+                    fontSize: 32,
+                    top: 50,
+                    left: 40,
+                    fontWeight: '800',
+                    padding: 10,
+                  }}
+                >
+                  Lucky Cookie
+                </Text>
+              </Animated.View>
+              <Animated.View
+                style={{
+                  opacity: this.dislikeOpacity,
+                  transform: [{ rotate: '20deg' }],
+                  position: 'absolute',
+                  top: 50,
+                  right: 40,
+                  zIndex: 1000,
+                }}
+              >
+                <Text
+                  style={{
+                    borderWidth: 1,
+                    borderColor: 'red',
+                    color: 'red',
+                    fontSize: 32,
+                    fontWeight: '800',
+                    padding: 10,
+                  }}
+                >
+                  awwW
+                </Text>
+              </Animated.View>
+              <Text
+                style={{
+                  borderWidth: 1,
+                  borderColor: 'white',
+                  color: 'white',
+                  fontSize: 25,
+                  top: 430,
+                  right: 0,
+                  fontWeight: '800',
+                  padding: 10,
+                  zIndex: 2000,
+                }}
+              >
+                {item.name} -{item.neighborhood}
+              </Text>
 
-// 						console.log('---------------tracker--------', newMatch.matchId)
+              <Image
+                style={{
+                  flex: 1,
+                  height: null,
+                  width: null,
+                  resizeMode: 'cover',
+                  borderRadius: 20,
+                }}
+                source={{ uri: item.icon }}
+              />
+            </Animated.View>
+          );
+        } else {
+          return (
+            <Animated.View
+              key={item.id}
+              style={[
+                {
+                  opacity: this.nextCardOpacity,
+                  transform: [{ scale: this.nextCardScale }],
+                  height: SCREEN_HEIGHT - 120,
+                  width: SCREEN_WIDTH,
+                  padding: 10,
+                  position: 'absolute',
+                },
+              ]}
+            >
+              <Image
+                style={{
+                  flex: 1,
+                  height: null,
+                  width: null,
+                  resizeMode: 'cover',
+                  borderRadius: 20,
+                }}
+                source={{ uri: item.icon }}
+              />
+            </Animated.View>
+          );
+        }
+      })
+      .reverse();
+  };
 
-// 					this.props.addUserToAcceptedMatches(currentUser, newMatch)
+  render() {
+    const all = this.props.all;
+    const current = this.props.current;
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>{this.renderUsers(all)}</View>
+        <View style={{ height: 60 }}>footer</View>
+      </View>
+    );
+  }
+}
 
-//         } else if (gestureState.dx < -120) {
-//           Animated.spring(this.position, {
-//             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy }
-//           }).start(() => {
-//                 this.position.setValue({ x: 0, y: 0 });
-//               })
-//             //---------DISPATCH THUNK---------------
-//           }
-//         else {
-//           Animated.spring(this.position, {
-//             toValue: { x: 0, y: 0 },
-//             friction: 4
-//           }).start();
-// 					};
-// 				}
-// 		})
-// 	}
+mapDispatch = dispatch => {
+  return {
+    updateAcceptedMatches: (current, likedUser) => {
+      dispatch(updateAcceptedMatch(current, likedUser));
+    },
+    updateRejectMatches: (current, dislikeUser) => {
+      dispatch(updateRejectMatch(current, dislikeUser));
+    },
+  };
+};
 
-//   // renderUsers = () => {
-//   //   //------------rendering users we see --------------
-//   //     const currentUser = this.props.users.find(
-//   //     user => user.name == this.props.current.name
-// 	// 	);
-// 	// 	const genderAvail = this.props.users.filter(match => {
-// 	// 		return (
-// 	// 			(currentUser.seeking === match.identifyAs) ?  match : null
-// 	// 		)
-// 	// 	})
-// 	// 	const availMatches = genderAvail.filter(item => {
-// 	// 		return (
-// 	// 			(currentUser.acceptedMatches.indexOf(item.id) < 0) &&
-// 	// 			(currentUser.rejectedMatches.indexOf(item.id) < 0) &&
-// 	// 			(currentUser.name !== item.name))
-//   //     })
-//   //   }
-
-//     // return bottom.map((item, i) => {
-//     //     if (item) {
-//       // const arr = []
-//       //     for(let i = 0; i < availMatches.length; i++){
-//       //       arr.push(availMatches[i])
-//       //     }
-//       //     this.setState = {
-//       //       matchId: this.state.matchId + arr[0]
-//       //     }
-
-//       //     return (
-//       //       <Animated.View
-//       //         // key={item.name}
-//       //         {...this.PanResponder.panHandlers}
-//       //         style={[
-//       //           this.rotateAndTranslate,
-//       //           {
-//       //             height: SCREEN_HEIGHT - 120,
-//       //             width: SCREEN_WIDTH,
-//       //             padding: 10,
-//       //             position: 'absolute'
-//       //           }
-//       //         ]}>
-//       //         <Animated.View
-//       //           style={{
-//       //             opacity: this.likeOpacity,
-//       //             transform: [{ rotate: '-30deg' }],
-//       //             position: 'absolute',
-//       //             top: 50,
-//       //             left: 40,
-//       //             zIndex: 1000
-//       //           }}
-//       //         >
-//       //           <Text style={styles.yes}>LIKE</Text>
-//       //         </Animated.View>
-
-//       //         <Animated.View
-//       //           style={{
-//       //             opacity: this.dislikeOpacity,
-//       //             transform: [{ rotate: '30deg' }],
-//       //             position: 'absolute',
-//       //             top: 50,
-//       //             right: 40,
-//       //             zIndex: 1000
-//       //           }}>
-//       //           <Text style={styles.no}>DISLIKE</Text>
-//       //         </Animated.View>
-
-//       //         <Image
-//       //           style={{
-//       //             flex: 1,
-//       //             height: null,
-//       //             width: null,
-//       //             resizeMode: 'cover',
-//       //             borderRadius: 20
-//       //           }}
-//       //           source={{ uri: this.state.matchId.images[0] }}
-//       //         />
-//       //       </Animated.View>
-// 			// 		)
-// 			// 	}
-
-// 		// 		return null;
-// 		// })
-
-//   render() {
-
-//     return (
-//       <View style={{ flex: 1 }}>
-//         <View style={{ height: 20 }} />
-//         <View style={{ flex: 1 }}>{this.renderUsers()}</View>
-//         <View style={{ height: 20 }} />
-//       </View>
-//     )
-//   };
-
-// const mapDispatch = dispatch => {
-//   return {
-//     addUserToAcceptedMatches: (user, newMatch) => {
-//       dispatch(addUserToAcceptedMatches(user, newMatch));
-//     }
-//   };
-// };
-
-// const mapState = state => {
-//   return {
-//     users: state.users.all,
-//     current: state.users.current,
-//     newMatchData: state.users.newMatchData
-//   };
-// };
-
-// export default connect(
-//   mapState,
-//   mapDispatch
-// )(SwipeCards);
-
-// const styles = StyleSheet.create({
-//   yes: {
-//     borderWidth: 3,
-//     borderColor: 'green',
-//     color: 'green',
-//     fontSize: 32,
-//     fontWeight: '800',
-//     padding: 10
-//   },
-//   no: {
-//     borderWidth: 3,
-//     borderColor: 'red',
-//     color: 'red',
-//     fontSize: 32,
-//     fontWeight: '800',
-//     padding: 10
-//   },
-//   textInfo: {
-//     fontSize: 20,
-//     fontWeight: '300',
-//     color: '#444'
-//   }
-// });
+export default connect(
+  null,
+  mapDispatch
+)(SwipeCards);
