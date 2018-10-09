@@ -97,13 +97,14 @@ class NewArCam extends Component {
 
     //---
     for (let i = 0, x = -40; i < this.props.matches.length; i++, x += 20) {
-      const remoteUrl =
-        'https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=2d58969a-7270-42f6-b7e3-6abe0552b360.jpg';
+      const remoteUrl = this.props.matches[1].icon;
       const texture = await ExpoTHREE.loadAsync(remoteUrl);
+
       //const texture = Asset.fromModule(require(remoteUrl));
       // const texture = await loadTextureAsync({
       //   asset: require('https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=2d58969a-7270-42f6-b7e3-6abe0552b360'),
       // });
+
       newHeart = new THREE.Mesh(
         geometry,
         new THREE.MeshPhongMaterial({ map: texture })
