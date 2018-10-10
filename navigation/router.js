@@ -58,15 +58,15 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-  GEO: {
-    screen: Geolocation,
-    navigationOptions: {
-      tabLabel: 'GEO',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="compass" type="feather" color={tintColor} />
-      ),
-    },
-  },
+  // GEO: {
+  //   screen: Geolocation,
+  //   navigationOptions: {
+  //     tabLabel: 'GEO',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="compass" type="feather" color={tintColor} />
+  //     ),
+  //   },
+  // },
 });
 
 export const Root = createStackNavigator({
@@ -97,15 +97,15 @@ export const Root = createStackNavigator({
   },
 });
 
-// class RootRoute extends Component {
-//   componentDidMount() {
-//     this.props.loadInitialData();
-//   }
+class RootRoute extends Component {
+  componentDidMount() {
+    this.props.loadInitialData();
+  }
 
-//   render() {
-//     return <Root />;
-//   }
-// }
+  render() {
+    return <Root />;
+  }
+}
 
 const mapDispatch = dispatch => {
   return {
@@ -115,9 +115,9 @@ const mapDispatch = dispatch => {
   };
 };
 
-// // The `withRouter` wrapper makes sure that updates are not blocked
-// // when the url changes
-// export default connect(
-//   null,
-//   mapDispatch
-// )(RootRoute);
+// The `withRouter` wrapper makes sure that updates are not blocked
+// when the url changes
+export default connect(
+  null,
+  mapDispatch
+)(RootRoute);
