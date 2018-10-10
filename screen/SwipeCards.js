@@ -192,6 +192,7 @@ class SwipeCards extends Component {
               <Image
                 style={{
                   flex: 1,
+
                   height: null,
                   width: null,
                   resizeMode: 'cover',
@@ -222,7 +223,6 @@ class SwipeCards extends Component {
                   flex: 1,
                   height: null,
                   width: null,
-                  //  position: 'absolute',
                   resizeMode: 'cover',
                   borderRadius: 20,
                   zIndex: 1
