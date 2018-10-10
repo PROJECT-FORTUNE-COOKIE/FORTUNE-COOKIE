@@ -30,37 +30,36 @@ class CameraAR extends Component {
     }
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
-
-    this.props.createMatchesArrayForAR(
-      this.props.current.id,
-      this.state.location
-    );
   };
 
   componentDidMount() {
     this._getLocationAsync();
-    Location.watchPositionAsync(
-      {
-        enableHighAccuracy: false,
-        distanceInterval: 20,
-        timeInterval: 1200000
-      },
-      newLocation => {
-        this.setState({
-          location: newLocation,
-          matchesArr: this.props.nearbyMatchesArr
-        });
-      }
-    );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.location !== this.state.location) {
+      let userId = this.props.current;
+      let lat = this.state.location.coords.latitude;
+      let long = this.state.location.coords.longitude;
+      let data = {
+        userId,
+        lat,
+        long
+      };
+      this.props.updateUserLocation(data);
+
+      this.props.createMatchesArrayForAR(
+        this.props.current.id,
+        this.state.location
+      );
+    }
   }
 
   render() {
-    return (
-      <NewArCam
-        matches={this.state.matchesArr}
-        location={this.state.location}
-      />
-    );
+    if (this.props.nearbyMatchesArr.length > 0) {
+      return <NewArCam matches={this.props.nearbyMatchesArr} />;
+    }
+    return <Text>WAITING....</Text>;
   }
 }
 

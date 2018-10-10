@@ -21,7 +21,8 @@ class SingleUser extends Component {
     if (status === 'granted') {
       ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
-        aspect: [1, 1]
+        aspect: [1, 1],
+        base64: true
       })
         .then(newPostImage => {
           if (!newPostImage.cancelled) {
@@ -40,7 +41,9 @@ class SingleUser extends Component {
 
   uploadImage = async (uri, imageName) => {
     const response = await fetch(uri);
+
     const blob = await response.blob();
+    console.log('BLOB_BLOB_BLOB: ', blob);
     const referenceAddress = `${this.props.me.id}/${imageName}`;
 
     //----------create storage reference ------
@@ -58,6 +61,7 @@ class SingleUser extends Component {
   render() {
     const { container, rowContainer } = styles;
     const me = this.props.me;
+    const meToo = this.props.meToo;
     let image = me.icon;
     return (
       <View style={container}>
@@ -74,19 +78,34 @@ class SingleUser extends Component {
             }}
           />
         </View>
+
         <View>
           <Text
             style={{
-              fontFamily: 'Zapfino',
+              fontFamily: 'AvenirNext-Regular',
               fontSize: 25
             }}
           >
             {me.name}
           </Text>
-          {me.deposit ? <Text>{me.deposit} </Text> : null}
-          {me.birthday ? <Text>{me.age} </Text> : null}
-          {me.age ? <Text>{me.age} </Text> : null}
+          <Text
+            style={{
+              fontFamily: 'AvenirNext-Regular',
+              fontSize: 15
+            }}
+          >
+            Deposit: ${me.deposit ? <Text>{me.deposit} </Text> : null}
+          </Text>
+          <Text
+            style={{
+              fontFamily: 'AvenirNext-Regular',
+              fontSize: 15
+            }}
+          >
+            {/* Age: {meToo.age ? <Text>{meToo.age} </Text> : null} */}
+          </Text>
         </View>
+
         <View style={rowContainer}>
           <Icon
             reverse
@@ -114,7 +133,8 @@ class SingleUser extends Component {
 
 const mapStateToProps = state => {
   return {
-    me: state.users.current
+    me: state.users.current,
+    meToo: state.users
   };
 };
 
@@ -138,11 +158,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding: 35
+    padding: 25
   },
   rowContainer: {
     flexDirection: 'row',
     position: 'absolute',
-    top: 470
+    top: 500
   }
 });

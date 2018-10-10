@@ -4,7 +4,6 @@ import { Image, Text, View, TouchableOpacity } from 'react-native';
 import { Permissions } from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { Constants, Location } from 'expo';
-import { creatingMatchesArray, updateUserLocation } from './store/userReducer';
 import { connect } from 'react-redux';
 import AssetUtils from 'expo-asset-utils';
 import Expo, { AR } from 'expo';
@@ -36,11 +35,6 @@ class NewArCam extends Component {
   }
 
   render() {
-    console.log(
-      'OOOO___---------------____THIS.STATE______00000: ',
-      this.props.matches
-    );
-
     if (this.props.matches.length < 1) {
       return <Text>LOADING</Text>;
     }
@@ -81,32 +75,20 @@ class NewArCam extends Component {
   };
 
   setupScene = async () => {
-    // const someRemoteUrl =
-    //   'https://www.biography.com/.image/t_share/MTE5NDg0MDU0ODczNDc0NTc1/ben-affleck-9176967-2-402.jpg';
-    // const texture = await ExpoTHREE.loadAsync(someRemoteUrl);
-    // this.box = new THREE.Mesh(
-    //   new THREE.CubeGeometry(1, 1, 1),
-    //   new THREE.MeshPhongMaterial({ map: texture })
-    // );
-    // this.scene.add(this.box);
-    //------
-
     let heartsArr = [];
     let newHeart;
     var geometry = new THREE.CircleGeometry(5, 32);
 
     //---
     for (let i = 0, x = -40; i < this.props.matches.length; i++, x += 20) {
-      // const remoteUrl = this.props.matches[0].icon;
-      const url = this.props.matches[0].icon;
-      const texture = await ExpoTHREE.loadAsync(
-        'https://b.kisscc0.com/20180921/ojw/kisscc0-fortune-cookie-biscuits-kawaii-taco-kawaii-fortune-cookie-5ba4ea8ce88886.3640270015375346049525.png'
-      );
+      const remoteUrl = 'https://data.whicdn.com/images/106885273/large.jpg';
+      const texture = await ExpoTHREE.loadAsync(remoteUrl);
 
       //const texture = Asset.fromModule(require(remoteUrl));
-      // const texture = await loadTextureAsync({
-      //   asset: require('https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=2d58969a-7270-42f6-b7e3-6abe0552b360'),
-      // });
+      // const texture = await Expo.Asset.fromModule(
+      //   require('https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=4fcaaa40-07fa-4c07-a689-89611f5f3b5d')
+      // ).uri;
+
       newHeart = new THREE.Mesh(
         geometry,
         new THREE.MeshPhongMaterial({ map: texture })
