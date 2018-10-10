@@ -21,7 +21,8 @@ class SingleUser extends Component {
     if (status === 'granted') {
       ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
-        aspect: [1, 1]
+        aspect: [1, 1],
+        base64: true
       })
         .then(newPostImage => {
           if (!newPostImage.cancelled) {
