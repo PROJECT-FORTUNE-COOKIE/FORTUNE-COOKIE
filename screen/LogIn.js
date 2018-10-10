@@ -14,8 +14,8 @@ const LogIn = props => {
       </View>
       <View style={txt}>
         <Text style={headText}> Fortune </Text>
-        <Text style={headText}> ©ookie </Text>
-        <Text style={subText}> ' no ©ookie left behind </Text>
+        <Text style={headText}> Cookie </Text>
+        <Text style={subText}> ' no cookie left behind </Text>
       </View>
       <View style={btn}>
         <Button
