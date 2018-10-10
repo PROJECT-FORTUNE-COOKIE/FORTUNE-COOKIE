@@ -97,7 +97,7 @@ class NewArCam extends Component {
 
     //---
     for (let i = 0, x = -40; i < this.props.matches.length; i++, x += 20) {
-      const remoteUrl = this.props.matches[1].icon;
+      const remoteUrl = this.props.matches[0].icon;
       const texture = await ExpoTHREE.loadAsync(remoteUrl);
 
       //const texture = Asset.fromModule(require(remoteUrl));
