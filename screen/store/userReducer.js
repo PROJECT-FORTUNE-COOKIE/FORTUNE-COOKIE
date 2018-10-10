@@ -151,6 +151,7 @@ export const fbMe = () => {
                 identifyAs: '',
                 seeking: '',
                 age: '',
+                geolocation: '',
               });
             dispatch(checkIfNewUser(true));
           }
@@ -445,14 +446,9 @@ export const updateUserLocation = data => {
       let longitude = data.long;
 
       let user = db.collection('Users').doc(userId);
-      let query = await user.set(
-        {
-          geolocation: new firebase.firestore.GeoPoint(latitude, longitude),
-        },
-        { merge: true }
-      );
-      //console.log('------------in the back end!----------');
-      // dispatch(fetchLocation(userObj));
+      let query = await user.update({
+        geolocation: new firebase.firestore.GeoPoint(latitude, longitude),
+      });
     };
   } catch (err) {
     console.error(err);
@@ -464,9 +460,6 @@ export const creatingMatchesArray = (userId, location) => {
   return async dispatch => {
     let matchArr = [];
     //let allUsers = db.collection('Users');
-    console.log('USERLOCATION IN REDUCER: ', location);
-    console.log('lat: ', location.coords.latitude);
-    console.log('lat: ', location.coords.longitude);
 
     let latitude = location.coords.latitude;
     let longitude = location.coords.longitude;
@@ -494,11 +487,9 @@ export const creatingMatchesArray = (userId, location) => {
       .onSnapshot(snapshot => {
         //let data = [];
         snapshot.forEach(doc => {
-          console.log('&&&&&DOC>DATA()&&&&&&&: ', doc.data());
           matchArr.push(doc.data());
         });
         dispatch(createNearbyMatchesArray(matchArr));
-        console.log('MATCHARR in GEO REDUCER********: ', matchArr);
       });
   };
 };

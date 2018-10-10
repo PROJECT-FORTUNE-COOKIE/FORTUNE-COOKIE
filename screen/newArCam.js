@@ -4,7 +4,6 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import { Permissions } from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { Constants, Location } from 'expo';
-import { creatingMatchesArray, updateUserLocation } from './store/userReducer';
 import { connect } from 'react-redux';
 
 import { AR } from 'expo';
@@ -35,11 +34,6 @@ class NewArCam extends Component {
   }
 
   render() {
-    console.log(
-      'OOOO___---------------____THIS.STATE______00000: ',
-      this.props.matches
-    );
-
     if (this.props.matches.length < 1) {
       return <Text>LOADING</Text>;
     }
@@ -83,11 +77,10 @@ class NewArCam extends Component {
     let heartsArr = [];
     let newHeart;
     var geometry = new THREE.CircleGeometry(5, 32);
-    console.log('00000----THIS.PROPS.MATCHS-----777777: ', this.props.matches);
 
     //---
     for (let i = 0, x = -40; i < this.props.matches.length; i++, x += 20) {
-      const remoteUrl = this.props.matches[0].icon;
+      const remoteUrl = 'https://data.whicdn.com/images/106885273/large.jpg';
       const texture = await ExpoTHREE.loadAsync(remoteUrl);
 
       //const texture = Asset.fromModule(require(remoteUrl));
