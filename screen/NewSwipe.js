@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
+  StyleSheet,
   Text,
   View,
   Dimensions,
   Image,
   Animated,
-  PanResponder,
+  PanResponder
 } from 'react-native';
 import { connect } from 'react-redux';
 import { updateAcceptedMatch, updateRejectMatch } from './store';
@@ -18,49 +19,48 @@ class SwipeCards extends Component {
     super();
     this.position = new Animated.ValueXY();
     this.state = {
-      currentIndex: 0,
+      currentIndex: 0
     };
 
     this.rotate = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-      outputRange: ['-10deg', '0deg', '10deg'],
-      extrapolate: 'clamp',
+      outputRange: ['-30deg', '0deg', '30deg'],
+      extrapolate: 'clamp'
     });
 
     this.rotateAndTranslate = {
       transform: [
         {
-          rotate: this.rotate,
+          rotate: this.rotate
         },
-        ...this.position.getTranslateTransform(),
-      ],
+        ...this.position.getTranslateTransform()
+      ]
     };
 
     this.likeOpacity = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: [0, 0, 1],
-      extrapolate: 'clamp',
+      extrapolate: 'clamp'
     });
 
     this.dislikeOpacity = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: [1, 0, 0],
-      extrapolate: 'clamp',
+      extrapolate: 'clamp'
     });
 
     this.nextCardOpacity = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: [1, 0, 1],
-      extrapolate: 'clamp',
+      extrapolate: 'clamp'
     });
 
     this.nextCardScale = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: [1, 0.8, 1],
-      extrapolate: 'clamp',
+      extrapolate: 'clamp'
     });
   }
-
   componentWillMount() {
     this.PanResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -70,16 +70,15 @@ class SwipeCards extends Component {
       onPanResponderRelease: (evt, gestureState) => {
         if (gestureState.dx > 120) {
           Animated.spring(this.position, {
-            toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
+            toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy }
           }).start(() => {
             let oldIndx = this.state.currentIndex;
             const likedUser = this.props.all.splice(oldIndx, 1);
             const current = this.props.current;
             this.props.updateAcceptedMatches(current, likedUser[0]);
-
             this.setState(
               {
-                currentIndex: this.state.currentIndex + 1,
+                currentIndex: this.state.currentIndex + 1
               },
               () => {
                 this.position.setValue({ x: 0, y: 0 });
@@ -88,16 +87,11 @@ class SwipeCards extends Component {
           });
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
-            toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
+            toValue: { x: SCREEN_WIDTH - 100, y: gestureState.dy }
           }).start(() => {
-            let oldIndx = this.state.currentIndex;
-            const dislikedUser = this.props.all.splice(oldIndx, 1);
-            const current = this.props.current;
-            this.props.updateAcceptedMatches(current, dislikedUser[0]);
-
             this.setState(
               {
-                currentIndex: this.state.currentIndex + 1,
+                currentIndex: this.state.currentIndex + 1
               },
               () => {
                 this.position.setValue({ x: 0, y: 0 });
@@ -107,10 +101,10 @@ class SwipeCards extends Component {
         } else {
           Animated.spring(this.position, {
             toValue: { x: 0, y: 0 },
-            friction: 4,
+            friction: 4
           }).start();
         }
-      },
+      }
     });
   }
 
@@ -127,11 +121,11 @@ class SwipeCards extends Component {
               style={[
                 this.rotateAndTranslate,
                 {
-                  height: SCREEN_HEIGHT - 120,
+                  height: SCREEN_HEIGHT,
                   width: SCREEN_WIDTH,
                   padding: 10,
-                  position: 'absolute',
-                },
+                  position: 'absolute'
+                }
               ]}
             >
               <Animated.View
@@ -139,7 +133,9 @@ class SwipeCards extends Component {
                   opacity: this.likeOpacity,
                   transform: [{ rotate: '-20deg' }],
                   position: 'absolute',
-                  zIndex: 1000,
+                  top: 50,
+                  left: 40,
+                  zIndex: 1000
                 }}
               >
                 <Text
@@ -148,15 +144,14 @@ class SwipeCards extends Component {
                     borderColor: 'orange',
                     color: 'orange',
                     fontSize: 32,
-                    top: 50,
-                    left: 40,
                     fontWeight: '800',
-                    padding: 10,
+                    padding: 10
                   }}
                 >
                   Lucky Cookie
                 </Text>
               </Animated.View>
+
               <Animated.View
                 style={{
                   opacity: this.dislikeOpacity,
@@ -164,7 +159,7 @@ class SwipeCards extends Component {
                   position: 'absolute',
                   top: 50,
                   right: 40,
-                  zIndex: 1000,
+                  zIndex: 1000
                 }}
               >
                 <Text
@@ -174,37 +169,21 @@ class SwipeCards extends Component {
                     color: 'red',
                     fontSize: 32,
                     fontWeight: '800',
-                    padding: 10,
+                    padding: 10
                   }}
                 >
                   awwW
                 </Text>
               </Animated.View>
-              <Text
-                style={{
-                  borderWidth: 1,
-                  borderColor: 'white',
-                  color: 'white',
-                  fontSize: 25,
-                  top: 430,
-                  right: 0,
-                  fontWeight: '800',
-                  padding: 10,
-                  zIndex: 2000,
-                }}
-              >
-                {item.name} -{item.neighborhood}
-              </Text>
-
               <Image
                 style={{
                   flex: 1,
                   height: null,
                   width: null,
                   resizeMode: 'cover',
-                  borderRadius: 20,
+                  borderRadius: 20
                 }}
-                source={{ uri: item.icon }}
+                source={{ uri: item.images[0] }}
               />
             </Animated.View>
           );
@@ -216,11 +195,11 @@ class SwipeCards extends Component {
                 {
                   opacity: this.nextCardOpacity,
                   transform: [{ scale: this.nextCardScale }],
-                  height: SCREEN_HEIGHT - 120,
+                  height: SCREEN_HEIGHT,
                   width: SCREEN_WIDTH,
                   padding: 10,
-                  position: 'absolute',
-                },
+                  position: 'absolute'
+                }
               ]}
             >
               <Image
@@ -229,9 +208,9 @@ class SwipeCards extends Component {
                   height: null,
                   width: null,
                   resizeMode: 'cover',
-                  borderRadius: 20,
+                  borderRadius: 20
                 }}
-                source={{ uri: item.icon }}
+                source={{ uri: item.images[0] }}
               />
             </Animated.View>
           );
@@ -245,7 +224,11 @@ class SwipeCards extends Component {
     const current = this.props.current;
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>{this.renderUsers(all)}</View>
+        {/* <View style={{ height: 60 }}>header</View> */}
+        <View style={{ flex: 1 }}>
+          content view
+          {this.renderUsers(all)}
+        </View>
         <View style={{ height: 60 }}>footer</View>
       </View>
     );
@@ -259,7 +242,7 @@ mapDispatch = dispatch => {
     },
     updateRejectMatches: (current, dislikeUser) => {
       dispatch(updateRejectMatch(current, dislikeUser));
-    },
+    }
   };
 };
 
@@ -267,3 +250,12 @@ export default connect(
   null,
   mapDispatch
 )(SwipeCards);
+
+const style = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
+});
