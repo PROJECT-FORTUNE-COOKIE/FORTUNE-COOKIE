@@ -71,12 +71,8 @@ class SwipeCards extends Component {
         if (gestureState.dx > 120) {
           Animated.spring(this.position, {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
-          }).start(() => {
+          }).start(async () => {
             let oldIndx = this.state.currentIndex;
-            const likedUser = this.props.all.splice(oldIndx, 1);
-            const current = this.props.current;
-            this.props.updateAcceptedMatches(current, likedUser[0]);
-
             this.setState(
               {
                 currentIndex: this.state.currentIndex + 1,
@@ -85,16 +81,16 @@ class SwipeCards extends Component {
                 this.position.setValue({ x: 0, y: 0 });
               }
             );
+            const likedUser = this.props.all.splice(oldIndx, 1);
+            await this.props.updateAcceptedMatches(
+              this.props.current,
+              likedUser[0]
+            );
           });
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
           }).start(() => {
-            let oldIndx = this.state.currentIndex;
-            const dislikedUser = this.props.all.splice(oldIndx, 1);
-            const current = this.props.current;
-            this.props.updateAcceptedMatches(current, dislikedUser[0]);
-
             this.setState(
               {
                 currentIndex: this.state.currentIndex + 1,
@@ -148,7 +144,7 @@ class SwipeCards extends Component {
                     borderColor: 'orange',
                     color: 'orange',
                     fontSize: 32,
-                    top: 50,
+                    top: 30,
                     left: 40,
                     fontWeight: '800',
                     padding: 10,
@@ -162,7 +158,7 @@ class SwipeCards extends Component {
                   opacity: this.dislikeOpacity,
                   transform: [{ rotate: '20deg' }],
                   position: 'absolute',
-                  top: 50,
+                  top: 30,
                   right: 40,
                   zIndex: 1000,
                 }}
@@ -182,27 +178,38 @@ class SwipeCards extends Component {
               </Animated.View>
               <Text
                 style={{
-                  borderWidth: 1,
-                  borderColor: 'white',
-                  color: 'white',
+                  color: 'pink',
                   fontSize: 25,
                   top: 430,
                   right: 0,
                   fontWeight: '800',
-                  padding: 10,
                   zIndex: 2000,
                 }}
               >
-                {item.name} -{item.neighborhood}
+                {item.name}
+              </Text>
+              <Text
+                style={{
+                  color: 'pink',
+                  fontSize: 15,
+                  top: 430,
+                  right: 0,
+                  fontWeight: '800',
+                  zIndex: 2000,
+                }}
+              >
+                ~{item.neighborhood}, {item.age}
               </Text>
 
               <Image
                 style={{
                   flex: 1,
+
                   height: null,
                   width: null,
                   resizeMode: 'cover',
                   borderRadius: 20,
+                  zIndex: 1,
                 }}
                 source={{ uri: item.icon }}
               />
@@ -218,7 +225,7 @@ class SwipeCards extends Component {
                   transform: [{ scale: this.nextCardScale }],
                   height: SCREEN_HEIGHT - 120,
                   width: SCREEN_WIDTH,
-                  padding: 10,
+                  // padding: 10,
                   position: 'absolute',
                 },
               ]}
@@ -230,6 +237,7 @@ class SwipeCards extends Component {
                   width: null,
                   resizeMode: 'cover',
                   borderRadius: 20,
+                  zIndex: 1,
                 }}
                 source={{ uri: item.icon }}
               />
@@ -243,12 +251,8 @@ class SwipeCards extends Component {
   render() {
     const all = this.props.all;
     const current = this.props.current;
-    return (
-      <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>{this.renderUsers(all)}</View>
-        <View style={{ height: 60 }}>footer</View>
-      </View>
-    );
+
+    return <View>{this.renderUsers(all)}</View>;
   }
 }
 

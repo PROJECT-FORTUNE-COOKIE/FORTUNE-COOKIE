@@ -14,7 +14,6 @@ const GET_MATCHES = 'GET_MATCHES';
 const GET_MESSAGES_FOR_SELETED_MATCH = 'GET_MESSAGES_FOR_SELETED_MATCH';
 const GET_MESSAGES_FROM_SELETED_MATCH = 'GET_MESSAGES_FROM_SELETED_MATCH';
 const SET_SELECTED_MATCH_ON_STATE = 'SET_SELECTED_MATCH_ON_STATE';
-const ADD_MATCH_TO_PENDING = 'ADD_MATCH_TO_PENDING';
 const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
 const CHANGE_ICON = 'CHANGE_ICON';
 const ADD_MATCH_TO_ACCEPTED = 'ADD_MATCH_TO_ACCEPTED';
@@ -139,6 +138,7 @@ export const fbMe = () => {
                 birthday: '',
                 identifyAs: '',
                 seeking: '',
+                age: '',
               });
             dispatch(checkIfNewUser(true));
           }
@@ -390,13 +390,22 @@ export const updateIdentifySeeking = (
 ) => {
   return async dispatch => {
     try {
+      function _calculateAge(birthday) {
+        // birthday is a date
+        var ageDifMs = Date.now() - birthday.getTime();
+        var ageDate = new Date(ageDifMs); // miliseconds from epoch
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+      }
+
       const docRef = db.collection('Users').doc(userId);
+      const age = _calculateAge(new Date(birthday));
       await docRef.update({
         blurb,
         neighborhood,
         birthday,
         identifyAs,
         seeking,
+        age,
       });
       dispatch(
         updatingIdentifyAsAndSeeking(
@@ -404,7 +413,8 @@ export const updateIdentifySeeking = (
           neighborhood,
           birthday,
           identifyAs,
-          seeking
+          seeking,
+          age
         )
       );
     } catch (err) {
@@ -621,6 +631,7 @@ export default function(state = initialState, action) {
         birthday: action.birthday,
         identifyAs: action.identifyAs,
         seeking: action.seeking,
+        age: age,
       };
     case FETCH_LOCATION:
       return {

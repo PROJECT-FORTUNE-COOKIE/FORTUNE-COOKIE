@@ -77,19 +77,34 @@ class SingleUser extends Component {
             }}
           />
         </View>
+
         <View>
           <Text
             style={{
-              fontFamily: 'Zapfino',
+              fontFamily: 'AvenirNext-Regular',
               fontSize: 25,
             }}
           >
             {me.name}
           </Text>
-          {me.deposit ? <Text>{me.deposit} </Text> : null}
-          {me.birthday ? <Text>{me.age} </Text> : null}
-          {me.age ? <Text>{me.age} </Text> : null}
+          <Text
+            style={{
+              fontFamily: 'AvenirNext-Regular',
+              fontSize: 15,
+            }}
+          >
+            Deposit: ${me.deposit ? <Text>{me.deposit} </Text> : null}
+          </Text>
+          <Text
+            style={{
+              fontFamily: 'AvenirNext-Regular',
+              fontSize: 15,
+            }}
+          >
+            Age: {me.age ? <Text>{me.age} </Text> : null}
+          </Text>
         </View>
+
         <View style={rowContainer}>
           <Icon
             reverse
@@ -141,11 +156,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding: 35,
+    padding: 25,
   },
   rowContainer: {
     flexDirection: 'row',
     position: 'absolute',
-    top: 470,
+    top: 500,
   },
 });
