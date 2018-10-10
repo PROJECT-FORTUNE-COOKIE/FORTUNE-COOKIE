@@ -84,17 +84,29 @@ const addMatchToAccepted = match => ({
   match,
 });
 
-const mappingOtherInfoToState = (blurb, birthday, neighborhood) => ({
+const mappingOtherInfoToState = (blurb, birthday, neighborhood, age) => ({
   type: MAP_OTHER_INFO_TO_STATE,
   blurb,
   birthday,
   neighborhood,
+  age,
 });
 
-const updatingIdentifyAsAndSeeking = (identifyAs, seeking) => ({
-  type: UPDATE_IDENTIFY_AS_AND_SEEKING,
+const updatingIdentifyAsAndSeeking = (
+  blurb,
+  neighborhood,
+  birthday,
   identifyAs,
   seeking,
+  age
+) => ({
+  type: UPDATE_IDENTIFY_AS_AND_SEEKING,
+  blurb,
+  neighborhood,
+  birthday,
+  identifyAs,
+  seeking,
+  age,
 });
 
 const fetchLocation = location => ({
@@ -370,8 +382,10 @@ export const fetchingOtherInfo = userId => {
           } else {
             console.log('Document data:', doc.data());
             const obj = doc.data();
-            const { blurb, birthday, neighborhood } = obj;
-            dispatch(mappingOtherInfoToState(blurb, birthday, neighborhood));
+            const { blurb, birthday, neighborhood, age } = obj;
+            dispatch(
+              mappingOtherInfoToState(blurb, birthday, neighborhood, age)
+            );
           }
         });
     } catch (err) {
@@ -547,6 +561,7 @@ const initialState = {
   identifyAs: '',
   seeking: '',
   nearbyMatchesArr: [],
+  age: '',
 };
 
 //---------------------- REDUCER -----------------------
@@ -621,6 +636,7 @@ export default function(state = initialState, action) {
         blurb: action.blurb,
         birthday: action.birthday,
         neighborhood: action.neighborhood,
+        age: action.age,
       };
 
     case UPDATE_IDENTIFY_AS_AND_SEEKING:
@@ -631,7 +647,7 @@ export default function(state = initialState, action) {
         birthday: action.birthday,
         identifyAs: action.identifyAs,
         seeking: action.seeking,
-        age: age,
+        age: action.age,
       };
     case FETCH_LOCATION:
       return {
