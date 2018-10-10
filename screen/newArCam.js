@@ -80,10 +80,6 @@ class NewArCam extends Component {
     let newHeart;
     var geometry = new THREE.CircleGeometry(5, 32);
 
-
-    console.log('00000----TNEW AR CAM VIEW -----777777: ', this.props.matches);
-
-    console.log('--------MAP STATE IN NEW ARCAM----------', this.props.nearbyMatchesArr)
     //---
     for (let i = 0, x = -40; i < this.props.matches.length; i++, x += 20) {
       const remoteUrl = 'https://data.whicdn.com/images/106885273/large.jpg';
@@ -128,10 +124,5 @@ class NewArCam extends Component {
   };
 }
 
-const mapState = state => {
-  return {
-    nearbyMatchesArr: state.users.nearbyMatchesArr
-  }
-}
 
-export default connect(mapState)(NewArCam);
+export default NewArCam;
