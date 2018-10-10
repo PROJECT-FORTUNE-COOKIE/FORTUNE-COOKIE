@@ -61,6 +61,7 @@ class SingleUser extends Component {
   render() {
     const { container, rowContainer } = styles;
     const me = this.props.me;
+    const meToo = this.props.meToo;
     let image = me.icon;
     return (
       <View style={container}>
@@ -101,7 +102,7 @@ class SingleUser extends Component {
               fontSize: 15,
             }}
           >
-            Age: {me.age ? <Text>{me.age} </Text> : null}
+            Age: {meToo.age ? <Text>{meToo.age} </Text> : null}
           </Text>
         </View>
 
@@ -133,6 +134,7 @@ class SingleUser extends Component {
 const mapStateToProps = state => {
   return {
     me: state.users.current,
+    meToo: state.users,
   };
 };
 
