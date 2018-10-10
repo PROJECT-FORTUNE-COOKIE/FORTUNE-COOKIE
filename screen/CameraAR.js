@@ -57,7 +57,6 @@ class CameraAR extends Component {
 
 
   render() {
-    console.log('00000----PROPS NEARBY MATCHES ARR-----777777: ', this.props.nearbyMatchesArr);
 
     if(this.props.nearbyMatchesArr.length > 0){
     return (
