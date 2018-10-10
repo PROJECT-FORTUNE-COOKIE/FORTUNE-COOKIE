@@ -21,7 +21,8 @@ class SingleUser extends Component {
     if (status === 'granted') {
       ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
-        aspect: [1, 1]
+        aspect: [1, 1],
+        base64: true,
       })
         .then(newPostImage => {
           if (!newPostImage.cancelled) {
@@ -40,7 +41,9 @@ class SingleUser extends Component {
 
   uploadImage = async (uri, imageName) => {
     const response = await fetch(uri);
+
     const blob = await response.blob();
+    console.log('BLOB_BLOB_BLOB: ', blob);
     const referenceAddress = `${this.props.me.id}/${imageName}`;
 
     //----------create storage reference ------
@@ -67,10 +70,10 @@ class SingleUser extends Component {
               height: 280,
               width: 300,
               top: 0,
-              borderRadius: 30
+              borderRadius: 30,
             }}
             source={{
-              uri: image
+              uri: image,
             }}
           />
         </View>
@@ -78,7 +81,7 @@ class SingleUser extends Component {
           <Text
             style={{
               fontFamily: 'Zapfino',
-              fontSize: 25
+              fontSize: 25,
             }}
           >
             {me.name}
@@ -114,7 +117,7 @@ class SingleUser extends Component {
 
 const mapStateToProps = state => {
   return {
-    me: state.users.current
+    me: state.users.current,
   };
 };
 
@@ -122,7 +125,7 @@ const mapDispatchToProps = dispatch => {
   return {
     changeIcon: (user, newIcon) => dispatch(updateIcon(user, newIcon)),
     waitingCookie: (selfSex, interest) =>
-      dispatch(fetchAllUsers(selfSex, interest))
+      dispatch(fetchAllUsers(selfSex, interest)),
   };
 };
 
@@ -138,11 +141,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding: 35
+    padding: 35,
   },
   rowContainer: {
     flexDirection: 'row',
     position: 'absolute',
-    top: 470
-  }
+    top: 470,
+  },
 });

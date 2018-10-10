@@ -80,16 +80,6 @@ class NewArCam extends Component {
   };
 
   setupScene = async () => {
-    // const someRemoteUrl =
-    //   'https://www.biography.com/.image/t_share/MTE5NDg0MDU0ODczNDc0NTc1/ben-affleck-9176967-2-402.jpg';
-    // const texture = await ExpoTHREE.loadAsync(someRemoteUrl);
-    // this.box = new THREE.Mesh(
-    //   new THREE.CubeGeometry(1, 1, 1),
-    //   new THREE.MeshPhongMaterial({ map: texture })
-    // );
-    // this.scene.add(this.box);
-    //------
-
     let heartsArr = [];
     let newHeart;
     var geometry = new THREE.CircleGeometry(5, 32);
@@ -101,9 +91,9 @@ class NewArCam extends Component {
       const texture = await ExpoTHREE.loadAsync(remoteUrl);
 
       //const texture = Asset.fromModule(require(remoteUrl));
-      // const texture = await loadTextureAsync({
-      //   asset: require('https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=2d58969a-7270-42f6-b7e3-6abe0552b360'),
-      // });
+      // const texture = await Expo.Asset.fromModule(
+      //   require('https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=4fcaaa40-07fa-4c07-a689-89611f5f3b5d')
+      // ).uri;
 
       newHeart = new THREE.Mesh(
         geometry,
