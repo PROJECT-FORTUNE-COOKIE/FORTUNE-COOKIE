@@ -23,7 +23,7 @@ const mapState = state => {
     all: state.users.all.filter(user => {
       return id !== user.id;
     }),
-    current: state.users.current
+    current: state.users.current,
   };
 };
 
