@@ -17,7 +17,7 @@ class CameraAR extends Component {
     this.state = {
       location: null,
       errorMessage: null,
-      matchesArr: [],
+      matchesArr: []
     };
   }
 
@@ -25,7 +25,7 @@ class CameraAR extends Component {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       this.setState({
-        errorMessage: 'Permission to access location was denied',
+        errorMessage: 'Permission to access location was denied'
       });
     }
     let location = await Location.getCurrentPositionAsync({});
@@ -39,28 +39,22 @@ class CameraAR extends Component {
 
   componentDidMount() {
     this._getLocationAsync();
-    console.log('-------------updated---------------');
     Location.watchPositionAsync(
       {
         enableHighAccuracy: false,
         distanceInterval: 20,
-        timeInterval: 1200000,
+        timeInterval: 1200000
       },
       newLocation => {
         this.setState({
           location: newLocation,
-          matchesArr: this.props.nearbyMatchesArr,
+          matchesArr: this.props.nearbyMatchesArr
         });
-        console.log('----------new location------------', newLocation);
       }
     );
   }
 
   render() {
-    console.log(
-      '******--THIS.PROPS.NEARBYMATCHESARR--&&&&&&&: ',
-      this.props.nearbyMatchesArr
-    );
     return (
       <NewArCam
         matches={this.state.matchesArr}
@@ -73,7 +67,7 @@ class CameraAR extends Component {
 const mapState = state => {
   return {
     current: state.users.current,
-    nearbyMatchesArr: state.users.nearbyMatchesArr,
+    nearbyMatchesArr: state.users.nearbyMatchesArr
   };
 };
 
@@ -84,7 +78,7 @@ mapDispatch = dispatch => {
     },
     createMatchesArrayForAR: (userId, location) => {
       dispatch(creatingMatchesArray(userId, location));
-    },
+    }
   };
 };
 

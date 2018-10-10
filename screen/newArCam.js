@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import { Tile, List, ListItem, Button } from 'react-native-elements';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Image, Text, View, TouchableOpacity } from 'react-native';
 import { Permissions } from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { Constants, Location } from 'expo';
 import { creatingMatchesArray, updateUserLocation } from './store/userReducer';
 import { connect } from 'react-redux';
-
-import { AR } from 'expo';
+import AssetUtils from 'expo-asset-utils';
+import Expo, { AR } from 'expo';
 import ExpoTHREE, {
   AR as ThreeAR,
   THREE,
   loadAsync,
   loadTextureAsync,
+  loadObjAsync
 } from 'expo-three';
 import { View as GraphicsView } from 'expo-graphics';
 
@@ -21,7 +22,7 @@ class NewArCam extends Component {
     super(props);
     this.state = {
       location: this.props.location,
-      errorMessage: null,
+      errorMessage: null
     };
     this.onContextCreate = this.onContextCreate.bind(this);
     this.onResize = this.onResize.bind(this);
@@ -67,7 +68,7 @@ class NewArCam extends Component {
       gl,
       pixelRatio,
       width,
-      height,
+      height
     });
 
     this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
@@ -93,26 +94,33 @@ class NewArCam extends Component {
     let heartsArr = [];
     let newHeart;
     var geometry = new THREE.CircleGeometry(5, 32);
-    console.log('00000----THIS.PROPS.MATCHS-----777777: ', this.props.matches);
 
     //---
     for (let i = 0, x = -40; i < this.props.matches.length; i++, x += 20) {
-      const remoteUrl = this.props.matches[0].icon;
-      const texture = await ExpoTHREE.loadAsync(remoteUrl);
+      // const remoteUrl = this.props.matches[0].icon;
+      const url = this.props.matches[0].icon;
+      const texture = await ExpoTHREE.loadAsync(
+        'https://b.kisscc0.com/20180921/ojw/kisscc0-fortune-cookie-biscuits-kawaii-taco-kawaii-fortune-cookie-5ba4ea8ce88886.3640270015375346049525.png'
+      );
 
       //const texture = Asset.fromModule(require(remoteUrl));
       // const texture = await loadTextureAsync({
       //   asset: require('https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=2d58969a-7270-42f6-b7e3-6abe0552b360'),
       // });
-
       newHeart = new THREE.Mesh(
         geometry,
         new THREE.MeshPhongMaterial({ map: texture })
       );
+
+      // newHeart = new THREE.Mesh(
+      //   geometry,
+      //   new THREE.MeshPhongMaterial({ map: texture })
+      // );
       newHeart.position.z = -45;
       newHeart.position.x = x;
       heartsArr.push(newHeart);
     }
+
     heartsArr.forEach(heart => {
       return this.scene.add(heart);
     });
