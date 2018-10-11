@@ -57,16 +57,16 @@ export const MenuTab = createBottomTabNavigator({
         <Icon name="camera" type="feather" color={tintColor} />
       )
     }
-  },
-  GEO: {
-    screen: Geolocation,
-    navigationOptions: {
-      tabLabel: 'GEO',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="compass" type="feather" color={tintColor} />
-      )
-    }
   }
+  // GEO: {
+  //   screen: Geolocation,
+  //   navigationOptions: {
+  //     tabLabel: 'GEO',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="compass" type="feather" color={tintColor} />
+  //     )
+  //   }
+  // }
 });
 
 export const Root = createStackNavigator({
