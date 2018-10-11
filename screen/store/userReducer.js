@@ -32,56 +32,56 @@ const CREATE_NEARBY_MATCHES_ARRAY = 'CREATE_NEARBY_MATCHES_ARRAY';
 
 const checkIfNewUser = bool => ({
   type: CHECK_IF_NEW_USER,
-  bool,
+  bool
 });
 
 const gotUser = user => ({ type: GOT_USER, user });
 const fetchingCurrentUser = () => ({
-  type: FETCH_CURRENT_USER,
+  type: FETCH_CURRENT_USER
 });
 const gotAllUsers = users => ({ type: GOT_ALL_USERS, users });
 const getAllMatchesForUser = matches => ({ type: GET_MATCHES, matches });
 const getAllMessagesForSelectedMatch = messages => ({
   type: GET_MESSAGES_FOR_SELETED_MATCH,
-  messages,
+  messages
 });
 const getAllMessagesFromSelectedMatch = messages => ({
   type: GET_MESSAGES_FROM_SELETED_MATCH,
-  messages,
+  messages
 });
 
 const settingSelectedMatchOnState = match => ({
   type: SET_SELECTED_MATCH_ON_STATE,
-  match,
+  match
 });
 
 const addNewMessageToServer = message => ({
   type: ADD_NEW_MESSAGE,
-  message,
+  message
 });
 
 const changeIcon = user => ({
   type: CHANGE_ICON,
-  user,
+  user
 });
 
 const fetchDeposit = deposit => ({
   type: FETCH_DEPOSIT,
-  deposit,
+  deposit
 });
 
 const updateDeposit = deposit => ({
   type: UPDATE_DEPOSIT,
-  deposit,
+  deposit
 });
 
 const getAcceptedMatches = matchIds => ({
   type: GET_ACCEPTED_MATCHES,
-  matchIds,
+  matchIds
 });
 const addMatchToAccepted = match => ({
   type: ADD_MATCH_TO_ACCEPTED,
-  match,
+  match
 });
 
 const mappingOtherInfoToState = (blurb, birthday, neighborhood, age) => ({
@@ -89,7 +89,7 @@ const mappingOtherInfoToState = (blurb, birthday, neighborhood, age) => ({
   blurb,
   birthday,
   neighborhood,
-  age,
+  age
 });
 
 const updatingIdentifyAsAndSeeking = (
@@ -106,17 +106,17 @@ const updatingIdentifyAsAndSeeking = (
   birthday,
   identifyAs,
   seeking,
-  age,
+  age
 });
 
 const fetchLocation = location => ({
   type: FETCH_LOCATION,
-  location,
+  location
 });
 
 const createNearbyMatchesArray = matchesArray => ({
   type: CREATE_NEARBY_MATCHES_ARRAY,
-  matchesArray,
+  matchesArray
 });
 
 //---------------------- THUNK CREATOR -----------------------
@@ -151,7 +151,7 @@ export const fbMe = () => {
                 identifyAs: '',
                 seeking: '',
                 age: '',
-                geolocation: '',
+                geolocation: ''
               });
             dispatch(checkIfNewUser(true));
           }
@@ -203,11 +203,11 @@ export const addUserToAcceptedMatches = (current, newMatch) => {
       const matchId = newMatch.matchId;
       current = {
         ...current,
-        acceptedMatches: [...current.acceptedMatches, matchId],
+        acceptedMatches: [...current.acceptedMatches, matchId]
       };
       let allUsers = await db.collection('Users').doc(id);
       let updated = await allUsers.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId),
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(matchId)
         // acceptedMatches: current.acceptedMatches
       });
     } catch (err) {
@@ -287,10 +287,11 @@ export const fetchingUserMessages = (userId, matchId) => {
 
 export const addingNewMessageToServer = (
   message,
-  userId,
+  userObj,
   matchId,
   userName
 ) => {
+  console.log('user obj', userObj);
   return dispatch => {
     let newMessageId = '';
     let possible =
@@ -310,12 +311,12 @@ export const addingNewMessageToServer = (
       recipientId: matchId,
       text: message[0].text,
       user: {
-        _id: userId,
+        _id: userObj._id,
         name: userName,
-        avatar:
-          'https://www.wikihow.com/images/thumb/6/65/Draw-a-Simple-Pig-Step-2.jpg/aid1169069-v4-728px-Draw-a-Simple-Pig-Step-2.jpg',
-      },
+        avatar: userObj.avatar
+      }
     };
+    console.log('new message: ', newMessage);
     docRef.get().then(function(doc) {
       if (!doc.exists) {
         allMessages.doc(newMessageId).set(newMessage);
@@ -330,7 +331,7 @@ export const updateIcon = (user, newIcon) => {
     try {
       const docRef = db.collection('Users').doc(user.id);
       await docRef.update({
-        icon: newIcon,
+        icon: newIcon
       });
 
       await docRef.get().then(doc => {
@@ -361,7 +362,7 @@ export const updatingDeposit = (user, oldDeposit, newDeposit) => {
       const updatedDeposit = oldDeposit + newDeposit;
       const docRef = db.collection('Users').doc(user.id);
       await docRef.update({
-        deposit: updatedDeposit,
+        deposit: updatedDeposit
       });
       dispatch(updateDeposit(updatedDeposit));
     } catch (err) {
@@ -420,7 +421,7 @@ export const updateIdentifySeeking = (
         birthday,
         identifyAs,
         seeking,
-        age,
+        age
       });
       dispatch(
         updatingIdentifyAsAndSeeking(
@@ -447,7 +448,7 @@ export const updateUserLocation = data => {
 
       let user = db.collection('Users').doc(userId);
       let query = await user.update({
-        geolocation: new firebase.firestore.GeoPoint(latitude, longitude),
+        geolocation: new firebase.firestore.GeoPoint(latitude, longitude)
       });
     };
   } catch (err) {
@@ -502,11 +503,11 @@ export const updateAcceptedMatch = (current, likedUser) => {
 
       let user = await db.collection('Users').doc(currentId);
       await user.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(likedId),
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(likedId)
       });
       let luckyUser = await db.collection('Users').doc(likedId);
       await luckyUser.update({
-        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(currentId),
+        acceptedMatches: firebase.firestore.FieldValue.arrayUnion(currentId)
       });
       dispatch(addMatchToAccepted(likedUser));
     } catch (err) {
@@ -523,11 +524,11 @@ export const updateRejectMatch = (current, dislikedUser) => {
 
       let user = await db.collection('Users').doc(currentId);
       await user.update({
-        rejectedMatches: firebase.firestore.FieldValue.arrayUnion(dislikedId),
+        rejectedMatches: firebase.firestore.FieldValue.arrayUnion(dislikedId)
       });
       let unluckyUser = await db.collection('Users').doc(dislikedId);
       await unluckyUser.update({
-        rejectedMatches: firebase.firestore.FieldValue.arrayUnion(currentId),
+        rejectedMatches: firebase.firestore.FieldValue.arrayUnion(currentId)
       });
     } catch (err) {
       console.error(err);
@@ -552,7 +553,7 @@ const initialState = {
   identifyAs: '',
   seeking: '',
   nearbyMatchesArr: [],
-  age: '',
+  age: ''
 };
 
 //---------------------- REDUCER -----------------------
@@ -561,65 +562,65 @@ export default function(state = initialState, action) {
     case CHECK_IF_NEW_USER:
       return {
         ...state,
-        newUser: action.bool,
+        newUser: action.bool
       };
     case GOT_USER:
       return {
         ...state,
-        current: action.user,
+        current: action.user
       };
     case FETCH_CURRENT_USER:
       return state;
     case GOT_ALL_USERS:
       return {
         ...state,
-        all: action.users,
+        all: action.users
       };
     case GET_MATCHES:
       return {
         ...state,
-        matches: action.matches,
+        matches: action.matches
       };
 
     case SET_SELECTED_MATCH_ON_STATE:
       return {
         ...state,
-        selectedMatch: action.match,
+        selectedMatch: action.match
       };
     case GET_MESSAGES_FOR_SELETED_MATCH:
       return {
         ...state,
-        messagesToMatch: action.messages,
+        messagesToMatch: action.messages
       };
     case GET_MESSAGES_FROM_SELETED_MATCH:
       return {
         ...state,
-        messagesToUser: action.messages,
+        messagesToUser: action.messages
       };
     case ADD_NEW_MESSAGE:
       return {
         ...state,
-        messagesToMatch: [...state.messagesToMatch, action.message],
+        messagesToMatch: [...state.messagesToMatch, action.message]
       };
     case CHANGE_ICON:
       return {
         ...state,
-        current: action.user,
+        current: action.user
       };
     case FETCH_DEPOSIT:
       return {
         ...state,
-        deposit: action.deposit,
+        deposit: action.deposit
       };
     case UPDATE_DEPOSIT:
       return {
         ...state,
-        deposit: action.deposit,
+        deposit: action.deposit
       };
     case ADD_MATCH_TO_ACCEPTED:
       return {
         ...state,
-        matches: [...state.matches, action.match],
+        matches: [...state.matches, action.match]
       };
     case MAP_OTHER_INFO_TO_STATE:
       return {
@@ -627,7 +628,7 @@ export default function(state = initialState, action) {
         blurb: action.blurb,
         birthday: action.birthday,
         neighborhood: action.neighborhood,
-        age: action.age,
+        age: action.age
       };
 
     case UPDATE_IDENTIFY_AS_AND_SEEKING:
@@ -638,17 +639,17 @@ export default function(state = initialState, action) {
         birthday: action.birthday,
         identifyAs: action.identifyAs,
         seeking: action.seeking,
-        age: action.age,
+        age: action.age
       };
     case FETCH_LOCATION:
       return {
         ...state,
-        current: action.location,
+        current: action.location
       };
     case CREATE_NEARBY_MATCHES_ARRAY:
       return {
         ...state,
-        nearbyMatchesArr: action.matchesArray,
+        nearbyMatchesArr: action.matchesArray
       };
     default:
       return state;

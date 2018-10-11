@@ -163,6 +163,6 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     position: 'absolute',
-    top: 500
+    top: 485
   }
 });

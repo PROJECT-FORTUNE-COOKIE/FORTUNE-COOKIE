@@ -5,11 +5,10 @@ import { connect } from 'react-redux';
 import {
   fetchingMatchMessages,
   fetchingUserMessages,
-  addingNewMessageToServer,
+  addingNewMessageToServer
 } from './store/userReducer';
 
 class ChatWithMatch extends Component {
-
   componentDidMount() {
     const userId = this.props.current.id;
     const matchId = this.props.selectedMatch.id;
@@ -25,7 +24,6 @@ class ChatWithMatch extends Component {
   }
 
   render() {
-    //console.log('STATE---THIS.PROPS: ', this.props);
     let userName = this.props.current.name;
     let userId = this.props.current.id;
     let matchId = this.props.selectedMatch.id;
@@ -39,14 +37,15 @@ class ChatWithMatch extends Component {
       return a > b ? -1 : a < b ? 1 : 0;
     });
 
-    let userObj = { _id: this.props.current.id };
-
-    console.log('---------here in chat-------------', userObj)
+    let userObj = {
+      _id: this.props.current.id,
+      avatar: this.props.current.icon
+    };
 
     return (
       <GiftedChat
         messages={allMessages}
-        onSend={message => this.onSend(message, userId, matchId, userName)}
+        onSend={message => this.onSend(message, userObj, matchId, userName)}
         user={userObj}
       />
     );
@@ -59,7 +58,7 @@ const mapState = state => {
     selectedMatch: state.users.selectedMatch,
     newMessage: {},
     messagesToMatch: state.users.messagesToMatch,
-    messagesToUser: state.users.messagesToUser,
+    messagesToUser: state.users.messagesToUser
   };
 };
 
@@ -73,7 +72,7 @@ const mapDispatchToProps = dispatch => {
     },
     addMessageToServer: (message, userId, matchId, userName) => {
       dispatch(addingNewMessageToServer(message, userId, matchId, userName));
-    },
+    }
   };
 };
 
