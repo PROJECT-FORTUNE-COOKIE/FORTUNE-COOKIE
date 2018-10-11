@@ -77,33 +77,69 @@ class NewArCam extends Component {
   setupScene = async () => {
     let heartsArr = [];
     let newHeart;
+    let x = -40;
     var geometry = new THREE.CircleGeometry(5, 32);
 
     //---
-    for (let i = 0, x = -40; i < this.props.matches.length; i++, x += 20) {
-      const remoteUrl = 'https://data.whicdn.com/images/106885273/large.jpg';
-      const texture = await ExpoTHREE.loadAsync(remoteUrl);
 
-      //const texture = Asset.fromModule(require(remoteUrl));
-      // const texture = await Expo.Asset.fromModule(
-      //   require('https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=4fcaaa40-07fa-4c07-a689-89611f5f3b5d')
-      // ).uri;
+    let remoteUrl = 'https://data.whicdn.com/images/106885273/large.jpg';
+    let texture = await ExpoTHREE.loadAsync(remoteUrl);
+    newHeart = new THREE.Mesh(
+      geometry,
+      new THREE.MeshPhongMaterial({ map: texture })
+    );
+    // newHeart = new THREE.Mesh(
+    //   geometry,
+    //   new THREE.MeshPhongMaterial({ map: texture })
+    // );
+    newHeart.position.z = -45;
+    newHeart.position.x = x;
+    heartsArr.push(newHeart);
+    //-------beginning of new char  ------------------
+    remoteUrl =
+      'https://i.dailymail.co.uk/i/newpix/2018/04/02/19/4ABDA36800000578-5570667-image-a-5_1522694631802.jpg';
+    texture = await ExpoTHREE.loadAsync(remoteUrl);
+    newHeart = new THREE.Mesh(
+      geometry,
+      new THREE.MeshPhongMaterial({ map: texture })
+    );
 
+    newHeart.position.z = -45;
+    x += 20;
+    newHeart.position.x = x;
 
+    heartsArr.push(newHeart);
+    //------------------end of a new char ------------------
+    //-------beginning of new char  ------------------
+    remoteUrl =
+      'https://pbs.twimg.com/profile_images/771566790874845187/aFEY1zdY_400x400.jpg';
+    texture = await ExpoTHREE.loadAsync(remoteUrl);
+    newHeart = new THREE.Mesh(
+      geometry,
+      new THREE.MeshPhongMaterial({ map: texture })
+    );
 
-      newHeart = new THREE.Mesh(
-        geometry,
-        new THREE.MeshPhongMaterial({ map: texture })
-      );
+    newHeart.position.z = -45;
+    x += 20;
+    newHeart.position.x = x;
 
-      // newHeart = new THREE.Mesh(
-      //   geometry,
-      //   new THREE.MeshPhongMaterial({ map: texture })
-      // );
-      newHeart.position.z = -45;
-      newHeart.position.x = x;
-      heartsArr.push(newHeart);
-    }
+    heartsArr.push(newHeart);
+    //------------------end of a new char ------------------
+
+    //-------beginning of new char  ------------------
+    remoteUrl = 'https://i.ebayimg.com/images/g/pOMAAOSwWdZZZsJN/s-l300.jpg';
+    texture = await ExpoTHREE.loadAsync(remoteUrl);
+    newHeart = new THREE.Mesh(
+      geometry,
+      new THREE.MeshPhongMaterial({ map: texture })
+    );
+
+    newHeart.position.z = -45;
+    x += 20;
+    newHeart.position.x = x;
+
+    heartsArr.push(newHeart);
+    //------------------end of a new char ------------------
 
     heartsArr.forEach(heart => {
       return this.scene.add(heart);
