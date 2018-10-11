@@ -59,18 +59,16 @@ class SingleUser extends Component {
   };
 
   render() {
-    const { container, rowContainer } = styles;
+    const { container, rowContainer, text, img } = styles;
     const me = this.props.me;
-    const meToo = this.props.meToo;
     let image = me.icon;
     return (
       <View style={container}>
-        <View>
+        <View style={img}>
           <Image
             style={{
               height: 280,
               width: 300,
-              top: 0,
               borderRadius: 30
             }}
             source={{
@@ -79,7 +77,7 @@ class SingleUser extends Component {
           />
         </View>
 
-        <View>
+        <View style={text}>
           <Text
             style={{
               fontFamily: 'AvenirNext-Regular',
@@ -163,6 +161,14 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     position: 'absolute',
-    top: 485
+    top: 460
+  },
+  img: {
+    position: 'absolute',
+    top: 50
+  },
+  text: {
+    position: 'absolute',
+    top: 370
   }
 });
