@@ -88,6 +88,8 @@ class NewArCam extends Component {
       //   require('https://firebasestorage.googleapis.com/v0/b/project-fortune-cookie.appspot.com/o/1875650202513626%2FmyIcon?alt=media&token=4fcaaa40-07fa-4c07-a689-89611f5f3b5d')
       // ).uri;
 
+
+
       newHeart = new THREE.Mesh(
         geometry,
         new THREE.MeshPhongMaterial({ map: texture })

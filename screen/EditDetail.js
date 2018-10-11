@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, StyleSheet, Text } from 'react-native';
+import { ScrollView, View, StyleSheet, Text, Picker } from 'react-native';
 import { Button, FormLabel, FormInput, CheckBox } from 'react-native-elements';
 import { connect } from 'react-redux';
 import {
@@ -19,9 +19,15 @@ class EditDetail extends Component {
       blurb: '',
       neighborhood: '',
       birthday: '',
+      charity: '',
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.updateCharity = this.updateCharity.bind(this)
   }
+
+  updateCharity = (charity) => {
+    this.setState({ charity: charity })
+ }
 
   componentDidMount() {
     this.props.fetchUser();
@@ -141,6 +147,20 @@ class EditDetail extends Component {
             })
           }
         />
+        <View>
+        <FormLabel>Select charity for donation: </FormLabel>
+
+        <Text style={{flex: 1, fontSize: 18, alignSelf: 'auto' }}>     {this.state.charity}
+        </Text>
+            <Picker selectedValue = {this.state.charity} onValueChange = {this.updateCharity}
+            style={{flex: 1, alignContent: 'flex-start'}} itemStyle={{height: 44, alignItems: 'flex-start', fontSize: 18}}>
+               <Picker.Item label = "Planned Parenthood" value = "Planned Parenthood" />
+               <Picker.Item label = "Doctors Without Borders" value = "Doctors Without Borders" />
+               <Picker.Item label = "Habitat for Humanity" value = "Habitat for Humanity" />
+               <Picker.Item label = "Goodwill" value = "Goodwill" />
+            </Picker>
+
+         </View>
 
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Button
@@ -199,5 +219,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignContent: 'space-around',
-  },
+  }
 });
