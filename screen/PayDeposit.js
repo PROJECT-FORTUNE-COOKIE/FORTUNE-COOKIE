@@ -71,16 +71,6 @@ class PayDeposit extends Component {
           <Text>Deposit Payment Form</Text>
         </View>
 
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text>
-            Fortune Cookie requires users to keep a deposit of $5 on their
-            account. If you do not message at least 3 matches in a week, your $5
-            will be given to charity and you will be required to make another
-            deposit to continue on the app. If you decide to sign out, any
-            deposit money will be return to you!
-          </Text>
-        </View>
-
         <FormLabel>email</FormLabel>
         <FormInput
           placeholder="fortune@cookie.com"

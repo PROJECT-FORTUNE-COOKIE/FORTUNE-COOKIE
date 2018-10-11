@@ -22,12 +22,12 @@ class EditDetail extends Component {
       charity: '',
     };
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.updateCharity = this.updateCharity.bind(this)
+    this.updateCharity = this.updateCharity.bind(this);
   }
 
-  updateCharity = (charity) => {
-    this.setState({ charity: charity })
- }
+  updateCharity = charity => {
+    this.setState({ charity: charity });
+  };
 
   componentDidMount() {
     this.props.fetchUser();
@@ -107,60 +107,85 @@ class EditDetail extends Component {
         />
 
         <FormLabel>I am: </FormLabel>
-        <CheckBox
-          title="male"
-          checked={boolValMale}
-          onPress={() =>
-            this.setState({
-              checkIdentifyMale: !boolValMale,
-            })
-          }
-        />
+        <View style={rowContainer}>
+          <CheckBox
+            title="male"
+            //iconType="delicious"
+            size={12}
+            checked={boolValMale}
+            onPress={() =>
+              this.setState({
+                checkIdentifyMale: !boolValMale,
+              })
+            }
+          />
 
-        <CheckBox
-          title="female"
-          checked={boolValFemale}
-          onPress={() =>
-            this.setState({
-              checkIdentifyFemale: !boolValFemale,
-            })
-          }
-        />
+          <CheckBox
+            title="female"
+            size={12}
+            checked={boolValFemale}
+            onPress={() =>
+              this.setState({
+                checkIdentifyFemale: !boolValFemale,
+              })
+            }
+          />
+        </View>
 
         <FormLabel>I am seeking: </FormLabel>
-        <CheckBox
-          title="male"
-          checked={boolSeekMale}
-          onPress={() =>
-            this.setState({
-              checkSeekingMale: !boolSeekMale,
-            })
-          }
-        />
+        <View style={rowContainer}>
+          <CheckBox
+            title="male"
+            size={12}
+            checked={boolSeekMale}
+            onPress={() =>
+              this.setState({
+                checkSeekingMale: !boolSeekMale,
+              })
+            }
+          />
 
-        <CheckBox
-          title="female"
-          checked={boolSeekFemale}
-          onPress={() =>
-            this.setState({
-              checkSeekingFemale: !boolSeekFemale,
-            })
-          }
-        />
+          <CheckBox
+            title="female"
+            size={12}
+            checked={boolSeekFemale}
+            onPress={() =>
+              this.setState({
+                checkSeekingFemale: !boolSeekFemale,
+              })
+            }
+          />
+        </View>
+
         <View>
-        <FormLabel>Select charity for donation: </FormLabel>
+          <FormLabel>Select charity for donation: </FormLabel>
 
-        <Text style={{flex: 1, fontSize: 18, alignSelf: 'auto' }}>     {this.state.charity}
-        </Text>
-            <Picker selectedValue = {this.state.charity} onValueChange = {this.updateCharity}
-            style={{flex: 1, alignContent: 'flex-start'}} itemStyle={{height: 44, alignItems: 'flex-start', fontSize: 18}}>
-               <Picker.Item label = "Planned Parenthood" value = "Planned Parenthood" />
-               <Picker.Item label = "Doctors Without Borders" value = "Doctors Without Borders" />
-               <Picker.Item label = "Habitat for Humanity" value = "Habitat for Humanity" />
-               <Picker.Item label = "Goodwill" value = "Goodwill" />
-            </Picker>
-
-         </View>
+          {/* <Text style={{ flex: 1, fontSize: 15, alignSelf: 'auto' }}>
+            {' '}
+            {this.state.charity}
+          </Text> */}
+          <Picker
+            size={20}
+            selectedValue={this.state.charity}
+            onValueChange={this.updateCharity}
+            style={{ flex: 1, alignContent: 'flex-start' }}
+            itemStyle={{ height: 44, alignItems: 'flex-start', fontSize: 18 }}
+          >
+            <Picker.Item
+              label="Planned Parenthood"
+              value="Planned Parenthood"
+            />
+            <Picker.Item
+              label="Doctors Without Borders"
+              value="Doctors Without Borders"
+            />
+            <Picker.Item
+              label="Habitat for Humanity"
+              value="Habitat for Humanity"
+            />
+            <Picker.Item label="Goodwill" value="Goodwill" />
+          </Picker>
+        </View>
 
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Button
@@ -219,5 +244,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignContent: 'space-around',
-  }
+  },
 });
