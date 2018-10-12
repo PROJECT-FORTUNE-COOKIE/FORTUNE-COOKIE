@@ -59,15 +59,15 @@ export const MenuTab = createBottomTabNavigator({
       ),
     },
   },
-  // TESTUI: {
-  //   screen: TESTUI,
-  //   navigationOptions: {
-  //     tabLabel: 'TESTUI',
-  //     tabBarIcon: ({ tintColor }) => (
-  //       <Icon name="compass" type="feather" color={tintColor} />
-  //     ),
-  //   },
-  // },
+  PayDeposit: {
+    screen: PayDeposit,
+    navigationOptions: {
+      tabLabel: 'PayDeposit',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="compass" type="feather" color={tintColor} />
+      ),
+    },
+  },
 });
 
 export const Root = createStackNavigator({
