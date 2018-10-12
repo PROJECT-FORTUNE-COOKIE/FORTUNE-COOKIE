@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Image, Animated } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Dimensions,
+  ImageBackground
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { storage } from './store/firestoreAuth';
 import { ImagePicker, Permissions } from 'expo';
 import { connect } from 'react-redux';
 import { updateIcon, fetchAllUsers } from './store/userReducer';
+
+const BG_IMAGE = require('../assets/backgroundIMG.png');
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 class SingleUser extends Component {
   componentDidMount() {
@@ -59,11 +70,12 @@ class SingleUser extends Component {
   };
 
   render() {
-    const { container, rowContainer, text, img } = styles;
+    const { container, rowContainer, text, img, bgImage } = styles;
     const me = this.props.me;
     let image = me.icon;
     return (
       <View style={container}>
+        <ImageBackground source={BG_IMAGE} style={bgImage} />
         <View style={img}>
           <Image
             style={{
@@ -99,9 +111,7 @@ class SingleUser extends Component {
               fontFamily: 'AvenirNext-Regular',
               fontSize: 15
             }}
-          >
-            {/* Age: {meToo.age ? <Text>{meToo.age} </Text> : null} */}
-          </Text>
+          />
         </View>
 
         <View style={rowContainer}>
@@ -155,8 +165,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-    padding: 25
+    backgroundColor: '#F5FCFF'
   },
   rowContainer: {
     flexDirection: 'row',
@@ -170,5 +179,14 @@ const styles = StyleSheet.create({
   text: {
     position: 'absolute',
     top: 370
+  },
+  bgImage: {
+    flex: 1,
+    top: 0,
+    left: 0,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

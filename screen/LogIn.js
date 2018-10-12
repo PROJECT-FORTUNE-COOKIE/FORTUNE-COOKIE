@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button } from 'react-native-elements';
 import {
   StyleSheet,
-  Image,
   Text,
   View,
   Dimensions,
-  ImageBackground,
+  ImageBackground
 } from 'react-native';
 import { fbMe } from './store/userReducer';
 import { connect } from 'react-redux';
@@ -16,15 +15,14 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 const LogIn = props => {
-  const { container, img, txt, btn, headText, subText } = styles;
+  const { container, txt, btn, headText, subText, bgImage } = styles;
 
   return (
     <View style={container}>
-      <ImageBackground source={BG_IMAGE} style={styles.bgImage} />
+      <ImageBackground source={BG_IMAGE} style={bgImage} />
 
       <View style={txt}>
         <Text style={headText}>Fortune Cookie</Text>
-        {/* <Text style={headText}> Cookie </Text> */}
         <Text style={subText}>no cookie left behind</Text>
       </View>
       <View style={btn}>
@@ -48,7 +46,7 @@ const mapDispatchToProps = dispatch => {
   return {
     handleSubmit() {
       dispatch(fbMe());
-    },
+    }
   };
 };
 
@@ -63,14 +61,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF'
   },
   txt: {
     width: 350,
     position: 'absolute',
     top: 50,
     height: 250,
-    zIndex: 1,
+    zIndex: 1
   },
   btn: {
     width: 280,
@@ -78,17 +76,17 @@ const styles = StyleSheet.create({
     padding: 10,
     position: 'absolute',
     top: 480,
-    zIndex: 2,
+    zIndex: 2
   },
   headText: {
     fontFamily: 'Arial Rounded MT Bold',
     fontSize: 45,
-    left: 15,
+    left: 15
   },
   subText: {
     fontFamily: 'AvenirNext-Regular',
     fontSize: 25,
-    left: 60,
+    left: 60
   },
   bgImage: {
     flex: 1,
@@ -97,6 +95,6 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 });

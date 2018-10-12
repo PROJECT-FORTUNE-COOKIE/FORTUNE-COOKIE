@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   createBottomTabNavigator,
-  createStackNavigator,
+  createStackNavigator
 } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import SingleUser from '../screen/SingleUser';
@@ -29,8 +29,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'Me',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="star" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
   AllUsers: {
     screen: AllUsers,
@@ -38,8 +38,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'All user',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="search" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
   MatchesList: {
     screen: MatchesList,
@@ -47,8 +47,8 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'MatchesList',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="align-justify" type="feather" color={tintColor} />
-      ),
-    },
+      )
+    }
   },
   CameraAR: {
     screen: CameraAR,
@@ -56,46 +56,37 @@ export const MenuTab = createBottomTabNavigator({
       tabLabel: 'CameraAR',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="camera" type="feather" color={tintColor} />
-      ),
-    },
-  },
-  // TESTUI: {
-  //   screen: TESTUI,
-  //   navigationOptions: {
-  //     tabLabel: 'TESTUI',
-  //     tabBarIcon: ({ tintColor }) => (
-  //       <Icon name="compass" type="feather" color={tintColor} />
-  //     ),
-  //   },
-  // },
+      )
+    }
+  }
 });
 
 export const Root = createStackNavigator({
   LogIn: {
-    screen: LogIn,
+    screen: LogIn
   },
   SingleUser: {
-    screen: MenuTab,
+    screen: MenuTab
   },
 
   EditDetail: {
-    screen: EditDetail,
+    screen: EditDetail
   },
   UserSetting: {
-    screen: UserSetting,
+    screen: UserSetting
   },
   ChatWithMatch: {
-    screen: ChatWithMatch,
+    screen: ChatWithMatch
   },
   PayDeposit: {
-    screen: PayDeposit,
+    screen: PayDeposit
   },
   WelcomePage: {
-    screen: WelcomePage,
+    screen: WelcomePage
   },
   AllUsers: {
-    screen: AllUsers,
-  },
+    screen: AllUsers
+  }
 });
 
 class RootRoute extends Component {
@@ -112,7 +103,7 @@ const mapDispatch = dispatch => {
   return {
     loadInitialData() {
       dispatch(fetchAllUsers());
-    },
+    }
   };
 };
 
