@@ -18,7 +18,7 @@ class MatchesList extends Component {
 
   render() {
     const matches = this.props.matches;
-    console.log('mathes here -----------------------', matches);
+
     return (
       <ScrollView>
         <List>
@@ -42,7 +42,7 @@ class MatchesList extends Component {
 const mapState = state => {
   return {
     current: state.users.current,
-    matches: state.users.matches,
+    matches: state.users.matches
   };
 };
 
@@ -53,7 +53,7 @@ const mapDispatchToProps = dispatch => {
     },
     setSelectedMatch: matchId => {
       dispatch(getSelectedMatch(matchId));
-    },
+    }
   };
 };
 

@@ -197,6 +197,7 @@ class EditDetail extends Component {
           <View style={btn}>
             <Button
               small
+              backgroundColor="#edc797"
               title="~all done~"
               onPress={() => {
                 this.handleSubmit();
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     borderWidth: 0,
     borderRadius: 5,
-    left: 50,
+    left: 80,
   },
   headText: {
     fontFamily: 'Arial Rounded MT Bold',

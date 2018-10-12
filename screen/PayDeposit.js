@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { AlertIOS, ScrollView, View, StyleSheet, Text } from 'react-native';
+import {
+  AlertIOS,
+  ScrollView,
+  View,
+  StyleSheet,
+  Text,
+  Dimensions,
+  ImageBackground,
+} from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
 import Stripe from 'react-native-stripe-api';
 import { connect } from 'react-redux';
@@ -13,6 +21,10 @@ import {
   creatingToken,
 } from './store/paymentReducer';
 import { fetchingInititalDeposit } from './store/userReducer';
+
+const BG_IMAGE = require('../assets/backgroundIMG.png');
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 class PayDeposit extends Component {
   constructor() {
@@ -64,50 +76,52 @@ class PayDeposit extends Component {
   }
 
   render() {
-    const { rowContainer } = styles;
+    const { rowContainer, container, txt, headText } = styles;
     return (
-      <ScrollView>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text>Deposit Payment Form</Text>
+      <View style={container}>
+        <ImageBackground source={BG_IMAGE} style={styles.bgImage} />
+        {/* <View style={{ flex: 1, alignItems: 'center' }}> */}
+        <View style={txt}>
+          <Text style={headText}>Deposit Payment Form</Text>
+
+          <FormLabel>email</FormLabel>
+          <FormInput
+            placeholder="fortune@cookie.com"
+            onChangeText={email => this.props.changeEmail(email)}
+            //value={'4242424242424242'}
+          />
+
+          <FormLabel>credit card number</FormLabel>
+          <FormInput
+            placeholder="4242424242424242"
+            onChangeText={number => this.props.changeCCNumber(number)}
+            //value={'4242424242424242'}
+          />
+
+          <FormLabel>expiration month</FormLabel>
+          <FormInput
+            placeholder="12"
+            onChangeText={expmonth => this.props.changeExpMonth(expmonth)}
+            //value={'12'}
+          />
+
+          <FormLabel>expiration year</FormLabel>
+          <FormInput
+            placeholder="18"
+            onChangeText={expyear => this.props.changeExpYear(expyear)}
+            //value={'18'}
+          />
+
+          <FormLabel>cvc</FormLabel>
+          <FormInput
+            placeholder="111"
+            onChangeText={cvc => this.props.changeCVC(cvc)}
+            //value={'111'}
+          />
+
+          <Button onPress={() => this.payNow()} title="PAY" />
         </View>
-
-        <FormLabel>email</FormLabel>
-        <FormInput
-          placeholder="fortune@cookie.com"
-          onChangeText={email => this.props.changeEmail(email)}
-          //value={'4242424242424242'}
-        />
-
-        <FormLabel>credit card number</FormLabel>
-        <FormInput
-          placeholder="4242424242424242"
-          onChangeText={number => this.props.changeCCNumber(number)}
-          //value={'4242424242424242'}
-        />
-
-        <FormLabel>expiration month</FormLabel>
-        <FormInput
-          placeholder="12"
-          onChangeText={expmonth => this.props.changeExpMonth(expmonth)}
-          //value={'12'}
-        />
-
-        <FormLabel>expiration year</FormLabel>
-        <FormInput
-          placeholder="18"
-          onChangeText={expyear => this.props.changeExpYear(expyear)}
-          //value={'18'}
-        />
-
-        <FormLabel>cvc</FormLabel>
-        <FormInput
-          placeholder="111"
-          onChangeText={cvc => this.props.changeCVC(cvc)}
-          //value={'111'}
-        />
-
-        <Button onPress={() => this.payNow()} title="PAY" />
-      </ScrollView>
+      </View>
     );
   }
 }
@@ -145,5 +159,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignContent: 'space-around',
+  },
+  bgImage: {
+    flex: 1,
+    top: 0,
+    left: 0,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  txt: {
+    width: 350,
+    position: 'absolute',
+    top: 35,
+    height: 250,
+    zIndex: 1,
+  },
+  headText: {
+    fontFamily: 'Arial Rounded MT Bold',
+    fontSize: 17,
+    left: 70,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
   },
 });

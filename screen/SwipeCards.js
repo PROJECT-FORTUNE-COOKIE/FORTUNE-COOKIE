@@ -5,7 +5,7 @@ import {
   Dimensions,
   Image,
   Animated,
-  PanResponder
+  PanResponder,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { updateAcceptedMatch, updateRejectMatch } from './store';
@@ -18,46 +18,46 @@ class SwipeCards extends Component {
     super();
     this.position = new Animated.ValueXY();
     this.state = {
-      currentIndex: 0
+      currentIndex: 0,
     };
 
     this.rotate = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: ['-10deg', '0deg', '10deg'],
-      extrapolate: 'clamp'
+      extrapolate: 'clamp',
     });
 
     this.rotateAndTranslate = {
       transform: [
         {
-          rotate: this.rotate
+          rotate: this.rotate,
         },
-        ...this.position.getTranslateTransform()
-      ]
+        ...this.position.getTranslateTransform(),
+      ],
     };
 
     this.likeOpacity = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: [0, 0, 1],
-      extrapolate: 'clamp'
+      extrapolate: 'clamp',
     });
 
     this.dislikeOpacity = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: [1, 0, 0],
-      extrapolate: 'clamp'
+      extrapolate: 'clamp',
     });
 
     this.nextCardOpacity = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: [1, 0, 1],
-      extrapolate: 'clamp'
+      extrapolate: 'clamp',
     });
 
     this.nextCardScale = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
       outputRange: [1, 0.8, 1],
-      extrapolate: 'clamp'
+      extrapolate: 'clamp',
     });
   }
 
@@ -70,12 +70,12 @@ class SwipeCards extends Component {
       onPanResponderRelease: (evt, gestureState) => {
         if (gestureState.dx > 120) {
           Animated.spring(this.position, {
-            toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy }
+            toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
           }).start(async () => {
             let oldIndx = this.state.currentIndex;
             this.setState(
               {
-                currentIndex: this.state.currentIndex + 1
+                currentIndex: this.state.currentIndex + 1,
               },
               () => {
                 this.position.setValue({ x: 0, y: 0 });
@@ -89,11 +89,11 @@ class SwipeCards extends Component {
           });
         } else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
-            toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy }
+            toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
           }).start(() => {
             this.setState(
               {
-                currentIndex: this.state.currentIndex + 1
+                currentIndex: this.state.currentIndex + 1,
               },
               () => {
                 this.position.setValue({ x: 0, y: 0 });
@@ -103,10 +103,10 @@ class SwipeCards extends Component {
         } else {
           Animated.spring(this.position, {
             toValue: { x: 0, y: 0 },
-            friction: 4
+            friction: 4,
           }).start();
         }
-      }
+      },
     });
   }
 
@@ -126,8 +126,8 @@ class SwipeCards extends Component {
                   height: SCREEN_HEIGHT - 40,
                   width: SCREEN_WIDTH,
                   padding: 10,
-                  position: 'absolute'
-                }
+                  position: 'absolute',
+                },
               ]}
             >
               <Animated.View
@@ -135,7 +135,7 @@ class SwipeCards extends Component {
                   opacity: this.likeOpacity,
                   transform: [{ rotate: '-20deg' }],
                   position: 'absolute',
-                  zIndex: 1000
+                  zIndex: 1000,
                 }}
               >
                 <Text
@@ -147,7 +147,7 @@ class SwipeCards extends Component {
                     top: 30,
                     left: 40,
                     fontWeight: '800',
-                    padding: 10
+                    padding: 10,
                   }}
                 >
                   Lucky Cookie
@@ -160,7 +160,7 @@ class SwipeCards extends Component {
                   position: 'absolute',
                   top: 30,
                   right: 40,
-                  zIndex: 1000
+                  zIndex: 1000,
                 }}
               >
                 <Text
@@ -170,7 +170,7 @@ class SwipeCards extends Component {
                     color: 'red',
                     fontSize: 32,
                     fontWeight: '800',
-                    padding: 10
+                    padding: 10,
                   }}
                 >
                   awwW
@@ -178,36 +178,36 @@ class SwipeCards extends Component {
               </Animated.View>
               <Text
                 style={{
-                  color: 'pink',
+                  color: '#be1b4c',
                   fontSize: 25,
                   top: 430,
                   right: 0,
                   fontWeight: '800',
-                  zIndex: 2000
+                  zIndex: 2000,
                 }}
               >
                 {item.name}
               </Text>
               <Text
                 style={{
-                  color: 'pink',
+                  color: '#be1b4c',
                   fontSize: 15,
                   top: 430,
                   right: 0,
                   fontWeight: '800',
-                  zIndex: 2000
+                  zIndex: 2000,
                 }}
               >
-                ~{item.neighborhood}, {item.age}
+                {item.neighborhood}, {item.age}
               </Text>
               <Text
                 style={{
-                  color: 'pink',
+                  color: '#be1b4c',
                   fontSize: 15,
                   top: 430,
                   right: 0,
                   fontWeight: '800',
-                  zIndex: 2000
+                  zIndex: 2000,
                 }}
               >
                 ~{item.blurb}
@@ -222,7 +222,7 @@ class SwipeCards extends Component {
                   // position: 'absolute',
                   top: -69,
                   borderRadius: 15,
-                  zIndex: 1
+                  zIndex: 1,
                 }}
                 source={{ uri: item.icon }}
               />
@@ -239,8 +239,8 @@ class SwipeCards extends Component {
                   height: SCREEN_HEIGHT - 40,
                   width: SCREEN_WIDTH,
                   // padding: 10,
-                  position: 'absolute'
-                }
+                  position: 'absolute',
+                },
               ]}
             >
               <Image
@@ -252,7 +252,7 @@ class SwipeCards extends Component {
                   // position: 'absolute',
                   top: -69,
                   borderRadius: 15,
-                  zIndex: 1
+                  zIndex: 1,
                 }}
                 source={{ uri: item.icon }}
               />
@@ -278,7 +278,7 @@ mapDispatch = dispatch => {
     },
     updateRejectMatches: (current, dislikeUser) => {
       dispatch(updateRejectMatch(current, dislikeUser));
-    }
+    },
   };
 };
 

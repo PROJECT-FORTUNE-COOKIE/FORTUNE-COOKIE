@@ -17,15 +17,11 @@ class ChatWithMatch extends Component {
   }
 
   onSend(message, userId, matchId, userName) {
-    // this.setState(previousState => ({
-    //   messages: GiftedChat.append(previousState.messages, messages),
-    // }));
     this.props.addMessageToServer(message, userId, matchId, userName);
   }
 
   render() {
     let userName = this.props.current.name;
-    let userId = this.props.current.id;
     let matchId = this.props.selectedMatch.id;
 
     let messagesToMatch = this.props.messagesToMatch;
